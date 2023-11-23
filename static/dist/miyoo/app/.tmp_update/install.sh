@@ -235,9 +235,9 @@ run_installation() {
     verb2="Update"
 
     if [ $reset_configs -eq 1 ]; then
-        verb="Installing"
-        verb2="Installation"
-        echo "Preparing installation..." >> /tmp/.update_msg
+        verb="Установка"
+        verb2="Установка"
+        echo "Подготовка к установке..." >> /tmp/.update_msg
 
         # Backup important stock files
         backup_system
@@ -281,7 +281,7 @@ run_installation() {
 
     run_migration_scripts
 
-    echo "Finishing up - Get ready!" >> /tmp/.update_msg
+    echo "Завершена - Всё готово!" >> /tmp/.update_msg
 
     if [ $reset_configs -eq 1 ]; then
         refresh_roms
@@ -342,12 +342,12 @@ run_installation() {
     #########################################################################################
 
     if [ $DEVICE_ID -eq MODEL_MM ]; then
-        echo "$verb2 complete!" >> /tmp/.update_msg
+        echo "$verb2 готова!" >> /tmp/.update_msg
         touch $sysdir/.waitConfirm
         touch $sysdir/.installed
         sync
     else
-        echo "$verb2 complete - Rebooting..." >> /tmp/.update_msg
+        echo "$verb2 завершена - Перезагрузка..." >> /tmp/.update_msg
     fi
 
     installUI &
@@ -357,7 +357,7 @@ run_installation() {
         counter=10
 
         while [ -f $sysdir/.waitConfirm ] && [ $counter -ge 0 ]; do
-            echo "Press A to turn off (""$counter""s)" >> /tmp/.update_msg
+            echo "Нажмите A для выключения (""$counter""s)" >> /tmp/.update_msg
             counter=$((counter - 1))
             sleep 1
         done
