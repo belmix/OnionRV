@@ -31,6 +31,7 @@ git clone https://github.com/belmix/OnionRV.git
 ```bash
 cd OnionRV/
 make git-submodules
+sudo chmod 666 /var/run/docker.sock
 make with-toolchain or make with-toolchain CMD=dev
 ```
 
