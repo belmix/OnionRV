@@ -231,8 +231,8 @@ run_installation() {
     sync
     sleep 1
 
-    verb="Updating"
-    verb2="Update"
+    verb="Обновление"
+    verb2="Обновление"
 
     if [ $reset_configs -eq 1 ]; then
         verb="Установка"
@@ -253,7 +253,7 @@ run_installation() {
         rm -rf App Emu RApp miyoo
 
     elif [ $system_only -ne 1 ]; then
-        echo "Preparing update..." >> /tmp/.update_msg
+        echo "Подготовка к установке..." >> /tmp/.update_msg
 
         # Ensure packages are fresh !
         rm -rf /mnt/SDCARD/App/PackageManager 2> /dev/null
@@ -347,7 +347,7 @@ run_installation() {
         touch $sysdir/.installed
         sync
     else
-        echo "$verb2 завершена - Перезагрузка..." >> /tmp/.update_msg
+        echo "Перезагрузка..." >> /tmp/.update_msg
     fi
 
     installUI &
