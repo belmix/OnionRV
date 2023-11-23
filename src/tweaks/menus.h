@@ -93,7 +93,7 @@ void menu_datetime(void *_)
 {
     if (!_menu_date_time._created) {
         _menu_date_time = list_create(6, LIST_SMALL);
-        strcpy(_menu_date_time.title, "Дата и время");
+        strcpy(_menu_date_time.title, "Date and time");
         list_addItem(&_menu_date_time,
                      (ListItem){
                          .label = "[DATESTRING]",
@@ -105,65 +105,64 @@ void menu_datetime(void *_)
         if (DEVICE_ID == MIYOO354 || network_state.ntp) {
             list_addItemWithInfoNote(&_menu_date_time,
                                      (ListItem){
-                                         .label = "Синхронизировать через интрнет",
+                                         .label = "Set automatically via internet",
                                          .item_type = TOGGLE,
                                          .value = (int)network_state.ntp,
                                          .action = network_setNtpState},
-                                     "Используйте подключение к Интернету\n"
-									 "для синхронизации даты и времени\n"
-                                     "при включении консоли.");
+                                     "Use the internet connection to sync\n"
+                                     "date and time on startup.");
         }
         if (DEVICE_ID == MIYOO354) {
             list_addItemWithInfoNote(&_menu_date_time,
                                      (ListItem){
-                                         .label = "Дождитесь синхронизации при запуске",
+                                         .label = "Wait for sync on startup",
                                          .item_type = TOGGLE,
                                          .disabled = !network_state.ntp,
                                          .value = (int)network_state.ntp_wait,
                                          .action = network_setNtpWaitState},
-                                     "Дождитесь синхронизации даты и времени\n"
-                                     "при включении консоли."
+                                     "Wait for date and time synchronization\n"
+                                     "on system startup."
                                      " \n"
-                                     "Гарантирует синхронизацию времени\n"
-									 "перед началом запуска игры.");
+                                     "Ensures that time is synced before a game\n"
+                                     "is launched.");
             list_addItemWithInfoNote(&_menu_date_time,
                                      (ListItem){
-                                         .label = "Получить часовой пояс по IP-адресу",
+                                         .label = "Get time zone via IP address",
                                          .item_type = TOGGLE,
                                          .disabled = !network_state.ntp,
                                          .value = !network_state.manual_tz,
                                          .action = network_setTzManualState},
-                                     "Если это включено, система попытается\n"
-                                     "получить ваш часовой пояс по вашему\n"
-                                     "IP-адресу."
+                                     "If this is enabled, the system will try\n"
+                                     "to retrieve your time zone from your IP\n"
+                                     "address."
                                      " \n"
-                                     "Возможно, было бы полезно отключить,\n"
-                                     "если вы подключены к VPN.");
+                                     "It might be beneficial to disable this\n"
+                                     "option if you're on a VPN.");
             list_addItemWithInfoNote(&_menu_date_time,
                                      (ListItem){
-                                         .label = "Выберите часовой пояс",
+                                         .label = "Select time zone",
                                          .item_type = MULTIVALUE,
                                          .disabled = !network_state.ntp || !network_state.manual_tz,
                                          .value_max = 48,
                                          .value_formatter = formatter_timezone,
                                          .value = value_timezone(),
                                          .action = network_setTzSelectState},
-                                     "Установите свой часовой пояс вручную.\n"
-                                     "Вам также нужно настроит летнее время.");
+                                     "Manually set your time zone.\n"
+                                     "You need to adjust for DST as well.");
         }
         list_addItemWithInfoNote(&_menu_date_time,
                                  (ListItem){
-                                     .label = "Эмулировать пропущеное время",
+                                     .label = "Emulated time skip",
                                      .item_type = MULTIVALUE,
                                      .disabled = network_state.ntp,
                                      .value_max = 24,
                                      .value_formatter = formatter_timeSkip,
                                      .value = settings.time_skip,
                                      .action = action_setTimeSkip},
-                                 "Без RTC системное время останавливается\n"
-                                 "пока устройство выключено.\n"
-                                 "Этот параметр позволяет вам добавить определенное\n"
-                                 "количество часов при запуске");
+                                 "Without RTC the system time stands still\n"
+                                 "while the device is off.\n"
+                                 "This option lets you add a specific amount\n"
+                                 "of hours at startup.");
     }
     _writeDateString(_menu_date_time.items[0].label);
     menu_stack[++menu_level] = &_menu_date_time;
