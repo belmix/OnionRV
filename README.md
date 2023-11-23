@@ -10,15 +10,11 @@ OS Miyoo Mini+
 
 ## Установка
 
-Обновление репозиторий
+Обновление репозиторий и установка пакетов
 ```bash
+sudo su
 apt update
 apt list --upgradable
-```
-
-Установка пакетов
-
-```bash
 apt install git
 apt install make
 snap install docker
