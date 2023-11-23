@@ -201,7 +201,7 @@ void menu_icon_packs(void *_)
 
     if (!_menu_icon_packs._created) {
         _menu_icon_packs = list_create(200, LIST_SMALL);
-        strcpy(_menu_icon_packs.title, "Иконки");
+        strcpy(_menu_icon_packs.title, "Настройки иконок");
 
         _add_icon_packs("/mnt/SDCARD/Icons", &_menu_icon_packs,
                         _action_apply_icon_pack, false, NULL);
@@ -491,7 +491,7 @@ void menu_icons(void *_)
                                               .action = menu_icon_packs});
         list_addItem(&_menu_icons, (ListItem){.label = "Редактировать иконки Консоли...",
                                               .action = menu_console_icons});
-        list_addItem(&_menu_icons, (ListItem){.label = "Редактировать иконки ЭПриложений...",
+        list_addItem(&_menu_icons, (ListItem){.label = "Редактировать иконки Приложений...",
                                               .action = menu_app_icons});
         list_addItem(&_menu_icons, (ListItem){.label = "Редактировать иконки Эксперт...",
                                               .action = menu_expert_icons});

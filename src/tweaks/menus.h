@@ -320,17 +320,17 @@ void menu_buttonAction(void *_)
                                  "при быстром и двойном нажатии.");
         list_addItem(&_menu_button_action,
                      (ListItem){
-                         .label = "В игре: Кнопка Меню...",
+                         .label = "В процессе игры: Меню...",
                          .action = menu_buttonActionInGameMenu});
         list_addItem(&_menu_button_action,
                      (ListItem){
-                         .label = "Главное меню: Кнопка Меню...",
+                         .label = "В главном меню: Меню...",
                          .action = menu_buttonActionMainUIMenu});
 
         getInstalledApps(true);
         list_addItemWithInfoNote(&_menu_button_action,
                                  (ListItem){
-                                     .label = "Главное меню: кнопка X",
+                                     .label = "В главном меню: X",
                                      .item_type = MULTIVALUE,
                                      .value_max = installed_apps_count + NUM_TOOLS,
                                      .value = value_appShortcut(0),
@@ -340,14 +340,14 @@ void menu_buttonAction(void *_)
                                  "Установите действие кнопки X в Главном меню.");
         list_addItemWithInfoNote(&_menu_button_action,
                                  (ListItem){
-                                     .label = "Главное меню: кнопка Y",
+                                     .label = "В главном меню: Y",
                                      .item_type = MULTIVALUE,
                                      .value_max = installed_apps_count + NUM_TOOLS + 1,
                                      .value = value_appShortcut(1),
                                      .value_formatter = formatter_appShortcut,
                                      .action_id = 1,
                                      .action = action_setAppShortcut},
-                                 "Установите действие кнопки Y в Главном меню.");
+                                 "Действие кнопки Y в Главном меню.");
         list_addItemWithInfoNote(&_menu_button_action,
                                  (ListItem){
                                      .label = "Быстрое нажатие кнопки Включения",
@@ -369,7 +369,7 @@ void menu_batteryPercentage(void *_)
         _menu_battery_percentage = list_createWithTitle(7, LIST_SMALL, "Процент заряда батареи");
         list_addItem(&_menu_battery_percentage,
                      (ListItem){
-                         .label = "Отображение",
+                         .label = "Видимость",
                          .item_type = MULTIVALUE,
                          .value_max = 2,
                          .value_labels = THEME_TOGGLE_LABELS,
@@ -670,29 +670,29 @@ void menu_tools(void *_)
         strcpy(_menu_tools.title, "Утилиты");
         list_addItemWithInfoNote(&_menu_tools,
                                  (ListItem){
-                                     .label = "Генерировать файлы CUE для игр PSX",
+                                     .label = "Generate CUE files for PSX games",
                                      .action = tool_generateCueFiles},
-                                 "Для PSX в формате .bin требуется\n"
-                                 "файл '.cue'. Используйте этот инструмент\n"
-                                 "чтобы автоматически сгенерировать его.");
+                                 "PSX roms in '.bin' format needs a\n"
+                                 "matching '.cue' file. Use this tool\n"
+                                 "to automatically generate them.");
         list_addItemWithInfoNote(&_menu_tools,
                                  (ListItem){
-                                     .label = "Генерировать список игр с короткими названиями",
+                                     .label = "Generate game list for short name roms",
                                      .action = tool_buildShortRomGameList},
-                                 "Этот инструмент заменяет короткие имена в\n"
-                                 "игровые кэши с эквивалентными им реальными\n"
-                                 "именами. Это гарантирует, что список будет отсортирован\n"
-                                 "правильно.");
+                                 "This tool replaces the short names in\n"
+                                 "game caches with their equivalent real\n"
+                                 "names. This ensures the list is sorted\n"
+                                 "correctly.");
         list_addItemWithInfoNote(&_menu_tools,
                                  (ListItem){
                                      .label = "Generate miyoogamelist with digest names",
                                      .action = tool_generateMiyoogamelists},
-                                 "Используйте этот инструмент для очистки названий ваших игр\n"
-                                 "без необходимости переименовывать файлы rom\n"
-                                 "(удаляет скобки, ранжирование и многое другое).\n"
-                                 "При этом генерируется файл 'miyoogamelist.xml'\n"
-                                 "который имеет некоторые ограничения, такие как\n"
-                                 "отсутвие поддержки вложенных папок.");
+                                 "Use this tool to clean your game names\n"
+                                 "without having to rename the rom files\n"
+                                 "(removes parens, rankings, and much more).\n"
+                                 "This generates a 'miyoogamelist.xml' file\n"
+                                 "which comes with some limitations, such\n"
+                                 "as no subfolder support.");
     }
     menu_stack[++menu_level] = &_menu_tools;
     header_changed = true;

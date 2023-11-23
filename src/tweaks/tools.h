@@ -54,11 +54,11 @@ void _toolDialog(const char *title_str, const char *message_str,
 
 void _runCommandPopup(const char *tool_name, const char *_cmd)
 {
-    static char msg_apply[] = "Применение утилит...\n \n \n ";
+    static char msg_apply[] = "Applying tool...\n \n \n ";
 
     keys_enabled = false;
     char full_title[STR_MAX];
-    sprintf(full_title, "Утилита: %s", tool_name);
+    sprintf(full_title, "Tool: %s", tool_name);
     _toolDialog(full_title, msg_apply, false);
 
     char cmd[STR_MAX];
@@ -81,7 +81,7 @@ void _runCommandPopup(const char *tool_name, const char *_cmd)
 
     if (video != NULL)
         msleep(300);
-    _toolDialog(full_title, thread_success ? "Готово" : "Ошибка утилиты", false);
+    _toolDialog(full_title, thread_success ? "Done" : "Tool failed", false);
 
     if (video != NULL)
         msleep(300);
