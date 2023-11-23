@@ -757,7 +757,7 @@ void menu_main(void)
         list_addItem(&_menu_main,
                      (ListItem){
                          .label = "Утилиты",
-                         .description = "Создание, переименование, удаление",
+                         .description = "Дополнительные инструменты",
                          .action = menu_tools,
                          .icon_ptr = _get_menu_icon("tweaks_tools")});
     }
