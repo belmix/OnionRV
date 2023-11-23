@@ -433,29 +433,29 @@ void menu_themeOverrides(void *_)
 {
     if (!_menu_theme_overrides._created) {
         _menu_theme_overrides = list_create(7, LIST_SMALL);
-        strcpy(_menu_theme_overrides.title, "Настройки темы");
+        strcpy(_menu_theme_overrides.title, "Настройки оформления");
         list_addItem(&_menu_theme_overrides,
                      (ListItem){
-                         .label = "Процент заряда батареи...",
+                         .label = "Индикатор заряда...",
                          .action = menu_batteryPercentage});
         list_addItemWithInfoNote(&_menu_theme_overrides,
                                  (ListItem){
-                                     .label = "Скрыть подписи меню",
+                                     .label = "Названия меню",
                                      .item_type = MULTIVALUE,
                                      .value_max = 2,
                                      .value_labels = THEME_TOGGLE_LABELS,
                                      .value = value_hideLabelsIcons(),
                                      .action = action_hideLabelsIcons},
-                                 "Скрыть подписи в главном меню.");
+                                 "Скрыть подписи вкладок в главном меню.");
         list_addItemWithInfoNote(&_menu_theme_overrides,
                                  (ListItem){
-                                     .label = "Скрыть стандартные подписи",
+                                     .label = "Названия кнопок",
                                      .item_type = MULTIVALUE,
                                      .value_max = 2,
                                      .value_labels = THEME_TOGGLE_LABELS,
                                      .value = value_hideLabelsHints(),
                                      .action = action_hideLabelsHints},
-                                 "Скрыть подписи в нижней левой части экрана.");
+                                 "Скрыть названия кнопок на экране.");
         // list_addItem(&_menu_theme_overrides, (ListItem){
         // 	.label = "[Title] Font size", .item_type = MULTIVALUE,
         // .value_max = num_font_sizes, .value_formatter = formatter_fontSize
@@ -476,10 +476,10 @@ void menu_themeOverrides(void *_)
 void menu_userInterface(void *_)
 {
     if (!_menu_user_interface._created) {
-        _menu_user_interface = list_createWithTitle(5, LIST_SMALL, "Настройки офрмления");
+        _menu_user_interface = list_createWithTitle(5, LIST_SMALL, "Дополнительные настройки");
         list_addItemWithInfoNote(&_menu_user_interface,
                                  (ListItem){
-                                     .label = "Показывать последние",
+                                     .label = "Вкладка Последние",
                                      .item_type = TOGGLE,
                                      .value = settings.show_recents,
                                      .action = action_setShowRecents},
@@ -487,7 +487,7 @@ void menu_userInterface(void *_)
                                  "в главном меню.");
         list_addItemWithInfoNote(&_menu_user_interface,
                                  (ListItem){
-                                     .label = "Показывать экспертный режим",
+                                     .label = "Вкладка Эксперт",
                                      .item_type = TOGGLE,
                                      .value = settings.show_expert,
                                      .action = action_setShowExpert},
@@ -496,7 +496,7 @@ void menu_userInterface(void *_)
         display_init();
         list_addItemWithInfoNote(&_menu_user_interface,
                                  (ListItem){
-                                     .label = "Размер (бегунка)",
+                                     .label = "Индикатор +/-",
                                      .item_type = MULTIVALUE,
                                      .value_max = 15,
                                      .value_formatter = formatter_meterWidth,
@@ -507,11 +507,11 @@ void menu_userInterface(void *_)
                                  "при регулировки яркости или громкости.");
         list_addItem(&_menu_user_interface,
                      (ListItem){
-                         .label = "Дополнительные настройки...",
+                         .label = "Настройки оформления...",
                          .action = menu_themeOverrides});
         list_addItem(&_menu_user_interface,
                      (ListItem){
-                         .label = "Настройки значков...",
+                         .label = "Настройки иконок...",
                          .action = menu_icons});
     }
     menu_stack[++menu_level] = &_menu_user_interface;
@@ -721,11 +721,11 @@ void *_get_menu_icon(const char *name)
 void menu_main(void)
 {
     if (!_menu_main._created) {
-        _menu_main = list_createWithTitle(6, LIST_LARGE, "Tweaks");
+        _menu_main = list_createWithTitle(6, LIST_LARGE, "Настройки");
         list_addItem(&_menu_main,
                      (ListItem){
                          .label = "Система",
-                         .description = "Загрузка, батарея, время...",
+                         .description = "Включение, питание, дата...",
                          .action = menu_system,
                          .icon_ptr = _get_menu_icon("tweaks_system")});
         if (DEVICE_ID == MIYOO354) {
@@ -744,8 +744,8 @@ void menu_main(void)
                          .icon_ptr = _get_menu_icon("tweaks_menu_button")});
         list_addItem(&_menu_main,
                      (ListItem){
-                         .label = "Расширенные настройки",
-                         .description = "Отображение меню, настройки темы",
+                         .label = "Дополнительные настройки",
+                         .description = "Настройки меню и оформления",
                          .action = menu_userInterface,
                          .icon_ptr = _get_menu_icon("tweaks_user_interface")});
         list_addItem(&_menu_main,
