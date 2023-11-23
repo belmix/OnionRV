@@ -2,7 +2,7 @@
 
 mkdir -p cache
 cd cache
-
+# Получить список тем загружаемых в релиз
 wget -O featured.txt https://raw.githubusercontent.com/OnionUI/Themes/main/.github/data/featured.txt > /dev/null 2>&1
 featured=`cat ./featured.txt`
 rm -f ./featured.txt
