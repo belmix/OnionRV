@@ -483,7 +483,7 @@ void menu_userInterface(void *_)
                                      .item_type = TOGGLE,
                                      .value = settings.show_recents,
                                      .action = action_setShowRecents},
-                                 "Включить видимость вкладки "Последние"\n"
+                                 "Включить видимость вкладки Последние\n"
                                  "в главном меню.");
         list_addItemWithInfoNote(&_menu_user_interface,
                                  (ListItem){
@@ -491,12 +491,12 @@ void menu_userInterface(void *_)
                                      .item_type = TOGGLE,
                                      .value = settings.show_expert,
                                      .action = action_setShowExpert},
-                                 "Включить видимость вкладки "Эксперт"\n"
+                                 "Включить видимость вкладки Эксперт\n"
                                  "в главном меню.");
         display_init();
         list_addItemWithInfoNote(&_menu_user_interface,
                                  (ListItem){
-                                     .label = "Размер "бегунка"",
+                                     .label = "Размер (бегунка)",
                                      .item_type = MULTIVALUE,
                                      .value_max = 15,
                                      .value_formatter = formatter_meterWidth,
@@ -673,7 +673,7 @@ void menu_tools(void *_)
                                  (ListItem){
                                      .label = "Генерировать файлы CUE для игр PSX",
                                      .action = tool_generateCueFiles},
-                                 "Для PSX в формате ".bin" требуется\n"
+                                 "Для PSX в формате .bin требуется\n"
                                  "файл '.cue'. Используйте этот инструмент\n"
                                  "чтобы автоматически сгенерировать его.");
         list_addItemWithInfoNote(&_menu_tools,
