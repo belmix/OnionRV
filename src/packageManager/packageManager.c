@@ -38,7 +38,7 @@ typedef struct package_s {
     bool complete;
 } Package;
 
-static char layer_names[][STR_MAX] = {"VERIFIED", "APPS", "EXPERT", "SUMMARY"};
+static char layer_names[][STR_MAX] = {"ПРИСТАВКИ", "ПРИЛОЖЕНИЯ", "ЭКСПЕРТ", "ИЗМЕНЕНИЯ"};
 static char layer_dirs[][STR_MAX] = {PACKAGE_DIR "Emu", PACKAGE_DIR "App",
                                      PACKAGE_DIR "RApp", ""};
 static const int tab_count = 4;
@@ -396,7 +396,7 @@ void displayLayersInstall(void)
     }
 
     char footer_str[STR_MAX];
-    sprintf(footer_str, "%d added  |  %d removed  |  %d installed  |  %d total",
+    sprintf(footer_str, "%d добавлено  |  %d удалено  |  %d установлено  |  %d всего",
             changes_installs[nTab], changes_removals[nTab],
             package_installed_count[nTab], package_count[nTab]);
     renderFooter(footer_str);
@@ -1008,17 +1008,17 @@ int main(int argc, char *argv[])
                 if (changes_total > 0) {
                     renderSummary();
                     showScroller();
-                    renderFooter("Press A or START to apply changes");
+                    renderFooter("Нажмите A или START, чтобы применить изменения");
                 }
                 else {
                     SDL_Surface *status = TTF_RenderUTF8_Blended(
-                        font35, "NO CHANGES", color_white);
+                        font35, "НЕТ ИЗМЕНЕНИЙ", color_white);
                     SDL_Rect status_rect = {
                         alignCoord(320, status->w, ALIGN_CENTER),
                         alignCoord(247, status->h, ALIGN_CENTER)};
                     SDL_BlitSurface(status, NULL, screen, &status_rect);
                     SDL_FreeSurface(status);
-                    renderFooter("Press A or START to exit");
+                    renderFooter("Нажмите A или START для выхода");
                 }
             }
             else if (package_count[nTab] > 0) {
@@ -1076,7 +1076,7 @@ int main(int argc, char *argv[])
                     continue;
 
                 if (should_install) {
-                    printf_debug("Installing %s...\n", package->name);
+                    printf_debug("Установка %s...\n", package->name);
                     SDL_BlitSurface(surfaceBackground, NULL, screen, NULL);
 
                     surfaceMessage = TTF_RenderUTF8_Blended(

@@ -56,8 +56,8 @@ void check_networkChanged(void)
 
 int main(int argc, char *argv[])
 {
-    log_setName("tweaks");
-    print_debug("Debug logging enabled");
+    log_setName("настройки");
+    print_debug("Включено ведение журнала отладки");
 
     getDeviceModel();
 
@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
     if (strlen(apply_tool) > 0) {
         for (int i = 0; i < NUM_TOOLS; i++) {
             if (strncmp(tools_short_names[i], apply_tool, STR_MAX - 1) == 0) {
-                printf("Tool '%s':\n", tools_short_names[i]);
+                printf("Утилита'%s':\n", tools_short_names[i]);
                 (*tools_pt[i])(NULL);
                 break;
             }
@@ -185,13 +185,14 @@ int main(int argc, char *argv[])
         if (show_help_tooltip) {
             show_help_tooltip = false;
             config_flag_set(".tweaksHelpCompleted", true);
-            __showInfoDialog("Welcome to Tweaks!",
+            __showInfoDialog("Добро пожаловать в настройки!",
                              ":: TOOLTIPS ::\n"
                              " \n"
-                             "Press SELECT to view a tooltip\n"
-                             "describing the selected option."
+                             "Нажмите кнопку SELECT, чтобы\n"
+							 "просмотреть всплывающую подсказку\n"
+                             "c описанием выбранного раздела."
                              " \n"
-                             "Press any button to close");
+                             "Нажмите любую кнопку, чтобы закрыть");
         }
 
         if (battery_hasChanged(ticks, &battery_percentage))

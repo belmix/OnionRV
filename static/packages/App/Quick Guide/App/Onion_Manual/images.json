@@ -1,8 +1,8 @@
 {
   "images": [
-    { "path": "./page1.png", "title": "Quick Guide" },
-    { "path": "./page2.png", "title": "Features" },
-    { "path": "./page3.png", "title": "Shortcuts" },
-    { "path": "./page4.png", "title": "References" }
+    { "path": "./page1.png", "title": "Инструкция" },
+    { "path": "./page2.png", "title": "Возможности" },
+    { "path": "./page3.png", "title": "Управление" },
+    { "path": "./page4.png", "title": "Информация" }
   ]
 }

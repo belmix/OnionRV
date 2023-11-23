@@ -208,7 +208,7 @@ void readHistory()
     game_list_len = 0;
 
     if (!exists(HISTORY_PATH)) {
-        print_debug("History file missing");
+        print_debug("Отсутствует файл истории");
         return;
     }
 
@@ -248,7 +248,7 @@ void readHistory()
         str_split(game->core, "_libretro");
         file_cleanName(game->shortname, game->name);
 
-        printf_debug("Game loaded:\n"
+        printf_debug("Игра загружена:\n"
                      "\tname: '%s' (%s)\n"
                      "\tcmd: '%s'\n"
                      "\thash: %" PRIu32 "\n"
@@ -278,7 +278,7 @@ void removeCurrentItem()
 {
     Game_s *game = &game_list[current_game];
 
-    printf_debug("removing: %s\n", game->name);
+    printf_debug("удаление: %s\n", game->name);
 
     if (game->romScreen != NULL) {
         SDL_FreeSurface(game->romScreen);
@@ -324,7 +324,7 @@ int checkQuitAction(void)
 int main(void)
 {
     log_setName("gameSwitcher");
-    print_debug("Debug logging enabled");
+    print_debug("Включен журнал отладки");
 
     signal(SIGINT, sigHandler);
     signal(SIGTERM, sigHandler);
@@ -536,8 +536,8 @@ int main(void)
             if (keystate[SW_BTN_X] == PRESSED) {
                 if (game_list_len != 0) {
                     theme_renderDialog(
-                        screen, "Remove from history",
-                        "Are you sure you want to\nremove game from history?",
+                        screen, "Удалить из истории",
+                        "Вы уверены, что хотите удалить\nигру из истории?",
                         true);
                     SDL_BlitSurface(screen, NULL, video, NULL);
                     SDL_Flip(video);
@@ -791,9 +791,9 @@ int main(void)
     remove("/mnt/SDCARD/.tmp_update/cmd_to_run.sh");
 
     if (exit_to_menu)
-        print_debug("Exiting to menu");
+        print_debug("Выход в меню");
     else {
-        print_debug("Resuming game");
+        print_debug("Возобновление игры");
         FILE *file = fopen("/mnt/SDCARD/.tmp_update/cmd_to_run.sh", "w");
         fputs(game_list[current_game].RACommand, file);
         fclose(file);

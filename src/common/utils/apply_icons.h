@@ -174,7 +174,7 @@ bool _apply_singleIconFromPack(const char *config_path,
     _saveConfigFile(config_path, cJSON_Print(config));
     cJSON_free(config);
 
-    printf_debug("Applied icon to %s\nicon:    %s\niconsel: %s\n", config_path,
+    printf_debug("Примененный значок к %s\nicon:    %s\niconsel: %s\n", config_path,
                  icon_path, sel_path);
 
     return true;

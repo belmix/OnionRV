@@ -100,16 +100,16 @@ bool terminate_retroarch(void)
 void quietMainUI(void)
 {
     if (system_state == MODE_MAIN_UI) {
-        print_debug("Sending L1 to quiet MainUI");
+        print_debug("Отправка L1 to quiet Главное меню");
         keyinput_send(HW_BTN_L1, PRESSED);
         keyinput_send(HW_BTN_L1, RELEASED);
-        print_debug("Done (quietMainUI)");
+        print_debug("Готово (quietMainUI)");
     }
 }
 
 void action_MainUI_contextMenu(void)
 {
-    print_debug("Sending keys (contextMenu)");
+    print_debug("Отправка ключей (contextMenu)");
     keyinput_enable();
     keyinput_send(HW_BTN_MENU, RELEASED);
     quietMainUI();

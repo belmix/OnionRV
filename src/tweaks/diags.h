@@ -28,7 +28,7 @@ void diags_getEntries(void)
             size_t path_size = strlen(DIAG_SCRIPT_PATH) + strlen(ent->d_name) + 2;
             char *path = (char *)malloc(path_size);
             if (path == NULL) {
-                printf("Memory allocation failed...\n");
+                printf("Не удалось выделить память...\n");
                 return;
             }
 
@@ -67,7 +67,7 @@ void diags_getEntries(void)
                     diags_numScripts++;
                     scripts = realloc(scripts, diags_numScripts * sizeof(diagScripts));
                     if (scripts == NULL) {
-                        printf("Memory allocation failed...\n");
+                        printf("Не удалось выделить память...\n");
                         return;
                     }
                     scripts[diags_numScripts - 1] = entry;
@@ -79,7 +79,7 @@ void diags_getEntries(void)
         closedir(dir);
     }
     else {
-        printf("Could not open directory\n");
+        printf("Не удалось открыть каталог\n");
     }
 }
 
@@ -117,7 +117,7 @@ void *diags_resetStickyNote(void *payload_ptr)
 
     sleep(5);
 
-    list_updateStickyNote(item, "Idle: Selected script not running");
+    list_updateStickyNote(item, "Инфо: Выбранный Сценарий не запущен");
     list_changed = true;
     return NULL;
 }
@@ -143,18 +143,18 @@ void *diags_runScript(void *payload_ptr)
     const char *currentStickyNote = list_getStickyNote(item);
 
     if (__sync_lock_test_and_set(&isScriptRunning, 1)) {
-        if (strcmp(currentStickyNote, "Script running...") == 0) {
-            list_updateStickyNote(item, "Script already running...");
+        if (strcmp(currentStickyNote, "Запуск Сценария...") == 0) {
+            list_updateStickyNote(item, "Сценарий уже запущен...");
         }
-        else if (strcmp(currentStickyNote, "Script already running...") != 0) {
-            list_updateStickyNote(item, "Another script is already running...");
+        else if (strcmp(currentStickyNote, "Сценарий уже запущен...") != 0) {
+            list_updateStickyNote(item, "Другой Сценарий уже запущен...");
             diags_createStickyResetThread(item);
         }
         list_changed = true;
         return NULL;
     }
 
-    list_updateStickyNote(item, "Script running...");
+    list_updateStickyNote(item, "Запуск Сценария...");
     list_changed = true;
 
     pid_t pid = fork();
@@ -167,10 +167,10 @@ void *diags_runScript(void *payload_ptr)
         waitpid(pid, &status, 0);
 
         if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
-            list_updateStickyNote(item, "Script successfully completed.");
+            list_updateStickyNote(item, "Сценарий успешно завершен.");
         }
         else {
-            list_updateStickyNote(item, "Script failed!");
+            list_updateStickyNote(item, "Ошибка Сценария!");
         }
 
         diags_createStickyResetThread(item);
@@ -179,7 +179,7 @@ void *diags_runScript(void *payload_ptr)
         list_changed = true;
     }
     else {
-        list_updateStickyNote(item, "Failed to run script...");
+        list_updateStickyNote(item, "Ошибка запуска Сценария...");
         diags_createStickyResetThread(item);
         list_changed = true;
     }

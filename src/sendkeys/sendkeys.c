@@ -11,8 +11,8 @@ int main(int argc, char *argv[])
     struct input_event events[100];
 
     if (argc < 3 || argc % 2 == 0) {
-        printf("Usage: sendkeys [[CODE] [VALUE], ...]\nValues: 0 - released, 1 "
-               "- pressed, 2 - repeating\n");
+        printf("Инфо: sendkeys [[CODE] [VALUE], ...]\nValues: 0 - готовый, 1 "
+               "- нажатый, 2 - повтор\n");
         return 1;
     }
 

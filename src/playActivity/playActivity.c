@@ -6,13 +6,13 @@
 
 void printUsage()
 {
-    printf("Usage: playActivity list             -> List all play activities\n"
-           "       playActivity start [rom_path] -> Launch the counter for this rom\n"
-           "       playActivity resume           -> Resume the last rom as a new play activity\n"
-           "       playActivity stop [rom_path]  -> Stop the counter for this rom\n"
-           "       playActivity stop_all         -> Stop the counter for all roms\n"
-           "       playActivity migrate          -> Migrate the old database (prior to Onion 4.2.0) to SQLite\n"
-           "       playActivity fix_paths        -> Change all absolute paths to relative paths\n");
+    printf("Usage: playActivity list             -> Все игровые действия\n"
+           "       playActivity start [rom_path] -> Запуск счетчика для игры\n"
+           "       playActivity resume           -> Вернуться к последней игре\n"
+           "       playActivity stop [rom_path]  -> Остановить счётчик для игры\n"
+           "       playActivity stop_all         -> Остановить счётчик для всех игры\n"
+           "       playActivity migrate          -> Перенесите старую базу данных (до Onion 4.2.0) в SQLite\n"
+           "       playActivity fix_paths        -> Изменить все абсолютные пути на относительные\n");
 }
 
 int main(int argc, char *argv[])
@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
                 play_activity_start(argv[++i]);
             }
             else {
-                printf("Error: Missing rom_path argument\n");
+                printf("Ошибка: Missing rom_path argument\n");
                 printUsage();
                 return EXIT_FAILURE;
             }
@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
                 play_activity_stop(argv[++i]);
             }
             else {
-                printf("Error: Missing rom_path argument\n");
+                printf("Ошибка: Missing rom_path argument\n");
                 printUsage();
                 return EXIT_FAILURE;
             }
@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
             play_activity_list_all();
         }
         else {
-            printf("Error: Invalid argument '%s'\n", argv[1]);
+            printf("Ошибка: Invalid argument '%s'\n", argv[1]);
             printUsage();
             return EXIT_FAILURE;
         }

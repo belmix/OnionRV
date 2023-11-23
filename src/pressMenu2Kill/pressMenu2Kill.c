@@ -11,7 +11,7 @@
 int main(int argc, char *argv[])
 {
     if (argc < 2) {
-        printf("Usage: %s program_name\n", argv[0]);
+        printf("Инфо: %s program_name\n", argv[0]);
         return 1;
     }
 

@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
     sh = jpeg.output_height;
     ss = ALIGN4K(sw * sh * 4);
     if ((!sw) || (!sh) || (!ss) || (jpeg.out_color_components != 3)) {
-        fprintf(stderr, "jpg format error\n");
+        fprintf(stderr, "ошибка jpg формата\n");
         goto error;
     }
 
@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
     strcat(filename, ".png");
     fp = fopen(filename, "wb");
     if (!fp) {
-        fprintf(stderr, "png write error\n");
+        fprintf(stderr, "ошибка записи png\n");
         goto error;
     }
 
@@ -181,7 +181,7 @@ int main(int argc, char *argv[])
     return 0;
 
 usage:
-    printf("usage: %s filename.jpg [max_width:def=250] [max_height:def=360]\n",
+    printf("Инфо: %s filename.jpg [max_width:def=250] [max_height:def=360]\n",
            argv[0]);
 error:
     if (jpgVa)

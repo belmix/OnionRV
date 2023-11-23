@@ -1,6 +1,6 @@
 {
-	"label": "AdvanceMENU",
+	"label": "Расширенное меню",
 	"icon": "../../Icons/Default/app/advancemenu.png",
 	"launch": "launch.sh",
-	"description": "Advanced emulator frontend"
+	"description": "Расширенный интерфейс эмулятора"
 }

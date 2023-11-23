@@ -1,5 +1,5 @@
 {
-    "label": "Ports",
+    "label": "Порты",
     "icon": "../../Icons/Default/ports.png",
     "iconsel": "../../Icons/Default/ports.png",
     "launch": "launch.sh",

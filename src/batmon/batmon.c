@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
                 current_percentage = getBatPercMMP();
             }
             printf_debug(
-                "charging stopped: suspended = %d, perc = %d, warn = %d\n",
+                "зарядка остановлена: suspended = %d, perc = %d, warn = %d\n",
                 is_suspended, current_percentage, warn_at);
         }
 
@@ -61,14 +61,14 @@ int main(int argc, char *argv[])
                     current_percentage = getBatPercMMP();
                 }
                 printf_debug(
-                    "battery check: suspended = %d, perc = %d, warn = %d\n",
+                    "проверка заряда: suspended = %d, perc = %d, warn = %d\n",
                     is_suspended, current_percentage, warn_at);
                 ticks = -1;
             }
 
             if (current_percentage != old_percentage) {
                 printf_debug(
-                    "saving percBat: suspended = %d, perc = %d, warn = %d\n",
+                    "Сохранение % заряда: suspended = %d, perc = %d, warn = %d\n",
                     is_suspended, current_percentage, warn_at);
                 old_percentage = current_percentage;
                 file_put_sync(fp, "/tmp/percBat", "%d", current_percentage);

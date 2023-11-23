@@ -66,7 +66,7 @@ void loadThemeDirectory(const char *theme_dir,
         closedir(dp);
     }
     else {
-        perror("Couldn't open the Themes directory");
+        perror("Не удалось открыть каталог тем");
     }
 }
 
@@ -226,7 +226,7 @@ bool checkActiveTheme(char *theme_path_out)
     char active_theme_path[STR_MAX];
     file_get(fp, ACTIVE_THEME, "%[^\n]", active_theme_path);
 
-    printf_debug("active theme: %s\n", active_theme_path);
+    printf_debug("активная тема: %s\n", active_theme_path);
 
     return getThemePath(basename(active_theme_path), theme_path_out);
 }
@@ -256,7 +256,7 @@ void reinstallTheme(const char *theme_name, bool apply_icons,
         return;
 
     installTheme(theme_path, apply_icons);
-    printf_debug("Reapplied: \"%s\"\n", theme_path);
+    printf_debug("Применение: \"%s\"\n", theme_path);
 }
 
 #endif // THEME_SWITCHER_INSTALL_THEME_H__

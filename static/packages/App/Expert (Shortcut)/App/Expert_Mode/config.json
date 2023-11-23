@@ -1,7 +1,7 @@
 {
-"label":"Expert",
+"label":"Эксперт",
 "icon":"../../Icons/Default/app/expert.png",
 "launch":"launch.sh",
-"description":"Expert tab shortcut"
+"description":"Ярлыки на вкладке Эксперт"
 }
     

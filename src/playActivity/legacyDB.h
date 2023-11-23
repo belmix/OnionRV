@@ -45,13 +45,13 @@ int readLegacyDB()
 
 void displayLegacyDB(void)
 {
-    printf("--------------- Old DB entries ---------------\n");
+    printf("--------------- Старые записи в БД ---------------\n");
     for (int i = 0; i < rom_list_len; i++) {
         printf("rom_list name: %s\n", rom_list[i].name);
 
         char cPlayTime[15];
         sprintf(cPlayTime, "%d", rom_list[i].playTime);
-        printf("playtime: %s\n", cPlayTime);
+        printf("Игровое время: %s\n", cPlayTime);
     }
 }
 

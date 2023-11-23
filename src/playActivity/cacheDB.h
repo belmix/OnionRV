@@ -67,7 +67,7 @@ int cache_get_path_and_version(char *cache_db_file_path, const char *cache_dir, 
         return 2;
     }
 
-    printf_debug("No cache found at: '%s'\n", cache_db_file_path);
+    printf_debug("Кэш не найден: '%s'\n", cache_db_file_path);
     return CACHE_NOT_FOUND;
 }
 
@@ -126,7 +126,7 @@ CacheDBItem *cache_db_find(const char *path_or_name)
         sql = sqlite3_mprintf("SELECT pinyin, path, imgpath FROM %q_roms WHERE path LIKE '%%%q' OR disp = %Q LIMIT 1;", cache_type, rel_path, game_name);
     }
     else {
-        printf("No cache db found\n");
+        printf("Кэш Базы данных не найден\n");
         return NULL;
     }
 
@@ -139,10 +139,10 @@ CacheDBItem *cache_db_find(const char *path_or_name)
         strcpy(cache_db_item->name, (const char *)sqlite3_column_text(stmt, 0));
         strcpy(cache_db_item->path, (const char *)sqlite3_column_text(stmt, 1));
         strcpy(cache_db_item->imgpath, (const char *)sqlite3_column_text(stmt, 2));
-        printf_debug("cache item found: %s\n", cache_db_item->name);
+        printf_debug("кэш обьекта найден: %s\n", cache_db_item->name);
     }
     else {
-        printf("Game not found in this cache db\n");
+        printf("Игра не найдена в кэше базы данных\n");
     }
 
     sqlite3_finalize(stmt);

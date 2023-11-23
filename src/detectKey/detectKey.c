@@ -8,7 +8,7 @@
 int main(int argc, char *argv[])
 {
     if (argc < 2) {
-        printf("Usage: detectKey [KEY] - Example (MENU button): detectKey 1\n");
+        printf("Инфо: detectKey [KEY] - Example (MENU button): detectKey 1\n");
         return 1;
     }
 

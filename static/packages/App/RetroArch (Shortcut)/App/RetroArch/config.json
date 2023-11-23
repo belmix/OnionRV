@@ -2,5 +2,5 @@
 "label":"RetroArch",
 "icon":"../../Icons/Default/app/retroarch.png",
 "launch":"launch.sh",
-"description":"Advanced emulator settings"
+"description":"Расширенные настройки эмулятора"
 }

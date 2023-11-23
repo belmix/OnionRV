@@ -394,11 +394,11 @@ int main(int argc, char *argv[])
             closedir(dp);
         }
         else {
-            perror("Emu folder does not exists");
+            perror("Каталог Emu не существует");
         }
 
         int random_weighted_index = rand() % total_games_count;
-        printf_debug("total: %d\n", total_games_count);
+        printf_debug("Всего: %d\n", total_games_count);
         printf_debug("rwi: %d\n", random_weighted_index);
 
         for (int i = 0; i < system_count; i++) {

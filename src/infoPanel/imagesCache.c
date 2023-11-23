@@ -21,7 +21,7 @@ static void drawImage(SDL_Surface *image_to_draw, SDL_Surface *screen,
     if (!image_to_draw)
         return;
 
-    DEBUG_PRINT(("frame %p\n", frame));
+    DEBUG_PRINT(("фрейм %p\n", frame));
     int border_left = 0;
     SDL_Rect new_frame = {0, 0};
     if (frame != NULL) {
@@ -54,14 +54,14 @@ char *drawImageByIndex(const int new_image_index, const int image_index,
 
     if (new_image_index < 0 || new_image_index >= images_paths_count) {
         // out of range, draw nothing
-        printf("out of range, draw nothing\n");
+        printf("за пределами диапазона, не отрисовано\n");
         return NULL;
     }
     char *image_path_to_draw = images_paths[new_image_index];
     DEBUG_PRINT(("image_path_to_draw: %s\n", image_path_to_draw));
     if (new_image_index == image_index) {
         if (g_image_cache_current == NULL) {
-            DEBUG_PRINT(("invalidating cache\n"));
+            DEBUG_PRINT(("невалидный кэш\n"));
             g_image_cache_prev =
                 new_image_index == 0
                     ? NULL
@@ -79,14 +79,14 @@ char *drawImageByIndex(const int new_image_index, const int image_index,
         }
     }
     if (abs(new_image_index - image_index) > 1) {
-        DEBUG_PRINT(("random jump, not implemented yet\n"));
+        DEBUG_PRINT(("случайное перемещение, еще не реализованно\n"));
         return NULL;
     }
 
     int move_direction = new_image_index - image_index;
 
     if (move_direction > 0) {
-        DEBUG_PRINT(("moving forward\n"));
+        DEBUG_PRINT(("перемещение вперёд\n"));
         if (g_image_cache_prev)
             SDL_FreeSurface(g_image_cache_prev);
         g_image_cache_prev = g_image_cache_current;
@@ -97,14 +97,14 @@ char *drawImageByIndex(const int new_image_index, const int image_index,
         else {
             const int next_image_index = new_image_index + 1;
             char *image_path_to_load = images_paths[next_image_index];
-            DEBUG_PRINT(("preloading next image '%s' for index #%d\n",
+            DEBUG_PRINT(("предварительная загрузка следующего изображения '%s' for index #%d\n",
                          image_path_to_load, next_image_index));
             g_image_cache_next = IMG_Load(image_path_to_load);
         }
         *cache_used = true;
     }
     else if (move_direction < 0) {
-        DEBUG_PRINT(("moving backward\n"));
+        DEBUG_PRINT(("перемещение назад\n"));
 
         if (g_image_cache_next)
             SDL_FreeSurface(g_image_cache_next);
@@ -116,7 +116,7 @@ char *drawImageByIndex(const int new_image_index, const int image_index,
         else {
             const int prev_image_index = new_image_index - 1;
             char *image_path_to_load = images_paths[prev_image_index];
-            DEBUG_PRINT(("preloading prev image '%s' for index #%d\n",
+            DEBUG_PRINT(("предварительная загрузка предыдущего изображения '%s' for index #%d\n",
                          image_path_to_load, prev_image_index));
             g_image_cache_prev = IMG_Load(image_path_to_load);
         }
@@ -124,7 +124,7 @@ char *drawImageByIndex(const int new_image_index, const int image_index,
         *cache_used = true;
     }
     else {
-        DEBUG_PRINT(("same slide\n"));
+        DEBUG_PRINT(("тот же слайд\n"));
         *cache_used = true;
     }
 
@@ -135,7 +135,7 @@ char *drawImageByIndex(const int new_image_index, const int image_index,
 
 void cleanImagesCache()
 {
-    DEBUG_PRINT(("cleaning images cache\n"));
+    DEBUG_PRINT(("очистка кэша изображений\n"));
     if (g_image_cache_prev)
         SDL_FreeSurface(g_image_cache_prev);
     if (g_image_cache_current)

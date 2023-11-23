@@ -7,8 +7,8 @@
 int main(int argc, char *argv[])
 {
     if (argc < 2) {
-        printf("Usage: setState [N]\nN: 0 - main menu, 1 - recents, 2 - "
-               "favorites, 3 - games, 4 - expert, 5 - apps\n");
+        printf("Используется: setState [N]\nN: 0 - Главное Меню, 1 - Последние, 2 - "
+               "Избранное, 3 - Игры, 4 - Эксперт, 5 - Приложения\n");
         return 1;
     }
 

@@ -1,6 +1,6 @@
 {
-    "label": "Guest Mode [OFF]",
+    "label": "Гостевой режим [ВЫКЛ]",
     "icon": "../../Icons/Default/app/guest_off.png",
     "launch": "launch.sh",
-    "description": "Activate the guest profile"
+    "description": "Активировать гостевой профиль"
 }

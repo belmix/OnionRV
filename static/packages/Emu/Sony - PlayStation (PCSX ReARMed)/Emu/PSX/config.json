@@ -1,5 +1,5 @@
 {
-    "label": "PSX",
+    "label": "Сони PS",
     "icon": "../../Icons/Default/ps.png",
     "iconsel": "../../Icons/Default/ps.png",
     "launch": "launch.sh",

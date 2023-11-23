@@ -10,7 +10,7 @@
 #include "utils/str.h"
 
 #define LANG_MAX 400
-#define LANG_DEFAULT "en.lang"
+#define LANG_DEFAULT "ru.lang"
 #define LANG_DIR "/mnt/SDCARD/miyoo/app/lang"
 #define LANG_DIR_FALLBACK "/customer/app/lang"
 #define LANG_DIR_BACKUP "/mnt/SDCARD/miyoo/app/lang_backup"

@@ -47,7 +47,7 @@ SDL_Surface *createBottomBar(TTF_Font *font)
     pos.x += surfaceButtonA->w + 10;
 
     SDL_Surface *text =
-        TTF_RenderUTF8_Blended(font, "INSTALL", (SDL_Color){255, 255, 255});
+        TTF_RenderUTF8_Blended(font, "УСТАНОВИТЬ", (SDL_Color){255, 255, 255});
     pos.y = 35 - text->h / 2 - 3;
     SDL_BlitSurface(text, NULL, surface, &pos);
     pos.x += text->w + 20;
@@ -57,7 +57,7 @@ SDL_Surface *createBottomBar(TTF_Font *font)
     SDL_BlitSurface(surfaceButtonB, NULL, surface, &pos);
     pos.x += surfaceButtonB->w + 10;
 
-    text = TTF_RenderUTF8_Blended(font, "CANCEL", (SDL_Color){255, 255, 255});
+    text = TTF_RenderUTF8_Blended(font, "ОТМЕНА", (SDL_Color){255, 255, 255});
     pos.y = 35 - text->h / 2 - 3;
     SDL_BlitSurface(text, NULL, surface, &pos);
     pos.x += text->w + 20;
@@ -67,7 +67,7 @@ SDL_Surface *createBottomBar(TTF_Font *font)
     SDL_BlitSurface(surfaceButtonX, NULL, surface, &pos);
     pos.x += surfaceButtonX->w + 10;
 
-    text = TTF_RenderUTF8_Blended(font, "TOGGLE ICONS",
+    text = TTF_RenderUTF8_Blended(font, "ПЕРЕКЛЮЧАТЕЛИ",
                                   (SDL_Color){255, 255, 255});
     pos.y = 35 - text->h / 2 - 3;
     SDL_BlitSurface(text, NULL, surface, &pos);
@@ -264,12 +264,12 @@ int main(int argc, char *argv[])
 
         if (keystate[SW_BTN_A]) {
             if (levelPage == 1) {
-                showCenteredMessage(video, screen, "Installing...", font30,
+                showCenteredMessage(video, screen, "Установка...", font30,
                                     color_white);
 
                 // Install theme
                 installTheme(theme.path, apply_icons);
-                printf_debug("Theme installed: %s\n", themes[current_page]);
+                printf_debug("Тема установленна: %s\n", themes[current_page]);
 
                 quit = true;
             }
@@ -393,8 +393,8 @@ int main(int argc, char *argv[])
 
             rectThemeName.x = 60;
             char msg[STR_MAX];
-            sprintf(msg, "%s [%s]", has_icons ? "Apply icons" : "Reset icons",
-                    apply_icons ? "ON" : "OFF");
+            sprintf(msg, "%s [%s]", has_icons ? "Применить иконки" : "Сбросить иконки",
+                    apply_icons ? "ВКЛ" : "ВЫКЛ");
             imagePages = TTF_RenderUTF8_Blended(font21, msg, color_white);
             SDL_BlitSurface(imagePages, NULL, screen, &rectThemeName);
             SDL_FreeSurface(imagePages);
