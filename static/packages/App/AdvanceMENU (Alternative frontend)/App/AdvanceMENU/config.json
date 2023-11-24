@@ -1,6 +1,6 @@
 {
-	"label": "Расширенное меню",
+	"label": "Альтернативное Меню",
 	"icon": "../../Icons/Default/app/advancemenu.png",
 	"launch": "launch.sh",
-	"description": "Расширенный интерфейс эмулятора"
+	"description": "Альтернативное меню для игр"
 }
