@@ -31,7 +31,7 @@ SOFTWARE.
 
 #define MAX_YEAR 2100
 #define MIN_YEAR 1970
-#define DEFAULT_YEAR 2022
+#define DEFAULT_YEAR 2023
 #define MAX_DAY 31
 #define MIN_DAY 1
 #define MAX_MONTH 12
@@ -305,7 +305,7 @@ int main(int argc, char *argv[])
 
         GFX_FillRect(sdl_screen, NULL, 0);
 
-        PrintWhiteString("Пожалуйста, установите время", sdl_screen, 10, 5);
+        PrintWhiteString("Please set the Clock", sdl_screen, 10, 5);
 
         PrintString("dd/mm/yyyy hh:mm:ss", sdl_screen, DARK_GRAY_COLOR, 26, 20);
         snprintf(tmp_str, sizeof(tmp_str), "%02d/%02d/%04d %02d:%02d:%02d",
@@ -322,8 +322,8 @@ int main(int argc, char *argv[])
                 26 + (select_cursor * 24) + (select_cursor > 2 ? 16 : 0), 50);
         }
 
-        PrintWhiteString("Start: Обновить время/Выйти", sdl_screen, 10, 70);
-        PrintWhiteString("B: Выйти", sdl_screen, 10, 90);
+        PrintWhiteString("Start: Update time/Quit", sdl_screen, 10, 70);
+        PrintWhiteString("B: Quit", sdl_screen, 10, 90);
 
         /* Print back buffer to the final screen */
         SDL_SoftStretch(sdl_screen, &rectS, screen, &rectD);
