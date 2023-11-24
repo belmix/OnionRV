@@ -67,7 +67,7 @@ SDL_Surface *createBottomBar(TTF_Font *font)
     SDL_BlitSurface(surfaceButtonX, NULL, surface, &pos);
     pos.x += surfaceButtonX->w + 10;
 
-    text = TTF_RenderUTF8_Blended(font, "ПЕРЕКЛЮЧАТЕЛИ",
+    text = TTF_RenderUTF8_Blended(font, "ИКОНКИ",
                                   (SDL_Color){255, 255, 255});
     pos.y = 35 - text->h / 2 - 3;
     SDL_BlitSurface(text, NULL, surface, &pos);
@@ -192,7 +192,7 @@ int main(int argc, char *argv[])
 
     int levelPage = 0;
 
-    showCenteredMessage(video, screen, "Loading previews...", font30,
+    showCenteredMessage(video, screen, "Загрузка...", font30,
                         color_white);
 
     char themes[NUMBER_OF_THEMES][STR_MAX];
