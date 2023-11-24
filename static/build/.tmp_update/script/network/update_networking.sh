@@ -57,7 +57,7 @@ main() {
 check() {
     log "Network Checker: Update networking"
     if wifi_enabled && [ "$is_booting" -eq 1 ]; then
-        bootScreen Boot "Waiting for network..."
+        bootScreen Boot "Проверка сети..."
     fi
 
     check_wifi
@@ -68,7 +68,7 @@ check() {
     check_smbdstate
 
     if wifi_enabled && flag_enabled ntpWait && [ $is_booting -eq 1 ]; then
-        bootScreen Boot "Syncing time..."
+        bootScreen Boot "Синхронизация времени..."
         check_ntpstate && bootScreen Boot "Time synced: $(date +"%H:%M")" || bootScreen Boot "Time sync failed"
         sleep 1
     else
@@ -76,7 +76,7 @@ check() {
     fi
 
     if [ -f "$sysdir/.updateAvailable" ] && [ $is_booting -eq 1 ]; then
-        bootScreen Boot "Update available!"
+        bootScreen Boot "Готово!"
         sleep 1
     elif wifi_enabled && [ ! -f /tmp/update_checked ]; then
         touch /tmp/update_checked

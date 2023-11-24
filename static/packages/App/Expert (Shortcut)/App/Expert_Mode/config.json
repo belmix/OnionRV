@@ -1,7 +1,7 @@
 {
-"label":"Эксперт",
+"label":"Эксперт меню",
 "icon":"../../Icons/Default/app/expert.png",
 "launch":"launch.sh",
-"description":"Ярлыки на вкладке Эксперт"
+"description":"Профессиональное меню"
 }
     
