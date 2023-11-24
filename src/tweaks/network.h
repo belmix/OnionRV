@@ -511,7 +511,7 @@ void menu_wifi(void *_)
         strcpy(_menu_wifi.title, "WiFi");
         list_addItem(&_menu_wifi,
                      (ListItem){
-                         .label = "IP address: N/A",
+                         .label = "IP адрес: N/A",
                          .disabled = true,
                          .action = NULL});
         list_addItemWithInfoNote(&_menu_wifi,
@@ -527,7 +527,7 @@ void menu_wifi(void *_)
                                  "regular netplay.");
         list_addItemWithInfoNote(&_menu_wifi,
                                  (ListItem){
-                                     .label = "WPS connect",
+                                     .label = "WPS подключение",
                                      .action = network_wpsConnect},
                                  "Use your WiFi router's WPS function\n"
                                  "to connect your device with a single press.\n"
@@ -548,13 +548,13 @@ void menu_network(void *_)
 {
     if (!_menu_network._created) {
         _menu_network = list_create(8, LIST_SMALL);
-        strcpy(_menu_network.title, "Network");
+        strcpy(_menu_network.title, "Сеть");
 
         network_loadState();
 
         list_addItem(&_menu_network,
                      (ListItem){
-                         .label = "IP address: N/A",
+                         .label = "IP адрес: N/A",
                          .disabled = true,
                          .action = NULL});
         list_addItem(&_menu_network,
@@ -563,7 +563,7 @@ void menu_network(void *_)
                          .action = menu_wifi});
         list_addItemWithInfoNote(&_menu_network,
                                  (ListItem){
-                                     .label = "Samba: Network file share...",
+                                     .label = "Samba: Файлообменик...",
                                      .item_type = TOGGLE,
                                      .disabled = !settings.wifi_on,
                                      .alternative_arrow_action = true,
@@ -593,7 +593,7 @@ void menu_network(void *_)
                                  "simply enter the IP address in your browser.");
         list_addItemWithInfoNote(&_menu_network,
                                  (ListItem){
-                                     .label = "SSH: Secure shell...",
+                                     .label = "SSH: Защищённое подключение...",
                                      .item_type = TOGGLE,
                                      .disabled = !settings.wifi_on,
                                      .alternative_arrow_action = true,
@@ -606,7 +606,7 @@ void menu_network(void *_)
                                  "SFTP provides a secure file transfer protocol.");
         list_addItemWithInfoNote(&_menu_network,
                                  (ListItem){
-                                     .label = "FTP: File server...",
+                                     .label = "FTP: Фаловый сервер...",
                                      .item_type = TOGGLE,
                                      .disabled = !settings.wifi_on,
                                      .alternative_arrow_action = true,
@@ -619,7 +619,7 @@ void menu_network(void *_)
                                  "other device.");
         list_addItemWithInfoNote(&_menu_network,
                                  (ListItem){
-                                     .label = "Telnet: Remote shell",
+                                     .label = "Telnet: Незащищённое поключение",
                                      .item_type = TOGGLE,
                                      .disabled = !settings.wifi_on,
                                      .value = (int)network_state.telnet,
@@ -628,7 +628,7 @@ void menu_network(void *_)
                                  "access to your device.");
         list_addItemWithInfoNote(&_menu_network,
                                  (ListItem){
-                                     .label = "Disable services in game",
+                                     .label = "Выключать во время игры",
                                      .item_type = TOGGLE,
                                      .value = !network_state.keep_alive,
                                      .action = network_keepServicesAlive},
