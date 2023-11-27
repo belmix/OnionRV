@@ -1,6 +1,6 @@
 {
-"label":"Package Manager",
+"label":"Установка приложений",
 "icon":"../../Icons/Default/app/pacman.png",
 "launch":"launch.sh",
-"description":"Add or remove systems and apps"
+"description":"Добавление или удаление приложений"
 }

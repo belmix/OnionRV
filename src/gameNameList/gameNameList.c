@@ -69,7 +69,7 @@ int findFoldersWithShortname(char *disk_path, char matching_folders[][256], int 
             sprintf(command, "sed -n 's/.*\"rompath\":[[:space:]]*\"\\([^\"]*\\)\".*/\\1/p' '%s'", path);
             sed = popen(command, "r");
             if (sed == NULL) {
-                perror("Error executing sed command");
+                perror("Ошибка при выполнении sed команды");
                 exit(EXIT_FAILURE);
             }
             fgets(folder, sizeof(folder), sed);
@@ -120,7 +120,7 @@ void getRomNamesDir(const char *dir_path, const char *rom_ext, FILE *rom_names_f
     DIR *dir = opendir(dir_path);
     char shortname[256];
     if (dir == NULL) {
-        perror("Error opening directory");
+        perror("Ошибка при открытии каталога");
         return;
     }
 
@@ -157,7 +157,7 @@ int getRomNames(char* rom_dir_path, char* rom_names_file_path) {
     // Open the file to write the rom names to
     rom_names_file = fopen(rom_names_file_path, "w");
     if (rom_names_file == NULL) {
-        printf("Error: Failed to open file %s\n", rom_names_file_path);
+        printf("Ошибка: Не удалось открыть файл %s\n", rom_names_file_path);
         return -1;
     }
     
@@ -188,7 +188,7 @@ int matchRomNames(char* rom_names_file, char* full_rom_list_file, char* arcade_r
     missing_rom_names_fp = fopen(missing_rom_names_file, "w");
 
     if (rom_names_fp == NULL || full_rom_list_fp == NULL || arcade_rom_names_fp == NULL || missing_rom_names_fp == NULL) {
-        printf("Error opening files\n");
+        printf("Не удалось открыть файл\n");
         return 1;
     }
 
@@ -245,7 +245,7 @@ int matchRomNames(char* rom_names_file, char* full_rom_list_file, char* arcade_r
 int createCopyFile(const char* src_path, const char* dst_path) {
     // Check if the source file exists
     if (access(src_path, F_OK) != 0) {
-        printf("The input file to copy does not exist\n");
+        printf("Входной файл для копирования не существует\n");
         return -1;
     }
 
@@ -377,7 +377,7 @@ int updateSqlliteCache(char* base_dir_path) {
         sprintf(table_name, "%s_roms", matching_folders[i]);
         int rc =  sqlite3_open(cache_path, &db);
         if ( rc != SQLITE_OK) {
-            fprintf(stderr, "Cannot open database: %s (%s)\n", sqlite3_errmsg(db),
+            fprintf(stderr, "Не удается открыть базу данных: %s (%s)\n", sqlite3_errmsg(db),
                     cache_path);
             sqlite3_close(db);
             continue;
@@ -415,7 +415,7 @@ int main(int argc, char *argv[]) {
 
 
     if (argc < 2) {
-        printf("Usage: gameNameList base_dir_path list_dir_path\n");
+        printf("Инфо: gameNameList base_dir_path list_dir_path\n");
         return 1;
     }
 
@@ -433,14 +433,14 @@ int main(int argc, char *argv[]) {
 
     // Get the list of rom names and write them to a sorted file
     if (getRomNames(base_dir_path, rom_names_file_path) != 0) {
-        printf("Error: Failed to get rom names\n");
+        printf("Ошибка: Не удалось получить имена rom\n");
         return -1;
     }
 
 
     // Match the rom names and write the results to the output files
     if (matchRomNames(rom_names_file_path, full_rom_list_path, arcade_rom_names_path, missing_rom_names_path) != 0) {
-        printf("Error: Failed to match rom names\n");
+        printf("Ошибка: Не удалось сопоставить имена rom\n");
         return -1;
     }
 
@@ -450,20 +450,20 @@ int main(int argc, char *argv[]) {
     //sprintf(libpath, "../libgamename/libgamename.so"); for debug
     void *handle = dlopen(libpath, RTLD_LAZY);
     if (handle == NULL) {
-        fprintf(stderr, "Error loading library: %s\n", dlerror());
+        fprintf(stderr, "Ошибка загрузки библиотеки: %s\n", dlerror());
         return 1;
     }
 
     GetGameName_func = dlsym(handle, "GetGameNameForC");
     if (GetGameName_func == NULL) {
-        fprintf(stderr, "Error retrieving symbol: %s\n", dlerror());
+        fprintf(stderr, "Ошибка при извлечении символа: %s\n", dlerror());
         dlclose(handle);
         return 1;
     }
 
     // Update the sql lit cache on the new colum "lab" to let the UI sort by the title name displayed instead of of the rom name
     if (updateSqlliteCache(base_dir_path) != 0 ){
-        printf("Error: Failed to update sql lite caches\n");
+        printf("Ошибка: Не удалось обновить кэши sql lite\n");
         dlclose(handle);
         return -1;
     }

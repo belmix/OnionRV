@@ -46,7 +46,7 @@ static void sigHandler(int sig)
 
 int main(int argc, char *argv[])
 {
-    print_debug("Debug logging enabled, prompt v2!");
+    print_debug("Ведение журнала отладки включено!");
 
     signal(SIGINT, sigHandler);
     signal(SIGTERM, sigHandler);
@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    printf_debug(LOG_SUCCESS, "parsed command line arguments");
+    printf_debug(LOG_SUCCESS, "проанализированные аргументы командной строки");
 
     SDL_InitDefault(true);
 
@@ -109,7 +109,7 @@ int main(int argc, char *argv[])
     for (i = 0; i < pargc; i++) {
         ListItem item = {.action_id = i, .action = NULL};
         strncpy(item.label, pargs[i], STR_MAX - 1);
-        printf_debug("Adding list item: %s (%d)\n", item.label, item.action_id);
+        printf_debug("Добавление элемента списка: %s (%d)\n", item.label, item.action_id);
         list_addItem(&list, item);
     }
 
@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
 
     if (has_message) {
         char *str = str_replace(message_str, "\\n", "\n");
-        printf_debug("Message: %s\n", str);
+        printf_debug("Сообщение: %s\n", str);
         message = theme_textboxSurface(str, resource_getFont(TITLE),
                                        theme()->grid.color, ALIGN_CENTER);
         free(str);
@@ -280,7 +280,7 @@ int main(int argc, char *argv[])
     close(input_fd);
 #endif
 
-    print_debug("Freeing list...");
+    print_debug("Отчистка списка...");
     list_free(&list);
     printf_debug(LOG_SUCCESS, "freed list");
 

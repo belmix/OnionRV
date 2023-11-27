@@ -19,7 +19,7 @@ ScraperConfigFile=/mnt/SDCARD/.tmp_update/config/scraper.json
 # echo "romimage : $romimage"
 # echo "romNameNoExtension : $romNameNoExtension"
 # echo "romimage : $romimage"
-# read -n 1 -s -r -p "Press A to continue"
+# read -n 1 -s -r -p "Нажмите A для продолжения"
 
 
 
@@ -27,14 +27,14 @@ ScraperConfigFile=/mnt/SDCARD/.tmp_update/config/scraper.json
 
 Menu_Config()
 {
-    Option1="Media preferences"
-	Option2="Region selection"
-	Option3="Scraping sources"
-    Option4="Screenscraper: account settings"
-    Option5="Toggle background scraping"
-    Option6="Back to Main Menu"
+    Option1="Вид обложки"
+	Option2="Выбор региона"
+	Option3="Источники загрузки"
+    Option4="Screenscraper: настр. аккаунта"
+    Option5="Выполнять в фоне"
+    Option6="Вернуться в главное меню"
     
-    Mychoice=$( echo -e "$Option1\n$Option2\n$Option3\n$Option4\n$Option5\n$Option6" | /mnt/SDCARD/.tmp_update/script/shellect.sh -t "      --== CONFIGURATION MENU ==--" -b "Press A to validate your choice.")
+    Mychoice=$( echo -e "$Option1\n$Option2\n$Option3\n$Option4\n$Option5\n$Option6" | /mnt/SDCARD/.tmp_update/script/shellect.sh -t "      --== Меню конфигурации ==--" -b "Нажмите A для выбора.")
 
     [ "$Mychoice" = "$Option1" ] && Menu_Config_MediaType
     [ "$Mychoice" = "$Option2" ] && Menu_RegionSelection
@@ -54,20 +54,20 @@ Screenscraper_accountState()
 
 	clear
 	if [ "$userSS" = "null" ] || [ "$passSS" = "null" ] || [ "$userSS" = "" ] || [ "$passSS" = "" ]; then
-		echo -e "Login or Password is empty!\nCheck user IDs!\n\n\n\n\n\n\n\n"
-		read -n 1 -s -r -p "Press A to continue"
+		echo -e "Логин или пароль пусты!\nПроверьте идентификаторы пользователей!\n\n\n\n\n\n\n\n"
+		read -n 1 -s -r -p "Нажмите A для продолжения"
 		return
 	fi
 	
-	echo "Retrieve account information..."
+	echo "Получение информации об учетной записи..."
 	# Appel de l'API avec curl et stockage de la réponse JSON dans une variable
 	url="https://www.screenscraper.fr/api2/ssuserInfos.php?devid=xxx&devpassword=yyy&softname=zzz&output=json&ssid=$userSS&sspassword=$passSS"
 	api_result=$(curl -k -s "$url")
 
 
 	if echo "$api_result" | grep -q "^Erreur"; then
-		echo -e "Authentification failed.\nCheck user IDs!\n\n\n\n\n\n\n\n"
-		read -n 1 -s -r -p "Press A to continue"
+		echo -e "Не удалось выполнить аутентификацию\nПроверьте идентификаторы пользователей!\n\n\n\n\n\n\n\n"
+		read -n 1 -s -r -p "Нажмите A для продолжения"
 		return
 	fi
 
@@ -86,7 +86,7 @@ Screenscraper_accountState()
 	# Affichage des informations extraites
 	clear
 	echo -e "\n*****************************************************"
-	echo -e "*************** SCREENSCRAPER ACCOUNT ***************"
+	echo -e "*************** SCREENSCRAPER АККАУНТ ***************"
 	echo -e "*****************************************************\n\n"
 	echo -e "\n\n id: $id"
 	echo " Level: $level"
@@ -99,7 +99,7 @@ Screenscraper_accountState()
 	echo " max requests per minute: $maxRequestsPerMinute"
 	echo -e " Last scrape: $lastScrape\n\n\n\n\n\n\n\n\n\n\n\n"
 
-	read -n 1 -s -r -p "Press A to continue"
+	read -n 1 -s -r -p "Нажмите A для продолжения"
 
 }
 
@@ -113,7 +113,7 @@ Menu_Config_SSAccountSettings()
     echo "-------------------------------------------------"
     saveMetadata=false
     clear
-    echo "Loading..."
+    echo "Загрузка..."
     echo "==================================================="
     
     #We check for existing credentials
@@ -143,7 +143,7 @@ Menu_Config_SSAccountSettings()
 				passwordState="Password: (not set)"
 			fi
 			clear
-			Mychoice=$( echo -e "Screenscraper information\nUsername : $userSS\n${passwordState}\nAccount state and stats\nBack to configuration menu." | /mnt/SDCARD/.tmp_update/script/shellect.sh -t "     --== SCREENSCRAPER ACCOUNT ==--" -b "Press A to validate your choice.")
+			Mychoice=$( echo -e "Screenscraper information\nUsername : $userSS\n${passwordState}\nAccount state and stats\nBack to configuration menu." | /mnt/SDCARD/.tmp_update/script/shellect.sh -t "     --== SCREENSCRAPER ACCOUNT ==--" -b "Нажмите A для выбора.")
 			
 			case "$Mychoice" in
 				*Username\ *)
@@ -202,7 +202,7 @@ Menu_Config_BackgroundScraping()
     # Check if the configuration file exists
     if [ ! -f "$ScraperConfigFile" ]; then
       echo "Error: configuration file not found"
-      read -n 1 -s -r -p "Press A to continue"
+      read -n 1 -s -r -p "Нажмите A для продолжения"
       exit 1
     fi
     
@@ -210,14 +210,14 @@ Menu_Config_BackgroundScraping()
     echo -e "====================================================\n\n"
     echo -e "Background scraping allows you to use your\nMiyoo during scraping.\n\nYou may experience slowdowns,so choose \nnon-demanding emulators.\n\nHowever you will not see download in live if enabled.\n"
     echo -e "====================================================\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
-    read -n 1 -s -r -p "Press A to continue"
+    read -n 1 -s -r -p "Нажмите A для продолжения"
     clear
     
     config=$(cat "$ScraperConfigFile")
     ScrapeInBackground=$(echo "$config" | jq -r '.ScrapeInBackground')
     
     
-    	Mychoice=$( echo -e "No\nYes\nBack to Configuration Menu" | /mnt/SDCARD/.tmp_update/script/shellect.sh -t "Background scraping ? (Currently: $ScrapeInBackground)" -b "Press A to validate your choice.")
+    	Mychoice=$( echo -e "No\nYes\nBack to Configuration Menu" | /mnt/SDCARD/.tmp_update/script/shellect.sh -t "Background scraping ? (Currently: $ScrapeInBackground)" -b "Нажмите A для выбора.")
         # TODO : add a new option to display the tail of the log to show what happens in background
 
         if [ "$Mychoice" = "Yes" ]; then
@@ -245,7 +245,7 @@ Menu_Config_MediaType()
     # Check if the configuration file exists
     if [ ! -f "$ScraperConfigFile" ]; then
       echo "Error: configuration file not found"
-      read -n 1 -s -r -p "Press A to continue"
+      read -n 1 -s -r -p "Нажмите A для продолжения"
       exit 1
     fi
 
@@ -281,7 +281,7 @@ Menu_Config_MediaType()
     Option08="Screenscraper Mix V2       (available on SS)"
 	Option09="Back to Configuration Menu"
 
-    Mychoice=$( echo -e "$Option01\n$Option02\n$Option03\n$Option04\n$Option05\n$Option06\n$Option07\n$Option08\n$Option09\n" | /mnt/SDCARD/.tmp_update/script/shellect.sh -t\ "Current media type : $ScreenscraperMediaType" -b "Press A to validate your choice.")
+    Mychoice=$( echo -e "$Option01\n$Option02\n$Option03\n$Option04\n$Option05\n$Option06\n$Option07\n$Option08\n$Option09\n" | /mnt/SDCARD/.tmp_update/script/shellect.sh -t\ "Текущий медия тип : $ScreenscraperMediaType" -b "Нажмите A для выбора.")
     
     [ "$Mychoice" = "$Option01" ]  && SSmediaType="box-2D"                 && LBmediaType="Box - Front"                      && RAmediaType="Named_Boxarts"  
     [ "$Mychoice" = "$Option02" ]  && SSmediaType="sstitle"                && LBmediaType="Screenshot - Game Title"          && RAmediaType="Named_Titles"  
@@ -315,8 +315,8 @@ Menu_RegionSelection()
 {
     # Check if the configuration file exists
     if [ ! -f "$ScraperConfigFile" ]; then
-      echo "Error: configuration file not found"
-      read -n 1 -s -r -p "Press A to continue"
+      echo "Ошибка: файл конфигурации не найден"
+      read -n 1 -s -r -p "Нажмите A для продолжения"
       exit 1
     fi
 
@@ -329,11 +329,11 @@ Menu_RegionSelection()
     clear
     echo -e 
     echo -e "====================================================\n\n"
-    echo -e " Select your country.\n\n"
-    echo -e " If no media is found for your country code," 
-    echo -e " other countries will be searched as fallback.\n" 
+    echo -e " Выберите страну.\n\n"
+    echo -e " Если обложка для кода вашей страны не найдена," 
+    echo -e " поиск продолжиться по другим странам.\n" 
     echo -e "====================================================\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
-    read -n 1 -s -r -p "Press A to continue"
+    read -n 1 -s -r -p "Нажмите A для продолжения"
     clear
 
 
@@ -354,10 +354,10 @@ Option14="Spain (sp)"
 Option15="Sweden (se)"
 Option16="United States (us)"
 Option17="United Kingdom (uk)"
-Option18="Back to Configuration Menu"
+Option18="Вернуться в меню конфигурации"
 
     Mychoice=$( echo -e "$Option01\n$Option02\n$Option03\n$Option04\n$Option05n$Option06\n$Option07\n$Option08\n$Option09\n$Option10\n$Option11\n$Option12\n$Option13\n$Option14\n$Option15\n$Option16\n$Option17\n$Option18\n" \
-	| /mnt/SDCARD/.tmp_update/script/shellect.sh -t\ "Current selected region: $ScreenscraperRegion" -b "Press A to validate your choice.") \
+	| /mnt/SDCARD/.tmp_update/script/shellect.sh -t\ "Текущий регион: $ScreenscraperRegion" -b "Нажмите A для выбора.") \
     
 	SSregion=$(echo "$Mychoice" | sed -n 's/.*(\(.*\))/\1/p')
 	LBregion=$(echo "$Mychoice" | sed -n 's/\(.*\) (.*)/\1/p')
@@ -384,7 +384,7 @@ Option18="Back to Configuration Menu"
 Menu_Config_ScrapingSource()
 {
     clear
-    echo "Loading..."
+    echo "Загрузка..."
     echo "==================================================="
     # The JSON file to modify
             
@@ -403,7 +403,7 @@ Menu_Config_ScrapingSource()
     
     while true; do
     
-        Mychoice=$( echo -e "$Screenscraper\n$Launchbox\n$Retroarch\nBack to Configuration Menu" | /mnt/SDCARD/.tmp_update/script/shellect.sh -t "      --== SCRAPER SELECTION ==--" -b "Press A to validate your choice.")
+        Mychoice=$( echo -e "$Screenscraper\n$Launchbox\n$Retroarch\nBack to Configuration Menu" | /mnt/SDCARD/.tmp_update/script/shellect.sh -t "      --== SCRAPER SELECTION ==--" -b "Нажмите A для выбора.")
         
         [ "$Mychoice" = "[ ] Screenscraper" ] && Screenscraper="[x] Screenscraper"
         [ "$Mychoice" = "[x] Screenscraper" ] && Screenscraper="[ ] Screenscraper"
@@ -444,15 +444,15 @@ Launch_Scraping ()
     rm -f /tmp/scraper_script.sh
 	
 	if [ "$(ip r)" = "" ]; then 
-		echo "You must be connected to wifi to use Scraper"
-		read -n 1 -s -r -p "Press A to continue"
+		echo "Вы должны быть подключены к Wi-Fi, чтобы использовать Scraper"
+		read -n 1 -s -r -p "Нажмите A для продолжения"
 		exit
 	fi
 
     # Check if the configuration file exists
     if [ ! -f "$ScraperConfigFile" ]; then
-      echo "Error: configuration file not found"
-      read -n 1 -s -r -p "Press A to continue"
+      echo "Ошибка: конфигурационный файд не найден"
+      read -n 1 -s -r -p "Нажмите A для продолжения"
       exit 1
     fi
     
@@ -566,7 +566,7 @@ https://www.screenscraper.fr/faq.php
 
 EOF
 
-read -n 1 -s -r -p "Press A to continue"
+read -n 1 -s -r -p "Нажмите A для продолжения"
 clear
 }
 
@@ -577,7 +577,7 @@ Delete_Rom_Cover ()
     clear
     rm "/mnt/SDCARD/Roms/$CurrentSystem/Imgs/$romNameNoExtension.png"
     echo -e "$romNameNoExtension.png\nRemoved\n"
-    read -n 1 -s -r -p "Press A to continue"
+    read -n 1 -s -r -p "Нажмите A для продолжения"
     clear
     Menu_Main
 }
@@ -589,14 +589,14 @@ Menu_Main ()
 
 {
 clear
-Option1="Scrape all $(basename "$CurrentSystem") roms"
-[ -f "$romimage" ] && Option2="" || Option2="Scrape current rom: $romname"
-[ -f "$romimage" ] && Option3="Delete cover: $romNameNoExtension.png" || Option3=""
-Option4="Configuration"
-Option5="Exit"
+Option1="Загрузить для всех $(basename "$CurrentSystem") игр"
+[ -f "$romimage" ] && Option2="" || Option2="Вытянуть для игры: $romname"
+[ -f "$romimage" ] && Option3="Удалить обложку: $romNameNoExtension.png" || Option3=""
+Option4="Конфигурация"
+Option5="Выход"
 
 clear
-Mychoice=$( echo -e "$Option1\n$Option2\n$Option3\n$Option4\nExit" | /mnt/SDCARD/.tmp_update/script/shellect.sh -t "           --== MAIN MENU ==--" -b "                     Menu : Exit        A : Validate ")
+Mychoice=$( echo -e "$Option1\n$Option2\n$Option3\n$Option4\nExit" | /mnt/SDCARD/.tmp_update/script/shellect.sh -t "           --== ГЛАВНОЕ МЕНЮ ==--" -b "                     Menu : Выход       A : Выбор ")
 
 [ "$Mychoice" = "$Option1" ] && (onerom=0; Launch_Scraping;)
 [ "$Mychoice" = "$Option2" ] && (onerom=1; Launch_Scraping;)

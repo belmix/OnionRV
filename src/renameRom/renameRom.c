@@ -26,7 +26,7 @@ bool renameFile(const char *dir_path, const char *file_ext,
         printf_debug("\nrename: '%s'\n     -> '%s'\n", old_path, new_path);
 #ifdef PLATFORM_MIYOOMINI
         if (rename(old_path, new_path) == 0) {
-            print_debug("File renamed successfully.");
+            print_debug("Файл успешно переименован.");
         }
 #endif
         return true;
@@ -45,7 +45,7 @@ bool renameCache(const char *cache_path, const char *rom_dirname,
     int rc = sqlite3_open(cache_path, &db);
 
     if (rc != SQLITE_OK) {
-        fprintf(stderr, "Cannot open database: %s\n", sqlite3_errmsg(db));
+        fprintf(stderr, "Не удается открыть базу данных: %s\n", sqlite3_errmsg(db));
         sqlite3_close(db);
         return false;
     }
@@ -58,7 +58,7 @@ bool renameCache(const char *cache_path, const char *rom_dirname,
     rc = sqlite3_prepare_v2(db, sql, -1, &res, 0);
 
     if (rc != SQLITE_OK) {
-        fprintf(stderr, "Failed to fetch data: %s\n", sqlite3_errmsg(db));
+        fprintf(stderr, "Не удалось получить данные: %s\n", sqlite3_errmsg(db));
         sqlite3_close(db);
         return false;
     }
@@ -78,7 +78,7 @@ bool renameCache(const char *cache_path, const char *rom_dirname,
 int main(int argc, char *argv[])
 {
     if (argc < 2) {
-        printf("Usage: renameRom [ROMPATH] [NEWNAME]\n");
+        printf("Использование: renameRom [ROMPATH] [NEWNAME]\n");
         return 1;
     }
 
@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
 
     const char *romext = file_getExtension(rompath);
     char *old_name = file_removeExtension(basename(rompath));
-    printf_debug("old name: %s\n", old_name);
+    printf_debug("старое имя: %s\n", old_name);
 
     // Rename rom file
     renameFile(romdir, romext, old_name, new_name);
@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
     snprintf(imgdir, STR_MAX * 2, "%s/%s", emupath, config.imgpath);
 
     if (!renameFile(imgdir, "png", old_name, new_name)) {
-        print_debug("No box art found");
+        print_debug("Картинка не найдена");
     }
 
     // Rename cache entry

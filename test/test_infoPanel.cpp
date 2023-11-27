@@ -51,7 +51,7 @@ TEST(test_infoPanel, cacheTest)
     char* drawn_image_path = NULL;
     for (int i = 0; i < test_data_count; i++)
     {
-        printf("Entering test item #%d\n", i);
+        printf("Ввод тестового обьекта #%d\n", i);
         const TestItem& test_item = test_data[i];
         bool cache_used = false;
         drawn_image_path = drawImageByIndex(test_item.new_index, test_item.initial_index,

@@ -4,7 +4,7 @@ radir=/mnt/SDCARD/RetroArch/.retroarch
 ext_cache_path=$radir/cores/cache/core_extensions.cache
 globalscriptdir=/mnt/SDCARD/App/romscripts
 
-UI_TITLE="OPTIONS"
+UI_TITLE="Игровое меню"
 
 mkdir -p $radir/cores/cache
 
@@ -124,7 +124,7 @@ main() {
     if [ $skip_game_options -eq 0 ]; then
         get_core_info
 
-        game_core_label="Game core"
+        game_core_label="Ядро"
 
         if [ ! -f "$radir/cores/$default_core.so" ]; then
             default_core=""
@@ -136,7 +136,7 @@ main() {
             coreinfo=$(cat "$coreinfopath")
             corename=$(get_info_value "$coreinfo" corename)
 
-            game_core_label="Game core: $corename"
+            game_core_label="Ядро: $corename"
 
             if [ "$retroarch_core" == "$default_core" ]; then
                 game_core_label="$game_core_label (Default)"
@@ -144,7 +144,7 @@ main() {
                 add_reset_core=1
             fi
 
-            add_menu_option reset_game "Reset game"
+            add_menu_option reset_game "Перезапустить игру"
         fi
 
         romdirname=$(echo "$rompath" | sed "s/^.*Roms\///g" | cut -d "/" -f1)
@@ -160,22 +160,22 @@ main() {
         add_menu_option change_core "$game_core_label"
 
         if [ $add_reset_core -eq 1 ]; then
-            add_menu_option reset_core "Restore default core"
+            add_menu_option reset_core "Ядро по умолчанию"
         fi
     fi # skip_game_options
 
     if [ $current_tab -eq $TAB_GAMES ]; then
         if [ -f "$emupath/active_filter" ]; then
             filter_kw=$(cat "$emupath/active_filter")
-            add_menu_option clear_filter "Clear filter"
-            add_menu_option filter_roms "Filter: $filter_kw"
+            add_menu_option clear_filter "Сбросить фильтр"
+            add_menu_option filter_roms "Отфильтровано: $filter_kw"
         else
-            add_menu_option filter_roms "Filter list"
+            add_menu_option filter_roms "Отфильтровать игры"
         fi
     fi
 
     if [ $current_tab -eq $TAB_GAMES ] || [ $current_tab -eq $TAB_EXPERT ]; then
-        add_menu_option refresh_roms "Refresh list"
+        add_menu_option refresh_roms "Обновить список"
     fi
 
     add_script_files "$globalscriptdir"
@@ -463,6 +463,7 @@ get_core_extensions() {
         ./bin/infoPanel --title "CACHING CORES" --message "Caching core info\n \nThis may take a minute..." --persistent &
         ./script/build_ext_cache.sh "$radir"
         touch /tmp/dismiss_info_panel
+        sync
     fi
 }
 

@@ -32,7 +32,7 @@ bool netinfo_getIpAddress(char *label_out, const char *interface)
     ioctl(n, SIOCGIFADDR, &ifr);
     close(n);
 
-    snprintf(ip_address, STR_MAX - 1, "IP address: %s (%s)", inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr), interface);
+    snprintf(ip_address, STR_MAX - 1, "IP адрес: %s (%s)", inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr), interface);
 
     if (strncmp(ip_address, label_out, STR_MAX) != 0) {
         strcpy(label_out, ip_address);
@@ -46,7 +46,7 @@ void netinfo_getHostnameAndIpAddress(char *hostname, char *ip_address)
     char host_buffer[STR_MAX];
     char *ip_buffer;
 
-    print_debug("Start");
+    print_debug("Запуск");
 
     // Retrieve hostname
     if (gethostname(host_buffer, sizeof(host_buffer)) != -1) {
@@ -59,20 +59,20 @@ void netinfo_getHostnameAndIpAddress(char *hostname, char *ip_address)
         if (host_entry != NULL) {
             // Convert IP address to ASCII string
             ip_buffer = inet_ntoa(*((struct in_addr *)host_entry->h_addr_list[0]));
-            sprintf(ip_address, "IP address: %s", ip_buffer);
-            printf_debug("IP address: %s\n", ip_address);
+            sprintf(ip_address, "IP адрес: %s", ip_buffer);
+            printf_debug("IP адрес: %s\n", ip_address);
         }
         else {
-            print_debug("Failed to retrieve IP address");
-            strncpy(ip_address, "IP address: -", STR_MAX - 1);
+            print_debug("Не удалось получить IP-адрес");
+            strncpy(ip_address, "IP адрес: -", STR_MAX - 1);
         }
     }
     else {
-        print_debug("Failed to retrieve hostname");
+        print_debug("Не удалось получить имя хоста");
         strncpy(hostname, "Hostname: -", STR_MAX - 1);
     }
 
-    print_debug("Done");
+    print_debug("Готово");
 }
 
 #endif // UTILS_NETINFO_H__

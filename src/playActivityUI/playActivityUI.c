@@ -158,7 +158,7 @@ void renderPage(int current_page)
         str_serializeTime(average, entry->play_time_average);
         snprintf(plays, 24, "%d", entry->play_count);
 
-        const char *details[] = {"TOTAL ", total, "  AVG ", average, "  PLAYS ", plays};
+        const char *details[] = {"ВСЕГО ", total, "  СРЕДНЕЕ ", average, "  ИГРАЛ ", plays};
         SDL_Rect detailsRect = {num_width + 100, 115 + 90 * row, 400, 40};
         for (int i = 0; i < 6; i++) {
             detailsRect.x += renderText(details[i], font18, i % 2 == 0 ? color_grey : color_lightgrey, &detailsRect);

@@ -43,7 +43,7 @@ bool _confirmReset(const char *title_str, const char *message_str)
 
     if (retval) {
         SDL_BlitSurface(screen, NULL, background_cache, NULL);
-        theme_renderDialog(screen, title_str, "Resetting...", false);
+        theme_renderDialog(screen, title_str, "Перезагрузка...", false);
         SDL_BlitSurface(screen, NULL, video, NULL);
         SDL_Flip(video);
     }
@@ -58,7 +58,7 @@ bool _confirmReset(const char *title_str, const char *message_str)
 void _notifyResetDone(const char *title_str)
 {
     SDL_BlitSurface(background_cache, NULL, screen, NULL);
-    theme_renderDialog(screen, title_str, "Done", false);
+    theme_renderDialog(screen, title_str, "Готово", false);
     SDL_BlitSurface(screen, NULL, video, NULL);
     SDL_Flip(video);
     msleep(300);
@@ -72,8 +72,8 @@ void _notifyResetDone(const char *title_str)
 
 void action_resetTweaks(void *pt)
 {
-    const char title_str[] = "Reset system tweaks";
-    if (!_disable_confirm && !_confirmReset(title_str, "Are you sure you want to\nreset system tweaks?"))
+    const char title_str[] = "Сброс настроек системы";
+    if (!_disable_confirm && !_confirmReset(title_str, "Вы уверены, что хотите\nсбросить настройки системы?"))
         return;
     rename(RESET_CONFIGS_PAK, "/mnt/SDCARD/.tmp_update/temp");
     system("rm -rf /mnt/SDCARD/.tmp_update/config && mkdir -p /mnt/SDCARD/.tmp_update/config");
@@ -87,8 +87,8 @@ void action_resetTweaks(void *pt)
 
 void action_resetThemeOverrides(void *pt)
 {
-    const char title_str[] = "Reset theme overrides";
-    if (!_disable_confirm && !_confirmReset(title_str, "Are you sure you want to\nreset theme overrides?"))
+    const char title_str[] = "Сброс настроек оформления";
+    if (!_disable_confirm && !_confirmReset(title_str, "Вы уверены, что хотите\nсбросить настройки темы?"))
         return;
     system("rm -rf /mnt/SDCARD/Saves/CurrentProfile/theme/*");
     if (!_disable_confirm)
@@ -97,9 +97,9 @@ void action_resetThemeOverrides(void *pt)
 
 void action_resetMainUI(void *pt)
 {
-    const char title_str[] = "Reset MainUI settings";
+    const char title_str[] = "Сброс настроек Главного Меню";
 
-    if (!_disable_confirm && !_confirmReset(title_str, "Are you sure you want to\nreset MainUI settings?"))
+    if (!_disable_confirm && !_confirmReset(title_str, "Вы уверены, что хотите\nсбросить настройки Главного Меню?"))
         return;
 
     system("rm -f /mnt/SDCARD/system.json");
@@ -121,8 +121,8 @@ void action_resetMainUI(void *pt)
 
 void action_resetRAMain(void *pt)
 {
-    const char title_str[] = "Reset RetroArch configuration";
-    if (!_disable_confirm && !_confirmReset(title_str, "Are you sure you want to reset\nRetroArch main configuration?"))
+    const char title_str[] = "Сброс конфигурации RetroArch";
+    if (!_disable_confirm && !_confirmReset(title_str, "Вы уверены, что хотите\nсбросить настройки RetroArch?"))
         return;
     system("7z x -aoa " RESET_CONFIGS_PAK " -o/mnt/SDCARD/ -ir!RetroArch/*");
     reset_menus = true;
@@ -132,8 +132,8 @@ void action_resetRAMain(void *pt)
 
 void action_resetRACores(void *pt)
 {
-    const char title_str[] = "Reset all RA core overrides";
-    if (!_disable_confirm && !_confirmReset(title_str, "Are you sure you want to reset\nall RetroArch core overrides?"))
+    const char title_str[] = "Сбросить ядра RetroArch";
+    if (!_disable_confirm && !_confirmReset(title_str, "Вы уверены, что хотите\nсбросить привязки ядра RetroArch?"))
         return;
     system("rm -rf /mnt/SDCARD/Saves/CurrentProfile/config/*");
     system("7z x " RESET_CONFIGS_PAK " -o/mnt/SDCARD/ -ir!Saves/CurrentProfile/config/*");
@@ -144,8 +144,8 @@ void action_resetRACores(void *pt)
 
 void action_resetAdvanceMENU(void *pt)
 {
-    const char title_str[] = "Reset AdvanceMENU/MAME/MESS";
-    if (!_disable_confirm && !_confirmReset(title_str, "Are you sure you want to\nreset AdvanceMENU/MAME/MESS?"))
+    const char title_str[] = "Сброс Расширеного Меню/MAME/MESS";
+    if (!_disable_confirm && !_confirmReset(title_str, "Вы уверены, что хотите\nсбросить Расширенное Меню/MAME/MESS?"))
         return;
     system("7z x -aoa " RESET_CONFIGS_PAK " -o/mnt/SDCARD/ -ir!BIOS/.advance/*");
     reset_menus = true;
@@ -155,8 +155,8 @@ void action_resetAdvanceMENU(void *pt)
 
 void action_resetAll(void *pt)
 {
-    const char title_str[] = "Reset everything";
-    if (!_confirmReset(title_str, "Are you sure you want to\nreset everything?"))
+    const char title_str[] = "Сбросить всё";
+    if (!_confirmReset(title_str, "Вы уверены, что хотите\nвсё сбросить?"))
         return;
     _disable_confirm = true;
     action_resetTweaks(pt);

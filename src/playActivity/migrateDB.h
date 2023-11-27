@@ -40,13 +40,13 @@ void _migrate_loadCacheDBs(void)
                 int cache_version = cache_get_path_and_version(cache_db_file_path, romFolder, entry->d_name);
 
                 if (cache_version != -1) {
-                    printf("Cache found : %s\n", cache_db_file_path);
+                    printf("Кэш найден : %s\n", cache_db_file_path);
 
                     // Open the database file
                     sqlite3 *db;
                     int rc = sqlite3_open(cache_db_file_path, &db);
                     if (rc != SQLITE_OK) {
-                        fprintf(stderr, "Cannot open database '%s': %s\n", cache_db_file_path, sqlite3_errmsg(db));
+                        fprintf(stderr, "Не удается открыть базу данных '%s': %s\n", cache_db_file_path, sqlite3_errmsg(db));
                         continue; // Skip to the next file
                     }
 
@@ -57,7 +57,7 @@ void _migrate_loadCacheDBs(void)
                     __migrate_cache_count++;
 
                     if (__migrate_cache_count >= MIGRATE_DB_MAX_FILES) {
-                        fprintf(stderr, "Maximum number of database files reached.\n");
+                        fprintf(stderr, "Достигнуто максимальное количество файлов базы данных.\n");
                         break;
                     }
                 }
@@ -67,7 +67,7 @@ void _migrate_loadCacheDBs(void)
         closedir(dir);
     }
     else
-        printf("No Rom folder detected ... \n");
+        printf("Каталог Rom не обнаружен ... \n");
 }
 
 void migrateDB(void)
@@ -84,7 +84,7 @@ void migrateDB(void)
     _migrate_loadCacheDBs();
 
     //displayRomOldDB();
-    printf("\n------- Migrating data to new database -------\n");
+    printf("\n------- Перенос данных в новую базу данных -------\n");
 
     int totalOldRecords = 0;
     int totalImported = 0;
@@ -92,7 +92,7 @@ void migrateDB(void)
     int totalSkipped = 0;
     int totalOrphan = 0;
 
-    printf("\n%d games to migrate\n", rom_list_len);
+    printf("\n%d перенос игр\n", rom_list_len);
     play_activity_db_open();
 
     for (int i = 0; i < LEGACY_DB_MAX; i++) {
@@ -176,7 +176,7 @@ void migrateDB(void)
                 }
                 else {
                     rom_id = sqlite3_column_int(stmt, 0);
-                    printf("- already added - ID %d\n", rom_id);
+                    printf("- уже добавлено - ID %d\n", rom_id);
                 }
                 free(cache_db_item);
                 break;
@@ -226,11 +226,11 @@ void migrateDB(void)
                 }
                 if (sqlite3_step(stmt) == SQLITE_ROW) {
                     rom_id = sqlite3_column_int(stmt, 0);
-                    printf("Orphan added - ID %d\n", rom_id);
+                    printf("Ошибка добавления - ID %d\n", rom_id);
                 }
             }
             else {
-                printf("Orphan already exists\n");
+                printf("Ошибка уже существует\n");
                 rom_id = sqlite3_column_int(stmt, 0);
             }
             sqlite3_finalize(stmt);
@@ -266,12 +266,12 @@ void migrateDB(void)
             sqlite3_free(sql);
 
             if (rc == SQLITE_ROW) {
-                printf("Play time already imported\n");
+                printf("Время игры уже импортировано\n");
                 totalAlreadyImported++;
                 continue;
             }
             else {
-                printf("Importing play time: %d\n", rom_list[i].playTime);
+                printf("Импорт времени игры: %d\n", rom_list[i].playTime);
 
                 sql = sqlite3_mprintf("INSERT INTO play_activity(rom_id, play_time, created_at, updated_at) VALUES "
                                       "(%d,%d,0,0);", // Imported times have the particularity of having a "created_at" at 0.
@@ -296,11 +296,11 @@ void migrateDB(void)
     }
 
     printf("\n********************************\n");
-    printf("Summary:\n========\n");
-    printf("Total of old records:        %d\n", totalOldRecords);
-    printf("Total imported: %d - %d orphans\n", totalImported, totalOrphan);
-    printf("Total already imported:      %d\n", totalAlreadyImported);
-    printf("Total skipped:               %d\n", totalSkipped);
+    printf("Сводная информация:\n========\n");
+    printf("Общее количество старых записей:        %d\n", totalOldRecords);
+    printf("Всего импортировано: %d - %d orphans\n", totalImported, totalOrphan);
+    printf("Всего уже импортировано:      %d\n", totalAlreadyImported);
+    printf("Всего пропущено:               %d\n", totalSkipped);
     printf("********************************\n");
 }
 

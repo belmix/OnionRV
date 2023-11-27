@@ -1,6 +1,6 @@
 {
-    "label": "Guest Mode [ON]",
+    "label": "Гостевой режим [ВКЛ]",
     "icon": "../../Icons/Default/app/guest_on.png",
     "launch": "launch.sh",
-    "description": "Back to the main profile"
+    "description": "Вернуться в основной профиль"
 }

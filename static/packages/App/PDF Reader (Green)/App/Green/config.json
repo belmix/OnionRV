@@ -1,7 +1,7 @@
 {
-"label":"PDF Reader",
+"label":"Чтение PDF",
 "icon":"../../Icons/Default/app/pdf.png",
 "iconsel":"",
 "launch":"launch.sh",
-"description":"Green"
+"description":"Просмотр PDF файлов"
 }

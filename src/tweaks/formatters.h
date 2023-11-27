@@ -47,7 +47,7 @@ void formatter_appShortcut(void *pt, char *out_label)
     int max_value = installed_apps_count + NUM_TOOLS + item->action_id;
 
     if (value <= 0 || value > max_value) {
-        strcpy(out_label, item->action_id == 0 ? "B button" : "A button");
+        strcpy(out_label, item->action_id == 0 ? "Кнопка B" : "Кнопка A");
         return;
     }
 
@@ -62,7 +62,7 @@ void formatter_appShortcut(void *pt, char *out_label)
     // tools
     value -= installed_apps_count;
     if (value < NUM_TOOLS) {
-        sprintf(out_label, "Tool: %s", tools_short_names[value]);
+        sprintf(out_label, "Утилита: %s", tools_short_names[value]);
         return;
     }
 
@@ -75,7 +75,7 @@ void formatter_battWarn(void *pt, char *out_label)
 {
     ListItem *item = (ListItem *)pt;
     if (item->value == 0)
-        strcpy(out_label, "Off");
+        strcpy(out_label, "Выкл");
     else
         sprintf(out_label, "< %d%%", item->value * 5);
 }
@@ -84,7 +84,7 @@ void formatter_battExit(void *pt, char *out_label)
 {
     ListItem *item = (ListItem *)pt;
     if (item->value == 0)
-        strcpy(out_label, "Off");
+        strcpy(out_label, "Выкл");
     else
         sprintf(out_label, "< %d%%", item->value);
 }
@@ -117,7 +117,7 @@ void formatter_fastForward(void *pt, char *out_label)
 {
     ListItem *item = (ListItem *)pt;
     if (item->value == 0)
-        strcpy(out_label, "Unlimited");
+        strcpy(out_label, "Без ограничений");
     else
         sprintf(out_label, "%d.0x", item->value);
 }
@@ -142,7 +142,7 @@ void formatter_startupTab(void *pt, char *out_label)
     ListItem *item = (ListItem *)pt;
     switch (item->value) {
     case 0:
-        strcpy(out_label, "Main menu");
+        strcpy(out_label, "Главное Меню");
         break;
     case 1:
         strncpy(out_label,
@@ -175,7 +175,7 @@ void formatter_timeSkip(void *pt, char *out_label)
 {
     ListItem *item = (ListItem *)pt;
     if (item->value == 0)
-        strcpy(out_label, "Off");
+        strcpy(out_label, "Выкл");
     else
         sprintf(out_label, "+ %dh", item->value);
 }

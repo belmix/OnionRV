@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
                  strcmp(argv[i], "--message") == 0)
             strncpy(message_str, argv[++i], STR_MAX - 1);
         else {
-            printf_debug("Error: Unknown argument '%s'\n", argv[i]);
+            printf_debug("Ошибка: Неизвестный аргумент '%s'\n", argv[i]);
             exit(EXIT_FAILURE);
         }
     }
@@ -173,7 +173,7 @@ int main(int argc, char *argv[])
         }
 
         if (exists(".installFailed")) {
-            sprintf(message_str, "Installation failed");
+            sprintf(message_str, "Ошибка установки");
             progress = 100;
             failed = true;
             quit = true;
@@ -189,7 +189,7 @@ int main(int argc, char *argv[])
             }
             else if (!quit && ticks - check_timer > TIMEOUT_M * 60 * 1000 &&
                      !exists(".waitConfirm")) {
-                sprintf(message_str, "The installation timed out, exiting...");
+                sprintf(message_str, "Установка завершена, мастер закрывается...");
                 progress = 100;
                 failed = true;
                 quit = true;

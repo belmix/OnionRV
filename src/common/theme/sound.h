@@ -20,7 +20,7 @@ void sound_change(void)
         int volume = settings.bgm_volume > 0
                          ? 42.3936 * log(1.0239 * (double)settings.bgm_volume)
                          : 0;
-        printf_debug("Volume set: %d = %d\n", settings.bgm_volume, volume);
+        printf_debug("Установка громкости: %d = %d\n", settings.bgm_volume, volume);
         Mix_Volume(-1, volume);
         _volume_updated = true;
     }

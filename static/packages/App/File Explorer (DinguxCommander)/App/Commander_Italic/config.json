@@ -1,6 +1,6 @@
 {
-"label":"File Explorer",
+"label":"Файловый менеджер",
 "icon":"../../Icons/Default/app/commander.png",
 "launch":"launch.sh",
-"description":"DinguxCommander"
+"description":"Работа с файловой системой"
 }

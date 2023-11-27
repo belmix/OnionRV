@@ -202,6 +202,8 @@ void getGameName(char *name_out, const char *rom_path)
  */
 void readHistory()
 {
+  game_list_len = 0;
+
     FILE *file;
     char line[STR_MAX * 3];
     char *jsonContent;
@@ -210,7 +212,8 @@ void readHistory()
     file = fopen(getMiyooRecentFilePath(), "r");
 
     if (file == NULL) {
-        print_debug("Error opening file");
+
+        print_debug("Отсутствует файл истории");
         return;
     }
 
@@ -311,6 +314,7 @@ void readHistory()
         file_cleanName(game->shortname, game->name);
         game->gameIndex = nbGame + 1;
 
+
         game = &game_list[nbGame];
 
         printf_debug("name: %s\n", game->name);
@@ -321,6 +325,16 @@ void readHistory()
         printf_debug("lineNumber: %i\n", game->lineNumber);
         printf_debug("romScreenPath: %s\n", game->romScreenPath);
         printf_debug("path: %s\n", game->path);
+      
+        // Check for duplicates
+        for (int i = 0; i < game_list_len; i++) {
+            Game_s *other = &game_list[i];
+            if (other->hash == game->hash) {
+                other->is_duplicate += 1;
+                game->is_duplicate = other->is_duplicate;
+            }
+        }
+
 
         nbGame++;
     }
@@ -333,8 +347,10 @@ void removeCurrentItem()
 {
     Game_s *game = &game_list[current_game];
 
+
     printf_debug("removing: %s\n", game->name);
     printf_debug("linenumber: %i\n", game->lineNumber);
+
 
     if (game->romScreen != NULL) {
         SDL_FreeSurface(game->romScreen);
@@ -369,7 +385,7 @@ int checkQuitAction(void)
 int main(int argc, char *argv[])
 {
     log_setName("gameSwitcher");
-    print_debug("\n\nDebug logging enabled");
+    print_debug("\n\nВключен журнал отладки");
 
     signal(SIGINT, sigHandler);
     signal(SIGTERM, sigHandler);
@@ -594,8 +610,8 @@ int main(int argc, char *argv[])
             if (keystate[SW_BTN_X] == PRESSED) {
                 if (game_list_len != 0) {
                     theme_renderDialog(
-                        screen, "Remove from history",
-                        "Are you sure you want to\nremove game from history?",
+                        screen, "Удалить из истории",
+                        "Вы уверены, что хотите удалить\nигру из истории?",
                         true);
                     SDL_BlitSurface(screen, NULL, video, NULL);
                     SDL_Flip(video);
@@ -841,15 +857,17 @@ int main(int argc, char *argv[])
 
     screen = SDL_CreateRGBSurface(SDL_HWSURFACE, 640, 480, 32, 0, 0, 0, 0);
 
+
     if (exit_to_menu) {
-        print_debug("Exiting to menu");
+        print_debug("Выход в меню");
         remove("/mnt/SDCARD/.tmp_update/.runGameSwitcher");
         remove("/mnt/SDCARD/.tmp_update/cmd_to_run.sh");
     }
 
     else {
-        print_debug("Resuming game");
+        print_debug("Возобновление игры");
         resumeGame(game_list[current_game].gameIndex);
+
     }
 
 #ifndef PLATFORM_MIYOOMINI

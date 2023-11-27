@@ -74,7 +74,7 @@ void logMessage(char *Message)
 
 int main(int argc, char *argv[])
 {
-    printf("%s", "\n --------EASTER LAUNCH---------------- \n");
+    printf("%s", "\n ---------------ЗАПУСК---------------- \n");
     // Initialize SDL
     SDL_InitDefault(true);
 

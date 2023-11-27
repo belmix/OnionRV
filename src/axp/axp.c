@@ -6,7 +6,7 @@ int main(int argc, char **argv)
     int w_val, val, ret;
 
     if (argc < 2) {
-        printf("Usage: %s reg_addr [+][write_val]\n\nRegisters:\n", argv[0]);
+        printf("Инфо: %s reg_addr [+][write_val]\n\nRegisters:\n", argv[0]);
         for (i = 0; i < 0x100; i += 0x10) {
             printf("%02X :", i);
             for (j = i; j < i + 0x10; j++) {
@@ -26,16 +26,16 @@ int main(int argc, char **argv)
     if (argc == 2) {
         val = axp_read(reg_address);
         if (val < 0) {
-            fprintf(stderr, "axp read error: %d %s\n", val, strerror(errno));
+            fprintf(stderr, "axp ошибка чтения: %d %s\n", val, strerror(errno));
             return 1;
         }
-        printf("Read %s-%x reg %x, read value:%x\n", AXPDEV, AXPID, reg_address,
+        printf("Чтение %s-%x reg %x, чтение занчения:%x\n", AXPDEV, AXPID, reg_address,
                val);
     }
     else {
         sscanf(argv[2], "%x", &w_val);
         if ((w_val & ~0xff) != 0)
-            fprintf(stderr, "Error on written value %s\n", argv[2]);
+            fprintf(stderr, "Ошибка при записи значения %s\n", argv[2]);
         if (argv[2][0] == '+') {
             val = axp_read(reg_address);
             val |= w_val;
@@ -45,10 +45,10 @@ int main(int argc, char **argv)
             val = w_val;
         ret = axp_write(reg_address, val);
         if (ret < 0) {
-            fprintf(stderr, "axp write error: %d %s\n", ret, strerror(errno));
+            fprintf(stderr, "axp ошибка записи: %d %s\n", ret, strerror(errno));
             return 1;
         }
-        printf("Write %s-%x reg %x, write value:%x\n", AXPDEV, AXPID,
+        printf("Запись %s-%x reg %x, write value:%x\n", AXPDEV, AXPID,
                reg_address, val);
     }
 

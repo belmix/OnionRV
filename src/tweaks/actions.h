@@ -102,7 +102,7 @@ void action_runDiagnosticScript(void *payload_ptr)
 
     pthread_t thread;
     if (pthread_create(&thread, NULL, diags_runScript, payload_ptr) != 0) {
-        list_updateStickyNote(item, "Failed to run script..."); // threading issues
+        list_updateStickyNote(item, "Ошибка запуска Сценария..."); // threading issues
         list_changed = true;
     }
 
@@ -315,14 +315,14 @@ void action_advancedSetLcdVoltage(void *pt)
     int res = axp_lcd_set(value);
 
     if (res != 0) {
-        printf_debug("Error: Failed to set LCD voltage: %d\n",
+        printf_debug("Ошибка: Не удалось установить напряжение ЖК-дисплея: %d\n",
                      1600 + value * 100);
         config_flag_set(".lcdvolt", false);
         msleep(200);
         return;
     }
 
-    printf_debug("LCD voltage set to: %d\n", 1600 + value * 100);
+    printf_debug("Напряжение ЖК-дисплея установлено на: %d\n", 1600 + value * 100);
 
     config_flag_set(".lcdvolt", true);
 

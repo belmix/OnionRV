@@ -1,6 +1,6 @@
 {
-    "label":"Random Game",
+    "label":"Случайная игра",
     "icon":"../../Icons/Default/app/dice.png",
     "launch":"launch.sh",
-    "description":"Launch random game (any system)"
+    "description":"Запуск случайной игры (все платформы)"
 }

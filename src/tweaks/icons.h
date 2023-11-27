@@ -152,7 +152,7 @@ void _action_apply_icon_pack(void *_item)
     SDL_BlitSurface(screen, NULL, background_cache, NULL);
 
     theme_renderDialog(screen, item->label,
-                       "Do you want to apply\nthis icon pack?", true);
+                       "Вы хотите применить\nэти иконки?", true);
     SDL_BlitSurface(screen, NULL, video, NULL);
     SDL_Flip(video);
 
@@ -175,7 +175,7 @@ void _action_apply_icon_pack(void *_item)
         char message_done[STR_MAX];
         int applied = apply_iconPack(item->payload, false);
 
-        sprintf(message_done, "Applied %d icons", applied);
+        sprintf(message_done, "Применение %d иконок", applied);
 
         list_free(&_menu_console_icons);
         list_free(&_menu_app_icons);
@@ -201,7 +201,7 @@ void menu_icon_packs(void *_)
 
     if (!_menu_icon_packs._created) {
         _menu_icon_packs = list_create(200, LIST_SMALL);
-        strcpy(_menu_icon_packs.title, "Icon packs");
+        strcpy(_menu_icon_packs.title, "Настройки иконок");
 
         _add_icon_packs("/mnt/SDCARD/Icons", &_menu_icon_packs,
                         _action_apply_icon_pack, false, NULL);
@@ -360,7 +360,7 @@ void _menu_temp_action(void *_item)
             temp_action_item->icon_ptr = (void *)IMG_Load(item->preview_path);
         }
 
-        theme_renderDialog(screen, item->label, "Change saved", false);
+        theme_renderDialog(screen, item->label, "Изменения сохранены", false);
         SDL_BlitSurface(screen, NULL, video, NULL);
         SDL_Flip(video);
         msleep(500);
@@ -425,7 +425,7 @@ void menu_console_icons(void *_)
 {
     if (!_menu_console_icons._created) {
         _menu_console_icons = list_create(200, LIST_SMALL);
-        strcpy(_menu_console_icons.title, "Console icons");
+        strcpy(_menu_console_icons.title, "Иконки консоли");
 
         _add_config_icons(CONFIG_EMU_PATH, &_menu_console_icons,
                           menu_change_console_icon);
@@ -447,7 +447,7 @@ void menu_app_icons(void *_)
 {
     if (!_menu_app_icons._created) {
         _menu_app_icons = list_create(200, LIST_LARGE);
-        strcpy(_menu_app_icons.title, "App icons");
+        strcpy(_menu_app_icons.title, "Иконки приложений");
 
         _add_config_icons(CONFIG_APP_PATH, &_menu_app_icons,
                           menu_change_app_icon);
@@ -471,7 +471,7 @@ void menu_expert_icons(void *_)
 {
     if (!_menu_expert_icons._created) {
         _menu_expert_icons = list_create(200, LIST_SMALL);
-        strcpy(_menu_expert_icons.title, "Expert icons");
+        strcpy(_menu_expert_icons.title, "Экспертные иконки");
 
         _add_config_icons(CONFIG_RAPP_PATH, &_menu_expert_icons,
                           menu_change_expert_icon);
@@ -486,14 +486,14 @@ void menu_icons(void *_)
 {
     if (!_menu_icons._created) {
         _menu_icons = list_create(5, LIST_SMALL);
-        strcpy(_menu_icons.title, "Icons");
-        list_addItem(&_menu_icons, (ListItem){.label = "Apply icon pack...",
+        strcpy(_menu_icons.title, "Иконки");
+        list_addItem(&_menu_icons, (ListItem){.label = "Применить иконки...",
                                               .action = menu_icon_packs});
-        list_addItem(&_menu_icons, (ListItem){.label = "Edit console icon...",
+        list_addItem(&_menu_icons, (ListItem){.label = "Редактировать иконки Консоли...",
                                               .action = menu_console_icons});
-        list_addItem(&_menu_icons, (ListItem){.label = "Edit app icon...",
+        list_addItem(&_menu_icons, (ListItem){.label = "Редактировать иконки Приложений...",
                                               .action = menu_app_icons});
-        list_addItem(&_menu_icons, (ListItem){.label = "Edit expert icon...",
+        list_addItem(&_menu_icons, (ListItem){.label = "Редактировать иконки Эксперт...",
                                               .action = menu_expert_icons});
     }
     menu_stack[++menu_level] = &_menu_icons;

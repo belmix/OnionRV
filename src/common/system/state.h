@@ -100,19 +100,19 @@ void system_state_update(void)
 #ifdef LOG_DEBUG
     switch (system_state) {
     case MODE_MAIN_UI:
-        print_debug("System state: Main UI");
+        print_debug("Состояние: Главное меню");
         break;
     case MODE_SWITCHER:
-        print_debug("System state: Game Switcher");
+        print_debug("Состояние: Быстрый доступ");
         break;
     case MODE_GAME:
-        print_debug("System state: RetroArch");
+        print_debug("Состояние: RetroArch");
         break;
     case MODE_APPS:
-        print_debug("System state: Apps");
+        print_debug("Состояние: Приложения");
         break;
     default:
-        print_debug("System state: Unknown");
+        print_debug("Состояние: Низвестно");
         break;
     }
 #endif

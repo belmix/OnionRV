@@ -385,7 +385,7 @@ int main(void)
                 continue;
             val = ev.value;
 
-            printf_debug("Keymon input: code=%d, value=%d\n", ev.code,
+            printf_debug("Ввод ключа: code=%d, value=%d\n", ev.code,
                          ev.value);
 
             if (exists("/tmp/settings_changed")) {

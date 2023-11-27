@@ -140,8 +140,8 @@ int main(void)
     if (frame_delay < min_delay)
         frame_delay = min_delay;
 
-    printf_debug("Frame count: %d\n", frame_count);
-    printf_debug("Frame delay: %d ms\n", frame_delay);
+    printf_debug("Количество фреймов: %d\n", frame_count);
+    printf_debug("Задержка фреймов: %d ms\n", frame_delay);
 
     bool power_pressed = false;
     int repeat_power = 0;

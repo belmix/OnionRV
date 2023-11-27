@@ -31,7 +31,7 @@ char *execute_command(const char *command)
 
     FILE *pipe = popen(command, "r");
     if (pipe == NULL) {
-        fprintf(stderr, "Error executing command: %s\n", command);
+        fprintf(stderr, "Ошибка выполнения команды: %s\n", command);
         exit(1);
     }
 
@@ -57,7 +57,7 @@ int main()
             strcat(serial, output);
         }
         else {
-            fprintf(stderr, "Error executing command: %s\n", commands[i]);
+            fprintf(stderr, "Ошибка выполнения команды: %s\n", commands[i]);
             exit(1);
         }
     }

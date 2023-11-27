@@ -85,9 +85,9 @@ int main(int argc, char *argv[])
 
     // Read png header and calc size
     if (fread(sig_bytes, sizeof(sig_bytes), 1, fp) != 1)
-        ERROR("png format error");
+        ERROR("ошибка записи в формате png");
     if (png_sig_cmp(sig_bytes, 0, sizeof(sig_bytes)))
-        ERROR("png format error");
+        ERROR("ошибка записи в формате png");
     png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, 0, 0, 0);
     info_ptr = png_create_info_struct(png_ptr);
     png_init_io(png_ptr, fp);
@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
     sh = png_get_image_height(png_ptr, info_ptr);
     ss = ALIGN4K(sw * sh * 4);
     if ((!sw) || (!sh) || (!ss) || (!ch))
-        ERROR("png format error");
+        ERROR("ошибка записи в формате png");
 
     // Initialize MI_lib and allocate src mem
     MI_SYS_Init();
@@ -179,7 +179,7 @@ int main(int argc, char *argv[])
     // Create png
     fp = fopen(argv[2], "wb");
     if (!fp)
-        ERROR("png write error");
+        ERROR("ошибка записи в формате png");
 
     // Write png
     png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, 0, 0, 0);
@@ -218,7 +218,7 @@ int main(int argc, char *argv[])
 
 usage:
     printf(
-        "usage: %s src.png dst.png [max_width:def=250] [max_height:def=360]\n",
+        "инфо: %s src.png dst.png [max_width:def=250] [max_height:def=360]\n",
         argv[0]);
 error:
     if (srcVa)

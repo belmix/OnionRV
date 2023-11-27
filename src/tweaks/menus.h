@@ -28,39 +28,40 @@
 void menu_systemStartup(void *_)
 {
     if (!_menu_system_startup._created) {
-        _menu_system_startup = list_createWithTitle(3, LIST_SMALL, "Startup");
+        _menu_system_startup = list_createWithTitle(3, LIST_SMALL, "Включение консоли");
 
         list_addItemWithInfoNote(&_menu_system_startup,
                                  (ListItem){
-                                     .label = "Auto-resume last game",
+                                     .label = "Вернуться в игру",
                                      .item_type = TOGGLE,
                                      .value = (int)settings.startup_auto_resume,
                                      .action = action_setStartupAutoResume},
-                                 "Auto-resume happens when you shutdown\n"
-                                 "the device while a game is running.\n"
-                                 "At startup, the system will resume\n"
-                                 "where you left off last time.");
+                                 "Автоматическое возобновление при выключении\n"
+                                 "устройство включается с запущенной игры.\n"
+                                 "При запуске система возобновит работу\n"
+                                 "там где вы остановились в прошлый раз.");
         list_addItemWithInfoNote(&_menu_system_startup,
                                  (ListItem){
-                                     .label = "Start application",
+                                     .label = "Запускать приложение",
                                      .item_type = MULTIVALUE,
                                      .value_max = 3,
-                                     .value_labels = {"MainUI", "GameSwitcher", "RetroArch", "AdvanceMENU"},
+                                     .value_labels = {"Главное меню", "Быстрый доступ", "RetroArch", "Расширенное меню"},
                                      .value = settings.startup_application,
                                      .action = action_setStartupApplication},
-                                 "With this option you can choose which\n"
-                                 "frontend you want to launch into on\n"
-                                 "startup.");
+                                 "С помощью этой опции вы можете выбрать,\n"
+                                 "какой интерфейс показывать, при включении\n"
+                                 "консоли.");
         list_addItemWithInfoNote(&_menu_system_startup,
                                  (ListItem){
-                                     .label = "MainUI: Start tab",
+                                     .label = "Запускать вкладку",
                                      .item_type = MULTIVALUE,
                                      .value_max = 5,
                                      .value_formatter = formatter_startupTab,
                                      .value = settings.startup_tab,
                                      .action = action_setStartupTab},
-                                 "Here you can set which tab you want\n"
-                                 "MainUI to launch into.");
+                                 "Здесь вы можете установить, какую\n"
+								 "вкладку вы хотите запусить при\n"
+                                 "включении консоли.");
     }
     menu_stack[++menu_level] = &_menu_system_startup;
     header_changed = true;
@@ -69,7 +70,7 @@ void menu_systemStartup(void *_)
 void menu_systemDisplay(void *_)
 {
     if (!_menu_system_display._created) {
-        _menu_system_display = list_createWithTitle(1, LIST_SMALL, "Display");
+        _menu_system_display = list_createWithTitle(1, LIST_SMALL, "Экран");
     }
     menu_stack[++menu_level] = &_menu_system_display;
     header_changed = true;
@@ -80,7 +81,7 @@ bool _writeDateString(char *label_out)
     char new_label[STR_MAX];
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
-    strftime(new_label, STR_MAX - 1, "Now: %Y-%m-%d %H:%M:%S", &tm);
+    strftime(new_label, STR_MAX - 1, "Текущее: %Y-%m-%d %H:%M:%S", &tm);
     if (strncmp(new_label, label_out, STR_MAX) != 0) {
         strcpy(label_out, new_label);
         return true;
@@ -92,7 +93,7 @@ void menu_datetime(void *_)
 {
     if (!_menu_date_time._created) {
         _menu_date_time = list_create(6, LIST_SMALL);
-        strcpy(_menu_date_time.title, "Date and time");
+        strcpy(_menu_date_time.title, "Дата и время");
         list_addItem(&_menu_date_time,
                      (ListItem){
                          .label = "[DATESTRING]",
@@ -104,7 +105,7 @@ void menu_datetime(void *_)
         if (DEVICE_ID == MIYOO354 || network_state.ntp) {
             list_addItemWithInfoNote(&_menu_date_time,
                                      (ListItem){
-                                         .label = "Set automatically via internet",
+                                         .label = "Синхронизация по интернету",
                                          .item_type = TOGGLE,
                                          .value = (int)network_state.ntp,
                                          .action = network_setNtpState},
@@ -114,7 +115,7 @@ void menu_datetime(void *_)
         if (DEVICE_ID == MIYOO354) {
             list_addItemWithInfoNote(&_menu_date_time,
                                      (ListItem){
-                                         .label = "Wait for sync on startup",
+                                         .label = "Синхронизировать при включении",
                                          .item_type = TOGGLE,
                                          .disabled = !network_state.ntp,
                                          .value = (int)network_state.ntp_wait,
@@ -126,7 +127,7 @@ void menu_datetime(void *_)
                                      "is launched.");
             list_addItemWithInfoNote(&_menu_date_time,
                                      (ListItem){
-                                         .label = "Get time zone via IP address",
+                                         .label = "Часовой пояс по IP адресу",
                                          .item_type = TOGGLE,
                                          .disabled = !network_state.ntp,
                                          .value = !network_state.manual_tz,
@@ -139,7 +140,7 @@ void menu_datetime(void *_)
                                      "option if you're on a VPN.");
             list_addItemWithInfoNote(&_menu_date_time,
                                      (ListItem){
-                                         .label = "Select time zone",
+                                         .label = "Выбрать часовой пояс",
                                          .item_type = MULTIVALUE,
                                          .disabled = !network_state.ntp || !network_state.manual_tz,
                                          .value_max = 48,
@@ -151,7 +152,7 @@ void menu_datetime(void *_)
         }
         list_addItemWithInfoNote(&_menu_date_time,
                                  (ListItem){
-                                     .label = "Emulated time skip",
+                                     .label = "Эмулировать пропущ. вермя",
                                      .item_type = MULTIVALUE,
                                      .disabled = network_state.ntp,
                                      .value_max = 24,
@@ -171,10 +172,10 @@ void menu_datetime(void *_)
 void menu_system(void *_)
 {
     if (!_menu_system._created) {
-        _menu_system = list_createWithTitle(6, LIST_SMALL, "System");
+        _menu_system = list_createWithTitle(6, LIST_SMALL, "Система");
         list_addItem(&_menu_system,
                      (ListItem){
-                         .label = "Startup...",
+                         .label = "Включение...",
                          .action = menu_systemStartup});
         // list_addItem(&_menu_system,
         //              (ListItem){
@@ -182,39 +183,39 @@ void menu_system(void *_)
         //                  .action = menu_systemDisplay});
         list_addItem(&_menu_system,
                      (ListItem){
-                         .label = "Date and time...",
+                         .label = "Дата и время...",
                          .action = menu_datetime});
         list_addItemWithInfoNote(&_menu_system,
                                  (ListItem){
-                                     .label = "Low battery warning",
+                                     .label = "Низкий заряд",
                                      .item_type = MULTIVALUE,
                                      .value_max = 5,
                                      .value_formatter = formatter_battWarn,
                                      .value = settings.low_battery_warn_at / 5,
                                      .action = action_setLowBatteryWarnAt},
-                                 "Show a red battery icon warning in the\n"
-                                 "top right corner, when battery is at or\n"
-                                 "below this value.");
+                                 "Отобразить предупреждение о красным значком батареи в\n"
+                                 "верхнем правом углу, когда батарея разряжена или\n"
+                                 "ниже заданого значения.");
         list_addItemWithInfoNote(&_menu_system,
                                  (ListItem){
-                                     .label = "Low batt.: Save and exit",
+                                     .label = "Сохранить и выйти",
                                      .item_type = MULTIVALUE,
                                      .value_max = 5,
                                      .value_formatter = formatter_battExit,
                                      .value = settings.low_battery_autosave_at,
                                      .action = action_setLowBatteryAutoSave},
-                                 "Set the battery percentage at which the\n"
-                                 "system should save and exit RetroArch.");
+                                 "Установите процент заряда батареи, при котором\n"
+                                 "система должна сохранить RetroArch и выйти из него.");
         list_addItemWithInfoNote(&_menu_system,
                                  (ListItem){
-                                     .label = "Vibration intensity",
+                                     .label = "Вибрация",
                                      .item_type = MULTIVALUE,
                                      .value_max = 3,
-                                     .value_labels = {"Off", "Low", "Normal", "High"},
+                                     .value_labels = {"Выкл", "Слабая", "Норма", "Сильная"},
                                      .value = settings.vibration,
                                      .action = action_setVibration},
-                                 "Set the vibration strength for haptic\n"
-                                 "feedback, when pressing system shortcuts.");
+                                 "Установите силу вибрации для тактильного\n"
+                                 "отклика при нажатии системных клавиш быстрого доступа.");
     }
     menu_stack[++menu_level] = &_menu_system;
     header_changed = true;
@@ -224,40 +225,40 @@ void menu_buttonActionMainUIMenu(void *_)
 {
     if (!_menu_button_action_mainui_menu._created) {
         _menu_button_action_mainui_menu = list_create(3, LIST_SMALL);
-        strcpy(_menu_button_action_mainui_menu.title, "MainUI: Menu button");
+        strcpy(_menu_button_action_mainui_menu.title, "Кнопка Меню в главном меню");
         list_addItemWithInfoNote(&_menu_button_action_mainui_menu,
                                  (ListItem){
-                                     .label = "Single press",
+                                     .label = "Быстрое нажатие",
                                      .item_type = MULTIVALUE,
                                      .value_max = 2,
                                      .value_labels = BUTTON_MAINUI_LABELS,
                                      .value = settings.mainui_single_press,
                                      .action_id = 0,
                                      .action = action_setMenuButtonKeymap},
-                                 "Set the action for single pressing\n"
-                                 "the menu button while in MainUI.");
+                                 "Установите действие для однократного нажатия\n"
+                                 "кнопки Меню в Главном меню.");
         list_addItemWithInfoNote(&_menu_button_action_mainui_menu,
                                  (ListItem){
-                                     .label = "Long press",
+                                     .label = "Долгое удержание",
                                      .item_type = MULTIVALUE,
                                      .value_max = 2,
                                      .value_labels = BUTTON_MAINUI_LABELS,
                                      .value = settings.mainui_long_press,
                                      .action_id = 1,
                                      .action = action_setMenuButtonKeymap},
-                                 "Set the action for long pressing\n"
-                                 "the menu button while in MainUI.");
+                                 "Установите действие для долгого нажатия\n"
+                                 "кнопки Меню в Главном меню.");
         list_addItemWithInfoNote(&_menu_button_action_mainui_menu,
                                  (ListItem){
-                                     .label = "Double press",
+                                     .label = "Двойное нажатие",
                                      .item_type = MULTIVALUE,
                                      .value_max = 2,
                                      .value_labels = BUTTON_MAINUI_LABELS,
                                      .value = settings.mainui_double_press,
                                      .action_id = 2,
                                      .action = action_setMenuButtonKeymap},
-                                 "Set the action for double pressing\n"
-                                 "the menu button while in MainUI.");
+                                 "Установите действие для двойного нажатия\n"
+                                 "кнопки Меню в Главном меню.");
     }
     menu_stack[++menu_level] = &_menu_button_action_mainui_menu;
     header_changed = true;
@@ -266,40 +267,40 @@ void menu_buttonActionMainUIMenu(void *_)
 void menu_buttonActionInGameMenu(void *_)
 {
     if (!_menu_button_action_ingame_menu._created) {
-        _menu_button_action_ingame_menu = list_createWithTitle(3, LIST_SMALL, "In-game: Menu button");
+        _menu_button_action_ingame_menu = list_createWithTitle(3, LIST_SMALL, "Кнопка Меню в процессе игры");
         list_addItemWithInfoNote(&_menu_button_action_ingame_menu,
                                  (ListItem){
-                                     .label = "Single press",
+                                     .label = "Быстрое нажатие",
                                      .item_type = MULTIVALUE,
                                      .value_max = 3,
                                      .value_labels = BUTTON_INGAME_LABELS,
                                      .value = settings.ingame_single_press,
                                      .action_id = 3,
                                      .action = action_setMenuButtonKeymap},
-                                 "Set the action for single pressing\n"
-                                 "the menu button while in-game.");
+                                 "Установите действие для однократного нажатия\n"
+                                 "кнопки Меню в Игре.");
         list_addItemWithInfoNote(&_menu_button_action_ingame_menu,
                                  (ListItem){
-                                     .label = "Long press",
+                                     .label = "Долгое удержание",
                                      .item_type = MULTIVALUE,
                                      .value_max = 3,
                                      .value_labels = BUTTON_INGAME_LABELS,
                                      .value = settings.ingame_long_press,
                                      .action_id = 4,
                                      .action = action_setMenuButtonKeymap},
-                                 "Set the action for long pressing\n"
-                                 "the menu button while in-game.");
+                                 "Установите действие для долгого нажатия\n"
+                                 "кнопки Меню в Игре.");
         list_addItemWithInfoNote(&_menu_button_action_ingame_menu,
                                  (ListItem){
-                                     .label = "Double press",
+                                     .label = "Двойное нажатие",
                                      .item_type = MULTIVALUE,
                                      .value_max = 3,
                                      .value_labels = BUTTON_INGAME_LABELS,
                                      .value = settings.ingame_double_press,
                                      .action_id = 5,
                                      .action = action_setMenuButtonKeymap},
-                                 "Set the action for double pressing\n"
-                                 "the menu button while in-game.");
+                                 "Установите действие для двойного нажатия\n"
+                                 "кнопки Меню в Игре.");
     }
     menu_stack[++menu_level] = &_menu_button_action_ingame_menu;
     header_changed = true;
@@ -308,55 +309,55 @@ void menu_buttonActionInGameMenu(void *_)
 void menu_buttonAction(void *_)
 {
     if (!_menu_button_action._created) {
-        _menu_button_action = list_createWithTitle(6, LIST_SMALL, "Button shortcuts");
+        _menu_button_action = list_createWithTitle(6, LIST_SMALL, "Настройки кнопок");
         list_addItemWithInfoNote(&_menu_button_action,
                                  (ListItem){
-                                     .label = "Menu single press vibration",
+                                     .label = "Вибрация при нажатии кнопки Меню",
                                      .item_type = TOGGLE,
                                      .value = (int)settings.menu_button_haptics,
                                      .action = action_setMenuButtonHaptics},
-                                 "Enable haptic feedback for menu button\n"
-                                 "single and double press.");
+                                 "Включите тактильную обратную связь для кнопки меню\n"
+                                 "при быстром и двойном нажатии.");
         list_addItem(&_menu_button_action,
                      (ListItem){
-                         .label = "In-game: Menu button...",
+                         .label = "Кнопка Меню в процессе игры...",
                          .action = menu_buttonActionInGameMenu});
         list_addItem(&_menu_button_action,
                      (ListItem){
-                         .label = "MainUI: Menu button...",
+                         .label = "Кнопка Меню в главном меню...",
                          .action = menu_buttonActionMainUIMenu});
 
         getInstalledApps(true);
         list_addItemWithInfoNote(&_menu_button_action,
                                  (ListItem){
-                                     .label = "MainUI: X button",
+                                     .label = "Кнопка X в главном меню",
                                      .item_type = MULTIVALUE,
                                      .value_max = installed_apps_count + NUM_TOOLS,
                                      .value = value_appShortcut(0),
                                      .value_formatter = formatter_appShortcut,
                                      .action_id = 0,
                                      .action = action_setAppShortcut},
-                                 "Set the X button action in MainUI.");
+                                 "Установите действие кнопки X в Главном меню.");
         list_addItemWithInfoNote(&_menu_button_action,
                                  (ListItem){
-                                     .label = "MainUI: Y button",
+                                     .label = "Кнопка Y в главном меню",
                                      .item_type = MULTIVALUE,
                                      .value_max = installed_apps_count + NUM_TOOLS + 1,
                                      .value = value_appShortcut(1),
                                      .value_formatter = formatter_appShortcut,
                                      .action_id = 1,
                                      .action = action_setAppShortcut},
-                                 "Set the Y button action in MainUI.");
+                                 "Действие кнопки Y в Главном меню.");
         list_addItemWithInfoNote(&_menu_button_action,
                                  (ListItem){
-                                     .label = "Power single press",
+                                     .label = "Кнопка Включения",
                                      .item_type = MULTIVALUE,
                                      .value_max = 1,
-                                     .value_labels = {"Standby", "Shutdown"},
+                                     .value_labels = {"Ожидание", "Выключение"},
                                      .value = (int)settings.disable_standby,
                                      .action = action_setDisableStandby},
-                                 "Change the power button single press\n"
-                                 "action to either 'standby' or 'shutdown'.");
+                                 "Настройки кнопки питания при быстом нажатии\n"
+                                 "действие режим ожидания, или режим выключения..");
     }
     menu_stack[++menu_level] = &_menu_button_action;
     header_changed = true;
@@ -365,10 +366,10 @@ void menu_buttonAction(void *_)
 void menu_batteryPercentage(void *_)
 {
     if (!_menu_battery_percentage._created) {
-        _menu_battery_percentage = list_createWithTitle(7, LIST_SMALL, "Battery percentage");
+        _menu_battery_percentage = list_createWithTitle(7, LIST_SMALL, "Процент заряда батареи");
         list_addItem(&_menu_battery_percentage,
                      (ListItem){
-                         .label = "Visible",
+                         .label = "Скрыть",
                          .item_type = MULTIVALUE,
                          .value_max = 2,
                          .value_labels = THEME_TOGGLE_LABELS,
@@ -376,7 +377,7 @@ void menu_batteryPercentage(void *_)
                          .action = action_batteryPercentageVisible});
         list_addItem(&_menu_battery_percentage,
                      (ListItem){
-                         .label = "Font family",
+                         .label = "Шрифт",
                          .item_type = MULTIVALUE,
                          .value_max = num_font_families,
                          .value_formatter = formatter_fontFamily,
@@ -384,7 +385,7 @@ void menu_batteryPercentage(void *_)
                          .action = action_batteryPercentageFontFamily});
         list_addItem(&_menu_battery_percentage,
                      (ListItem){
-                         .label = "Font size",
+                         .label = "Размер шрифта",
                          .item_type = MULTIVALUE,
                          .value_max = num_font_sizes,
                          .value_formatter = formatter_fontSize,
@@ -392,15 +393,15 @@ void menu_batteryPercentage(void *_)
                          .action = action_batteryPercentageFontSize});
         list_addItem(&_menu_battery_percentage,
                      (ListItem){
-                         .label = "Text alignment",
+                         .label = "Выравнивание текста",
                          .item_type = MULTIVALUE,
                          .value_max = 3,
-                         .value_labels = {"-", "Left", "Center", "Right"},
+                         .value_labels = {"-", "Слева", "По центру", "Справа"},
                          .value = value_batteryPercentagePosition(),
                          .action = action_batteryPercentagePosition});
         list_addItem(&_menu_battery_percentage,
                      (ListItem){
-                         .label = "Fixed position",
+                         .label = "Фиксированное",
                          .item_type = MULTIVALUE,
                          .value_max = 2,
                          .value_labels = THEME_TOGGLE_LABELS,
@@ -408,7 +409,7 @@ void menu_batteryPercentage(void *_)
                          .action = action_batteryPercentageFixed});
         list_addItem(&_menu_battery_percentage,
                      (ListItem){
-                         .label = "Horizontal offset",
+                         .label = "Гориз. смещение",
                          .item_type = MULTIVALUE,
                          .value_max = BATTPERC_MAX_OFFSET * 2 + 1,
                          .value_formatter = formatter_positionOffset,
@@ -416,7 +417,7 @@ void menu_batteryPercentage(void *_)
                          .action = action_batteryPercentageOffsetX});
         list_addItem(&_menu_battery_percentage,
                      (ListItem){
-                         .label = "Vertical offset",
+                         .label = "Верт. смещение",
                          .item_type = MULTIVALUE,
                          .value_max = BATTPERC_MAX_OFFSET * 2 + 1,
                          .value_formatter = formatter_positionOffset,
@@ -431,29 +432,29 @@ void menu_themeOverrides(void *_)
 {
     if (!_menu_theme_overrides._created) {
         _menu_theme_overrides = list_create(7, LIST_SMALL);
-        strcpy(_menu_theme_overrides.title, "Theme overrides");
+        strcpy(_menu_theme_overrides.title, "Настройки оформления");
         list_addItem(&_menu_theme_overrides,
                      (ListItem){
-                         .label = "Battery percentage...",
+                         .label = "Индикатор заряда...",
                          .action = menu_batteryPercentage});
         list_addItemWithInfoNote(&_menu_theme_overrides,
                                  (ListItem){
-                                     .label = "Hide icon labels",
+                                     .label = "Названия меню",
                                      .item_type = MULTIVALUE,
                                      .value_max = 2,
                                      .value_labels = THEME_TOGGLE_LABELS,
                                      .value = value_hideLabelsIcons(),
                                      .action = action_hideLabelsIcons},
-                                 "Hide the labels under the main menu icons.");
+                                 "Скрыть подписи вкладок в главном меню.");
         list_addItemWithInfoNote(&_menu_theme_overrides,
                                  (ListItem){
-                                     .label = "Hide hint labels",
+                                     .label = "Названия кнопок",
                                      .item_type = MULTIVALUE,
                                      .value_max = 2,
                                      .value_labels = THEME_TOGGLE_LABELS,
                                      .value = value_hideLabelsHints(),
                                      .action = action_hideLabelsHints},
-                                 "Hide the labels at the bottom of the screen.");
+                                 "Скрыть названия кнопок на экране.");
         // list_addItem(&_menu_theme_overrides, (ListItem){
         // 	.label = "[Title] Font size", .item_type = MULTIVALUE,
         // .value_max = num_font_sizes, .value_formatter = formatter_fontSize
@@ -474,42 +475,42 @@ void menu_themeOverrides(void *_)
 void menu_userInterface(void *_)
 {
     if (!_menu_user_interface._created) {
-        _menu_user_interface = list_createWithTitle(5, LIST_SMALL, "Appearance");
+        _menu_user_interface = list_createWithTitle(5, LIST_SMALL, "Дополнительные настройки");
         list_addItemWithInfoNote(&_menu_user_interface,
                                  (ListItem){
-                                     .label = "Show recents",
+                                     .label = "Вкладка Последние",
                                      .item_type = TOGGLE,
                                      .value = settings.show_recents,
                                      .action = action_setShowRecents},
-                                 "Toggle the visibility of the recents tab\n"
-                                 "in the main menu.");
+                                 "Включить видимость вкладки Последние\n"
+                                 "в главном меню.");
         list_addItemWithInfoNote(&_menu_user_interface,
                                  (ListItem){
-                                     .label = "Show expert mode",
+                                     .label = "Вкладка Эксперт",
                                      .item_type = TOGGLE,
                                      .value = settings.show_expert,
                                      .action = action_setShowExpert},
-                                 "Toggle the visibility of the expert tab\n"
-                                 "in the main menu.");
+                                 "Включить видимость вкладки Эксперт\n"
+                                 "в главном меню.");
         display_init();
         list_addItemWithInfoNote(&_menu_user_interface,
                                  (ListItem){
-                                     .label = "OSD bar size",
+                                     .label = "Индикатор +/-",
                                      .item_type = MULTIVALUE,
                                      .value_max = 15,
                                      .value_formatter = formatter_meterWidth,
                                      .value = value_meterWidth(),
                                      .action = action_meterWidth},
-                                 "Set the width of the 'OSD bar' shown\n"
-                                 "in the left side of the display when\n"
-                                 "adjusting brightness, or volume (MMP).");
+                                 "Установите ширину бегунка, расположеного\n"
+                                 "в левой части дисплея, отображаемого\n"
+                                 "при регулировки яркости или громкости.");
         list_addItem(&_menu_user_interface,
                      (ListItem){
-                         .label = "Theme overrides...",
+                         .label = "Настройки оформления...",
                          .action = menu_themeOverrides});
         list_addItem(&_menu_user_interface,
                      (ListItem){
-                         .label = "Icons packs...",
+                         .label = "Настройки иконок...",
                          .action = menu_icons});
     }
     menu_stack[++menu_level] = &_menu_user_interface;
@@ -519,39 +520,39 @@ void menu_userInterface(void *_)
 void menu_resetSettings(void *_)
 {
     if (!_menu_reset_settings._created) {
-        _menu_reset_settings = list_createWithTitle(7, LIST_SMALL, "Reset settings");
+        _menu_reset_settings = list_createWithTitle(7, LIST_SMALL, "Сброс настроек");
         list_addItemWithInfoNote(&_menu_reset_settings,
                                  (ListItem){
-                                     .label = "Reset system tweaks",
+                                     .label = "Сбросить настройки",
                                      .action = action_resetTweaks},
-                                 "Reset all Onion system tweaks,\n"
-                                 "including network setup.");
+                                 "Сбросить все настройки системы Onion, \n"
+                                 "включая настройку сети.");
         list_addItem(&_menu_reset_settings,
                      (ListItem){
-                         .label = "Reset theme overrides",
+                         .label = "Сброс оформления",
                          .action = action_resetThemeOverrides});
         list_addItemWithInfoNote(&_menu_reset_settings,
                                  (ListItem){
-                                     .label = "Reset MainUI settings",
+                                     .label = "Сброс настроек MainUI",
                                      .action = action_resetMainUI},
-                                 "Resets the settings stored on the device,\n"
-                                 "such as theme, display options, and volume.\n"
-                                 "Also resets WiFi configuration.");
+                                 "Сбрасить настройки, сохраненные на устройстве,\n"
+                                 "оформление, параметры экрана, и громкость.\n"
+                                 "Также сбрасывает конфигурацию Wi-Fi.");
         list_addItem(&_menu_reset_settings,
                      (ListItem){
-                         .label = "Reset RetroArch main configuration",
+                         .label = "Сброс конфигурации RetroArch",
                          .action = action_resetRAMain});
         list_addItem(&_menu_reset_settings,
                      (ListItem){
-                         .label = "Reset all RetroArch core overrides",
+                         .label = "Сбросить настройки ядра RetroArch",
                          .action = action_resetRACores});
         list_addItem(&_menu_reset_settings,
                      (ListItem){
-                         .label = "Reset AdvanceMENU/MAME/MESS",
+                         .label = "Сбросить Расширенное меню/MAME/MESS",
                          .action = action_resetAdvanceMENU});
         list_addItem(&_menu_reset_settings,
                      (ListItem){
-                         .label = "Reset everything", .action = action_resetAll});
+                         .label = "Сбросить всё", .action = action_resetAll});
     }
     menu_stack[++menu_level] = &_menu_reset_settings;
     header_changed = true;
@@ -562,17 +563,17 @@ void menu_diagnostics(void *pt)
     if (!_menu_diagnostics._created) {
         diags_getEntries();
 
-        _menu_diagnostics = list_createWithSticky(1 + diags_numScripts, "Diagnostics");
+        _menu_diagnostics = list_createWithSticky(1 + diags_numScripts, "Диагностика");
         list_addItemWithInfoNote(&_menu_diagnostics,
                                  (ListItem){
-                                     .label = "Enable logging",
-                                     .sticky_note = "Enable global logging",
+                                     .label = "Включить логирование",
+                                     .sticky_note = "Включить глобальный журнал",
                                      .item_type = TOGGLE,
                                      .value = (int)settings.enable_logging,
                                      .action = action_setEnableLogging},
-                                 "Enable global logging, \n"
-                                 "for system & networking. \n \n"
-                                 "Logs will be generated in, \n"
+                                 "Включить глобальный журнал, \n"
+                                 "для системы и сети. \n \n"
+                                 "Логи будут сохранены в , \n"
                                  "SD: /.tmp_update/logs.");
         for (int i = 0; i < diags_numScripts; i++) {
             ListItem diagItem = {
@@ -590,7 +591,7 @@ void menu_diagnostics(void *pt)
             }
 
             snprintf(diagItem.label, DIAG_MAX_LABEL_LENGTH - 1, "%s%.62s", prefix, scripts[i].label);
-            strncpy(diagItem.sticky_note, "Idle: Selected script not running", STR_MAX - 1);
+            strncpy(diagItem.sticky_note, "Инфо: Выбранный скрипт не запущен", STR_MAX - 1);
 
             char *parsed_Tooltip = diags_parseNewLines(scripts[i].tooltip);
             list_addItemWithInfoNote(&_menu_diagnostics, diagItem, parsed_Tooltip);
@@ -605,57 +606,57 @@ void menu_diagnostics(void *pt)
 void menu_advanced(void *_)
 {
     if (!_menu_advanced._created) {
-        _menu_advanced = list_createWithTitle(6, LIST_SMALL, "Advanced");
+        _menu_advanced = list_createWithTitle(6, LIST_SMALL, "Расширенные");
         list_addItemWithInfoNote(&_menu_advanced,
                                  (ListItem){
-                                     .label = "Swap triggers (L<>L2, R<>R2)",
+                                     .label = "Замена тригеров (L<>L2, R<>R2)",
                                      .item_type = TOGGLE,
                                      .value = value_getSwapTriggers(),
                                      .action = action_advancedSetSwapTriggers},
-                                 "Swap the function of L<>L2 and R<>R2\n"
-                                 "(only affects in-game actions).");
+                                 "Поменять действия L<>L2 и R<>R2\n"
+                                 "(влияет только на действия в игре).");
         if (DEVICE_ID == MIYOO283) {
             list_addItemWithInfoNote(&_menu_advanced,
                                      (ListItem){
-                                         .label = "Brightness control",
+                                         .label = "Регулировка яркости",
                                          .item_type = MULTIVALUE,
                                          .value_max = 1,
                                          .value_labels = {"SELECT+R2/L2",
                                                           "MENU+UP/DOWN"},
                                          .value = config_flag_get(".altBrightness"),
                                          .action = action_setAltBrightness},
-                                     "Change the shortcut for brightness.");
+                                     "Изменить кнопки настройки яркости.");
         }
         list_addItemWithInfoNote(&_menu_advanced,
                                  (ListItem){
-                                     .label = "Fast forward rate",
+                                     .label = "Скорость игры",
                                      .item_type = MULTIVALUE,
                                      .value_max = 50,
                                      .value = value_getFrameThrottle(),
                                      .value_formatter = formatter_fastForward,
                                      .action = action_advancedSetFrameThrottle},
-                                 "Set the maximum fast forward rate.");
+                                 "Установите максимальную скорость игры.");
         if (DEVICE_ID == MIYOO354) {
             list_addItemWithInfoNote(&_menu_advanced,
                                      (ListItem){
-                                         .label = "LCD undervolt",
+                                         .label = "Питание экрана",
                                          .item_type = MULTIVALUE,
                                          .value_max = 4,
-                                         .value_labels = {"Off", "-0.1V", "-0.2V", "-0.3V", "-0.4V"},
+                                         .value_labels = {"Выкл", "-0.1В", "-0.2В", "-0.3В", "-0.4В"},
                                          .value = value_getLcdVoltage(),
                                          .action = action_advancedSetLcdVoltage},
-                                     "Use this option if you're seeing\n"
-                                     "small artifacts on the display.");
+                                     "Используйте эту опцию, если вы видите\n"
+                                     "небольшие артефакты на дисплее.");
         }
         if (exists(RESET_CONFIGS_PAK)) {
             list_addItem(&_menu_advanced,
                          (ListItem){
-                             .label = "Reset settings...",
+                             .label = "Сброс настроек...",
                              .action = menu_resetSettings});
         }
         list_addItem(&_menu_advanced,
                      (ListItem){
-                         .label = "Diagnostics...",
+                         .label = "Диагностика...",
                          .action = menu_diagnostics});
     }
     menu_stack[++menu_level] = &_menu_advanced;
@@ -666,7 +667,7 @@ void menu_tools(void *_)
 {
     if (!_menu_tools._created) {
         _menu_tools = list_create(NUM_TOOLS, LIST_SMALL);
-        strcpy(_menu_tools.title, "Tools");
+        strcpy(_menu_tools.title, "Утилиты");
         list_addItemWithInfoNote(&_menu_tools,
                                  (ListItem){
                                      .label = "Generate CUE files for PSX games",
@@ -728,43 +729,43 @@ void *_get_menu_icon(const char *name)
 void menu_main(void)
 {
     if (!_menu_main._created) {
-        _menu_main = list_createWithTitle(6, LIST_LARGE, "Tweaks");
+        _menu_main = list_createWithTitle(6, LIST_LARGE, "Настройки");
         list_addItem(&_menu_main,
                      (ListItem){
-                         .label = "System",
-                         .description = "Startup, save and exit, vibration",
+                         .label = "Система",
+                         .description = "Включение, питание, дата...",
                          .action = menu_system,
                          .icon_ptr = _get_menu_icon("tweaks_system")});
         if (DEVICE_ID == MIYOO354) {
             list_addItem(&_menu_main,
                          (ListItem){
-                             .label = "Network",
-                             .description = "Setup networking",
+                             .label = "Сеть",
+                             .description = "Настройки сети",
                              .action = menu_network,
                              .icon_ptr = _get_menu_icon("tweaks_network")});
         }
         list_addItem(&_menu_main,
                      (ListItem){
-                         .label = "Button shortcuts",
-                         .description = "Customize global button actions",
+                         .label = "Кнопки",
+                         .description = "Настройка действий кнопок",
                          .action = menu_buttonAction,
                          .icon_ptr = _get_menu_icon("tweaks_menu_button")});
         list_addItem(&_menu_main,
                      (ListItem){
-                         .label = "Appearance",
-                         .description = "Menu visibility, theme overrides",
+                         .label = "Дополнительные настройки",
+                         .description = "Настройки меню и оформления",
                          .action = menu_userInterface,
                          .icon_ptr = _get_menu_icon("tweaks_user_interface")});
         list_addItem(&_menu_main,
                      (ListItem){
-                         .label = "Advanced",
-                         .description = "Emulator tweaks, reset settings",
+                         .label = "Дополнительные",
+                         .description = "Диагностика, сброс настроек",
                          .action = menu_advanced,
                          .icon_ptr = _get_menu_icon("tweaks_advanced")});
         list_addItem(&_menu_main,
                      (ListItem){
-                         .label = "Tools",
-                         .description = "Favorites, clean files",
+                         .label = "Утилиты",
+                         .description = "Дополнительные инструменты",
                          .action = menu_tools,
                          .icon_ptr = _get_menu_icon("tweaks_tools")});
     }

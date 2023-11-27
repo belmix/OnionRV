@@ -1,6 +1,6 @@
 {
-"label":"Music Player",
+"label":"Медиа пллеер",
 "icon":"../../Icons/Default/app/music.png",
 "launch":"launch.sh",
-"description":"GMU (Menu+Select to exit)"
+"description":"GMU (Menu+Select для выхода)"
 }

@@ -75,7 +75,7 @@ void imageCache_removeItem(int image_index)
     int idx = modulo(image_index, image_cache_len);
 
     if (image_cache[idx] != NULL) {
-        printf_debug("Removing image %d (%d)\n", image_index, idx);
+        printf_debug("Удаление изображения %d (%d)\n", image_index, idx);
         SDL_FreeSurface(image_cache[idx]);
         image_cache[idx] = NULL;
     }

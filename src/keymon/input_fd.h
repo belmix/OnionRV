@@ -35,7 +35,7 @@ static int ignore_queue_count = 0;
 
 void _ignoreQueue_remove(int index)
 {
-    printf_debug("Removing from ignore queue: code=%d, value=%d\n",
+    printf_debug("Удаление из очереди игнорирования: code=%d, value=%d\n",
                  ignore_queue[index][0], ignore_queue[index][1]);
     for (int i = index; i < ignore_queue_count - 1; i++) {
         ignore_queue[i][0] = ignore_queue[i + 1][0];
@@ -48,7 +48,7 @@ void _ignoreQueue_add(int code, int value)
 {
     if (ignore_queue_count >= QUEUE_MAX)
         return;
-    printf_debug("Adding to ignore queue: code=%d, value=%d\n", code, value);
+    printf_debug("Добавление в очередь игнорирования: code=%d, value=%d\n", code, value);
     ignore_queue[ignore_queue_count][0] = code;
     ignore_queue[ignore_queue_count][1] = value;
     ignore_queue_count++;
@@ -76,11 +76,11 @@ void keyinput_send(unsigned short code, signed int value)
     if (keyinput_disabled)
         return;
     char cmd[100];
-    sprintf(cmd, "sendkeys %d %d", code, value);
-    printf_debug("Send keys: code=%d, value=%d\n", code, value);
+    sprintf(cmd, "./bin/sendkeys %d %d", code, value);
+    printf_debug("Отправить ключи: code=%d, value=%d\n", code, value);
     _ignoreQueue_add(code, value);
     system(cmd);
-    print_debug("Keys sent");
+    print_debug("Ключи отправлены");
 }
 
 void keyinput_sendMulti(int n, int code_value_pairs[n][2])
@@ -97,9 +97,9 @@ void keyinput_sendMulti(int n, int code_value_pairs[n][2])
         sprintf(cmd + strlen(cmd), "%d %d ", code, value);
     }
 
-    printf_debug("Send keys: %s\n", cmd);
+    printf_debug("Отправить ключи: %s\n", cmd);
     system(cmd);
-    print_debug("Keys sent");
+    print_debug("Ключи отправлены");
 }
 
 /**
@@ -114,7 +114,7 @@ void keyinput_disable(void)
         usleep(100000);
     }
     keyinput_disabled = true;
-    print_debug("Keyinput disabled");
+    print_debug("Ввод ключа отключен");
 }
 
 /**
@@ -129,7 +129,7 @@ void keyinput_enable(void)
         usleep(100000);
     }
     keyinput_disabled = false;
-    print_debug("Keyinput enabled");
+    print_debug("Включен ввод ключа");
 }
 
 #endif // KEYMON_INPUT_FD_H__
