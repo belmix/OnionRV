@@ -26,9 +26,9 @@ program=$(basename "$0" .sh)
 check_wifi() {
 	ifconfig wlan1 down
 	if ifconfig wlan0 &>/dev/null; then
-		log "Wifi up"
+		log "Wifi включен"
 	else
-		build_infoPanel_and_log "WIFI" "Wifi disabled, starting..."
+		build_infoPanel_and_log "WIFI" "Wifi отключен, запуск..."
 
 		/customer/app/axp_test wifion
 		sleep 2
@@ -37,9 +37,9 @@ check_wifi() {
 		$miyoodir/app/wpa_supplicant -B -D nl80211 -iwlan0 -c /appconfigs/wpa_supplicant.conf
 
 		if is_running wpa_supplicant && ifconfig wlan0 >/dev/null 2>&1; then
-			build_infoPanel_and_log "WIFI" "Wifi started."
+			build_infoPanel_and_log "WIFI" "Wifi запущен."
 		else
-			build_infoPanel_and_log "WIFI" "Unable to start WiFi\n unable to continue."
+			build_infoPanel_and_log "WIFI" "Не удается запустить WiFi\n не удается продолжить."
 			sleep 1
 		fi
 
