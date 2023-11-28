@@ -775,7 +775,7 @@ int main(int argc, char *argv[])
             }
 
             if (view_mode == VIEW_NORMAL) {
-                char title_str[STR_MAX] = "GameSwitcher";
+                char title_str[STR_MAX] = "Переключение игр";
                 if (show_time && game_list_len > 0) {
                     if (strlen(game->totalTime) == 0) {
                         str_serializeTime(game->totalTime, play_activity_get_play_time(game->path));
