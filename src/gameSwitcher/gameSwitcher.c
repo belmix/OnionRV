@@ -326,16 +326,6 @@ void readHistory()
         printf_debug("romScreenPath: %s\n", game->romScreenPath);
         printf_debug("path: %s\n", game->path);
       
-        // Check for duplicates
-        for (int i = 0; i < game_list_len; i++) {
-            Game_s *other = &game_list[i];
-            if (other->hash == game->hash) {
-                other->is_duplicate += 1;
-                game->is_duplicate = other->is_duplicate;
-            }
-        }
-
-
         nbGame++;
     }
 
