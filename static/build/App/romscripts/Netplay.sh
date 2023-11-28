@@ -65,8 +65,8 @@ echo "##########################################################################
 echo "#################################### Netplay.sh script start.######################################################"
 echo "###################################################################################################################"
 LD_PRELOAD=/mnt/SDCARD/miyoo/lib/libpadsp.so prompt -t "Netplay" \
-	"Host a session..." \
-	"Join a session..."
+	"Основная сессия..." \
+	"Войти в сессию..."
 
 retcode=$?
 if [ $retcode -eq 0 ]; then
@@ -92,9 +92,9 @@ if [ $retcode -eq 0 ]; then
 	fi
 elif [ $retcode -eq 1 ]; then
 	PlayerNum=2
-	LD_PRELOAD=/mnt/SDCARD/miyoo/lib/libpadsp.so prompt -t "JOIN - Netplay type" \
-		"Standard Netplay (Use current Wifi)" \
-		"Easy Netplay (play anywhere, local only)" \
+	LD_PRELOAD=/mnt/SDCARD/miyoo/lib/libpadsp.so prompt -t "JOIN - Netplay тип" \
+		"Стандарный Netplay (через Wifi)" \
+		"Простой Netplay (локальный)" \
 		"$EasyNetplayPokemon"
 
 	retcode=$?
