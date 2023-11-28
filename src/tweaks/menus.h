@@ -198,7 +198,7 @@ void menu_system(void *_)
                                  "ниже заданого значения.");
         list_addItemWithInfoNote(&_menu_system,
                                  (ListItem){
-                                     .label = "Сохр. и выкл. при заряде",
+                                     .label = "Авто выключение",
                                      .item_type = MULTIVALUE,
                                      .value_max = 5,
                                      .value_formatter = formatter_battExit,
