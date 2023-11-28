@@ -18,10 +18,10 @@ if [ "$3" = "DynamicLabel" ]; then
 		if [ -n "$netplaycore_info" ]; then
 			netplaycore=$(echo "$netplaycore_info" | cut -d ';' -f 2)
 			if [ "$netplaycore" = "none" ]; then
-				DynamicLabel="No Netplay for $emulabel"
+				DynamicLabel="Нет Netplay для $emulabel"
 			else
 				netplaycore_without_suffix=$(echo "$netplaycore" | awk -F "_libretro.so" '{print $1}')
-				DynamicLabel="Netplay (core supported: ${netplaycore_without_suffix})"
+				DynamicLabel="Netplay (ядро: ${netplaycore_without_suffix})"
 			fi
 
 		else
