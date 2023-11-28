@@ -60,7 +60,7 @@ void menu_systemStartup(void *_)
                                      .value = settings.startup_tab,
                                      .action = action_setStartupTab},
                                  "Здесь вы можете установить, какую\n"
-								 "вкладку вы хотите запусить при\n"
+                                 "вкладку вы хотите запусить при\n"
                                  "включении консоли.");
     }
     menu_stack[++menu_level] = &_menu_system_startup;
