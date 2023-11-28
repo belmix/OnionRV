@@ -5,5 +5,5 @@ echo ":: Галерея - Просмотр изображений ::"
 ec=$?
 
 if [ $ec -ne 0 ]; then
-    /mnt/SDCARD/.tmp_update/bin/infoPanel -t Gallery -m "Изображения не найдены"
+    /mnt/SDCARD/.tmp_update/bin/infoPanel -t Галерея -m "Изображения не найдены"
 fi
