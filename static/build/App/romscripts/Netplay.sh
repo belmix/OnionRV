@@ -72,9 +72,9 @@ retcode=$?
 if [ $retcode -eq 0 ]; then
 
 	PlayerNum=1
-	LD_PRELOAD=/mnt/SDCARD/miyoo/lib/libpadsp.so prompt -t "HOST - Netplay type" \
-		"Standard Netplay (Use current Wifi)" \
-		"Easy Netplay (play anywhere, local only)" \
+	LD_PRELOAD=/mnt/SDCARD/miyoo/lib/libpadsp.so prompt -t "HOST - Netplay тип" \
+		"Стандарный Netplay (через Wifi)" \
+		"Простой Netplay (локальный)" \
 		"$EasyNetplayPokemon"
 
 	retcode=$?
