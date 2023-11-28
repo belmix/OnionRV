@@ -575,7 +575,7 @@ run_migration_scripts() {
         rm -f "$MIGRATION_LIST_FILE"
         mv temp "$MIGRATION_LIST_FILE"
 
-        echo "0/$count: Running migrations... 0%" >> /tmp/.update_msg
+        echo "0/$count: Запуск миграции... 0%" >> /tmp/.update_msg
         local n=0
         local max_id=0
 
@@ -589,7 +589,7 @@ run_migration_scripts() {
             eval "$entry"
 
             local percent=$((n * 100 / count))
-            echo "$n/$count: Running migrations... $percent%" >> /tmp/.update_msg
+            echo "$n/$count: Миграция... $percent%" >> /tmp/.update_msg
 
             if [ $migration_id -gt $max_id ]; then
                 max_id=$migration_id
@@ -605,7 +605,7 @@ run_migration_scripts() {
 }
 
 refresh_roms() {
-    echo ":: Refresh roms"
+    echo ":: Обновление Roms"
     # Force refresh the rom lists
     if [ -d /mnt/SDCARD/Roms ]; then
         cd /mnt/SDCARD/Roms
@@ -632,18 +632,18 @@ unzip_progress() {
     msg="$2"
     dest="$3"
 
-    echo "   - Extract '$zipfile' into $dest"
+    echo "   - Извлечение '$zipfile' в $dest"
 
     verify_file
 
-    echo "Verifying package..." > /tmp/.update_msg
+    echo "Проверка..." > /tmp/.update_msg
     sleep 3
 
     if [ -f "/mnt/SDCARD/.tmp_update/onion.pak" ]; then
-        echo "onion.pak exists"
+        echo "onion.pak существует"
         sleep 1
     else
-        echo "onion.pak is missing, extraction will fail"
+        echo "onion.pak ошибка, файл не существует"
     fi
 
     verify_file
@@ -682,7 +682,7 @@ unzip_progress() {
         value=$(echo "$last_line" | sed 's/.* \([0-9]\+\)%.*/\1/')
         if [ "$value" -eq "$value" ] 2> /dev/null; then # check if the value is numeric
             if [ $value -eq 0 ]; then
-                echo "Preparing file system..." > /tmp/.update_msg # It gets stuck a bit at 0%, so don't show percentage yet
+                echo "Подготовка системы..." > /tmp/.update_msg # It gets stuck a bit at 0%, so don't show percentage yet
             else
                 echo "$msg $value%" > /tmp/.update_msg # Now we can show completion percentage
             fi
@@ -696,7 +696,7 @@ unzip_progress() {
     extraction_status=$(cat "/tmp/extraction_status")
     if [ "$extraction_status" -ne 0 ]; then
         touch $sysdir/.installFailed
-        echo ":: Installation failed!"
+        echo ":: Ошибка установки!"
         sync
         reboot
         sleep 10
