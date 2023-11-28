@@ -117,7 +117,7 @@ void formatter_fastForward(void *pt, char *out_label)
 {
     ListItem *item = (ListItem *)pt;
     if (item->value == 0)
-        strcpy(out_label, "Без ограничений");
+        strcpy(out_label, "По умолчанию");
     else
         sprintf(out_label, "%d.0x", item->value);
 }
