@@ -187,7 +187,7 @@ void menu_system(void *_)
                          .action = menu_datetime});
         list_addItemWithInfoNote(&_menu_system,
                                  (ListItem){
-                                     .label = "Низкий заряд",
+                                     .label = "Индик. низкого заряда",
                                      .item_type = MULTIVALUE,
                                      .value_max = 5,
                                      .value_formatter = formatter_battWarn,
@@ -198,14 +198,14 @@ void menu_system(void *_)
                                  "ниже заданого значения.");
         list_addItemWithInfoNote(&_menu_system,
                                  (ListItem){
-                                     .label = "Сохранить и выйти",
+                                     .label = "Сохр. и выкл. при заряде",
                                      .item_type = MULTIVALUE,
                                      .value_max = 5,
                                      .value_formatter = formatter_battExit,
                                      .value = settings.low_battery_autosave_at,
                                      .action = action_setLowBatteryAutoSave},
                                  "Установите процент заряда батареи, при котором\n"
-                                 "система должна сохранить RetroArch и выйти из него.");
+                                 "система должна сохранить RetroArch и выключиться.");
         list_addItemWithInfoNote(&_menu_system,
                                  (ListItem){
                                      .label = "Вибрация",
@@ -330,7 +330,7 @@ void menu_buttonAction(void *_)
         getInstalledApps(true);
         list_addItemWithInfoNote(&_menu_button_action,
                                  (ListItem){
-                                     .label = "Кнопка X в главном меню",
+                                     .label = "Кнопка X в меню",
                                      .item_type = MULTIVALUE,
                                      .value_max = installed_apps_count + NUM_TOOLS,
                                      .value = value_appShortcut(0),
@@ -340,7 +340,7 @@ void menu_buttonAction(void *_)
                                  "Установите действие кнопки X в Главном меню.");
         list_addItemWithInfoNote(&_menu_button_action,
                                  (ListItem){
-                                     .label = "Кнопка Y в главном меню",
+                                     .label = "Кнопка Y в меню",
                                      .item_type = MULTIVALUE,
                                      .value_max = installed_apps_count + NUM_TOOLS + 1,
                                      .value = value_appShortcut(1),
@@ -353,7 +353,7 @@ void menu_buttonAction(void *_)
                                      .label = "Кнопка Включения",
                                      .item_type = MULTIVALUE,
                                      .value_max = 1,
-                                     .value_labels = {"Ожидание", "Выключение"},
+                                     .value_labels = {"Сон", "Выключение"},
                                      .value = (int)settings.disable_standby,
                                      .action = action_setDisableStandby},
                                  "Настройки кнопки питания при быстом нажатии\n"
