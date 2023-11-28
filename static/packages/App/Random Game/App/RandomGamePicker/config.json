@@ -2,5 +2,5 @@
     "label":"Случайная игра",
     "icon":"../../Icons/Default/app/dice.png",
     "launch":"launch.sh",
-    "description":"Запуск случайной игры (все платформы)"
+    "description":"Запуск случайной игры"
 }
