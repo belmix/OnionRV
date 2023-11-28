@@ -600,8 +600,8 @@ int main(int argc, char *argv[])
             if (keystate[SW_BTN_X] == PRESSED) {
                 if (game_list_len != 0) {
                     theme_renderDialog(
-                        screen, "Удалить из истории",
-                        "Вы уверены, что хотите удалить\nигру из истории?",
+                        screen, "Удалить из списка",
+                        "Вы уверены, что хотите удалить\nигру из переключателя?",
                         true);
                     SDL_BlitSurface(screen, NULL, video, NULL);
                     SDL_Flip(video);
