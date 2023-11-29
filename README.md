@@ -8,7 +8,7 @@ OS Miyoo Mini+
 
 <p>&nbsp;</p>
 
-## Установка
+## Сборка OnionOS
 
 Обновление репозиторий и установка пакетов
 ```bash
@@ -26,7 +26,7 @@ snap install docker
 git clone https://github.com/belmix/OnionRV.git
 ```
 
-Сборка OnionOS
+Компиляция
 
 ```bash
 cd OnionRV/
