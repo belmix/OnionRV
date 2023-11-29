@@ -31,9 +31,9 @@ fi
 check_wifi() {
 	ifconfig wlan1 down
 	if ifconfig wlan0 &>/dev/null; then
-		$display_func "WIFI" "Wifi up"
+		$display_func "WIFI" "Wifi включен"
 	else
-		$display_func "WIFI" "Wifi disabled, starting..."
+		$display_func "WIFI" "Wifi отключен, запуск..."
 
 		/customer/app/axp_test wifion
 		sleep 2
@@ -42,7 +42,7 @@ check_wifi() {
 		$miyoodir/app/wpa_supplicant -B -D nl80211 -iwlan0 -c /appconfigs/wpa_supplicant.conf
 
 		if pgrep "wpa_supplicant" >/dev/null && ifconfig wlan0 >/dev/null 2>&1; then
-			$display_func "WIFI" "Wifi started."
+			$display_func "WIFI" "Wifi запущен."
 		else
 			$display_func "WIFI" "Unable to start WiFi\n unable to continue."
 			sleep 1

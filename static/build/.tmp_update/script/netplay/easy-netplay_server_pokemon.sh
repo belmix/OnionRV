@@ -26,9 +26,9 @@ log "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* Easy Netplay Pokemon Host -*-*-*-*
 # We'll need wifi up for this. Lets try and start it..
 check_wifi() {
 	if ifconfig wlan0 &>/dev/null; then
-		build_infoPanel_and_log "WIFI" "Wifi up"
+		build_infoPanel_and_log "WIFI" "Wifi включен"
 	else
-		build_infoPanel_and_log "WIFI" "Wifi disabled, starting..."
+		build_infoPanel_and_log "WIFI" "Wifi отключен, запуск..."
 
 		/customer/app/axp_test wifion
 		sleep 2
@@ -38,7 +38,7 @@ check_wifi() {
 		udhcpc_control
 
 		if is_running wpa_supplicant && ifconfig wlan0 >/dev/null 2>&1; then
-			build_infoPanel_and_log "WIFI" "Wifi started."
+			build_infoPanel_and_log "WIFI" "Wifi запущен."
 		else
 			build_infoPanel_and_log "WIFI" "Unable to start WiFi\n unable to continue."
 			notify_stop
@@ -50,7 +50,7 @@ check_wifi() {
 
 # We'll need hotspot to host the local connection
 start_hotspot() {
-	build_infoPanel_and_log "Hotspot" "Starting hotspot..."
+	build_infoPanel_and_log "Hotspot" "Запуск hotspot..."
 	if is_running hostapd; then
 		killall -9 hostapd
 	fi
@@ -66,7 +66,7 @@ start_hotspot() {
 start_ftp() {
 	check_stop
 	if is_running bftpd; then
-		log "FTP already running, killing to rebind"
+		log "FTP уже запущен, killing to rebind"
 		bftpd_p=$(ps | grep bftpd | grep -v grep | awk '{for(i=4;i<=NF;++i) printf $i" "}')
 		killall -9 bftpd
 		killall -9 tcpsvd
@@ -115,7 +115,7 @@ create_cookie_info() {
 # Wait for a hit on the sta list for someone joining the hotspot
 wait_for_client() {
 	check_stop
-	build_infoPanel_and_log "Hotspot" "Waiting for a client to connect..."
+	build_infoPanel_and_log "Hotspot" "Ожидание подключения клиента..."
 
 	client_ip=""
 	client_mac=""

@@ -154,7 +154,7 @@ main() {
         echo "manpath: $manpath"
 
         if [ -f "$manpath" ]; then
-            add_menu_option open_manual "Game manual"
+            add_menu_option open_manual "Инструкция"
         fi
 
         add_menu_option change_core "$game_core_label"
