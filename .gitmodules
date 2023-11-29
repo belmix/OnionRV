@@ -9,4 +9,4 @@
 	url = https://github.com/belmix/app-Terminal.git
 [submodule "third-party/DinguxCommander"]
 	path = third-party/DinguxCommander
-	url = https://github.com/belmix/app-DinguxCommander
+	url = https://github.com/OnionUI/app-DinguxCommander
