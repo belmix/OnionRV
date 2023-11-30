@@ -665,20 +665,20 @@ void menu_advanced(void *_)
 
 void menu_screen_recorder(void *pt) {
     int isRecordingActive = exists("/tmp/recorder_active");
-    const char *recordingStatus = isRecordingActive ? "Status: Now recording..." : "Status: Idle.";
+    const char *recordingStatus = isRecordingActive ? "Статус: Запись..." : "Статус: Отключено.";
 
     if (!_menu_screen_recorder._created) {
-        _menu_screen_recorder = list_createWithSticky(7, "Screen recorder setup");
+        _menu_screen_recorder = list_createWithSticky(7, "Запись экрана");
         list_addItemWithInfoNote(&_menu_screen_recorder,
                                  (ListItem){
-                                     .label = "Start/stop recorder",
-                                     .sticky_note = "Status:...",
+                                     .label = "Вкл/выкл запись",
+                                     .sticky_note = "Статус:...",
                                      .action = tool_screenRecorder},
-                                 "Start or stop the recorder");
+                                 "Запустить или остановить запись");
         list_addItemWithInfoNote(&_menu_screen_recorder,
                                  (ListItem){
-                                     .label = "Toggle indicator icon",
-                                     .sticky_note = "Turn the indicator on/off",
+                                     .label = "Индикатор записи",
+                                     .sticky_note = "Отображение индикатора записи",
                                      .item_type = TOGGLE,
                                      .value = (int)settings.rec_indicator,
                                      .action = action_toggleScreenRecIndicator},
@@ -687,16 +687,16 @@ void menu_screen_recorder(void *pt) {
                                  "that you're still recording.");
         list_addItemWithInfoNote(&_menu_screen_recorder,
                                  (ListItem){
-                                     .label = "Toggle countdown",
-                                     .sticky_note = "Turn the countdown on/off",
+                                     .label = "Обратный отсчёт",
+                                     .sticky_note = "Вкл/Выкл обратныйы отсчёт",
                                      .item_type = TOGGLE,
                                      .value = (int)settings.rec_countdown,
                                      .action = action_toggleScreenRecCountdown},
                                  "Countdown when starting recording");
         list_addItemWithInfoNote(&_menu_screen_recorder,
                                  (ListItem){
-                                     .label = "Toggle hotkey",
-                                     .sticky_note = "Turn the hotkey (Menu+A) on/off ",
+                                     .label = "Горячие клавиши",
+                                     .sticky_note = "Включите/выключите горячую клавишу (Меню+A) ",
                                      .item_type = TOGGLE,
                                      .value = (int)settings.rec_hotkey,
                                      .action = action_toggleScreenRecHotkey},
@@ -705,16 +705,16 @@ void menu_screen_recorder(void *pt) {
                                  "with Menu+A");
         list_addItemWithInfoNote(&_menu_screen_recorder,
                                  (ListItem){
-                                     .label = "Reset screen recorder",
-                                     .sticky_note = "Hard kill ffmpeg if it's crashed",
+                                     .label = "Сбросить запись экрана",
+                                     .sticky_note = "Принудительно завершить запись",
                                      .action = action_hardKillFFmpeg},
                                  "Performs a hard kill of ffmpeg\n"
                                  "WARNING: If you're currently\n"
                                  "recording, you may lose the file!");
         list_addItemWithInfoNote(&_menu_screen_recorder,
                                  (ListItem){
-                                     .label = "Delete all recordings",
-                                     .sticky_note = "Empties the recordings directory",
+                                     .label = "Удалить все записи",
+                                     .sticky_note = "Очистить каталог записей",
                                      .action = action_deleteAllRecordings},
                                  "Deletes all recorded videos\n"
                                  "WARNING: This action cannot\n"
@@ -734,14 +734,14 @@ void menu_tools(void *_)
         strcpy(_menu_tools.title, "Утилиты");
         list_addItemWithInfoNote(&_menu_tools,
                                  (ListItem){
-                                     .label = "Generate CUE files for PSX games",
+                                     .label = "Сгенерировать CUE файл для PSX игр",
                                      .action = tool_generateCueFiles},
                                  "PSX roms in '.bin' format needs a\n"
                                  "matching '.cue' file. Use this tool\n"
                                  "to automatically generate them.");
         list_addItemWithInfoNote(&_menu_tools,
                                  (ListItem){
-                                     .label = "Generate game list for short name roms",
+                                     .label = "Создать список игр с короткими названиями",
                                      .action = tool_buildShortRomGameList},
                                  "This tool replaces the short names in\n"
                                  "game caches with their equivalent real\n"
@@ -749,7 +749,7 @@ void menu_tools(void *_)
                                  "correctly.");
         list_addItemWithInfoNote(&_menu_tools,
                                  (ListItem){
-                                     .label = "Generate miyoogamelist with digest names",
+                                     .label = "Miyoogamelist с цифровыми именами",
                                      .action = tool_generateMiyoogamelists},
                                  "Use this tool to clean your game names\n"
                                  "without having to rename the rom files\n"
@@ -759,7 +759,7 @@ void menu_tools(void *_)
                                  "as no subfolder support.");
         list_addItemWithInfoNote(&_menu_tools,
                                  (ListItem){
-                                     .label = "Regenerate game switcher list",
+                                     .label = "Обновить список игр переключателя",
                                      .action = tool_generateGsList},
                                  "Utilize this tool to recreate your game\n"
                                  "switcher list using the RetroArch history,\n"
@@ -768,7 +768,7 @@ void menu_tools(void *_)
                                  "ports may require manual addition.");
                     list_addItem(&_menu_tools,
                                  (ListItem){
-                                     .label = "Screen recorder control...",
+                                     .label = "Запись экрана...",
                                      .action = menu_screen_recorder});
                                      
     }
