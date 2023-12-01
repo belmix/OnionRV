@@ -689,7 +689,9 @@ void menu_screen_recorder(void *pt) {
                                      .item_type = TOGGLE,
                                      .value = (int)settings.rec_countdown,
                                      .action = action_toggleScreenRecCountdown},
-                                 "Countdown when starting recording");
+                                 "Обратный отсчёт начала записи. \n\n"
+                                 "Индикатор мигает 3 раза сигнализируя\n"
+                                 "Включение/Остановку процесса записи");
         list_addItemWithInfoNote(&_menu_screen_recorder,
                                  (ListItem){
                                      .label = "Горячие клавиши",
@@ -697,25 +699,25 @@ void menu_screen_recorder(void *pt) {
                                      .item_type = TOGGLE,
                                      .value = (int)settings.rec_hotkey,
                                      .action = action_toggleScreenRecHotkey},
-                                 "Enable the hotkey function.\n\n"
-                                 "Recording can be started/stopped\n"
-                                 "with Menu+A");
+                                 "Включить горячие клавиши.\n\n"
+                                 "Меню + клавиша A запускает процесс записи,\n"
+                                 "но ее нужно удерживать в течение 2 секунд.");
         list_addItemWithInfoNote(&_menu_screen_recorder,
                                  (ListItem){
                                      .label = "Сбросить запись экрана",
                                      .sticky_note = "Принудительно завершить запись",
                                      .action = action_hardKillFFmpeg},
-                                 "Performs a hard kill of ffmpeg\n"
-                                 "WARNING: If you're currently\n"
-                                 "recording, you may lose the file!");
+                                 "Принудительно завершить ffmpeg\n"
+                                 "Внимание: При использовании\n"
+                                 "записи, файл может быть потерян!");
         list_addItemWithInfoNote(&_menu_screen_recorder,
                                  (ListItem){
                                      .label = "Удалить все записи",
                                      .sticky_note = "Очистить каталог записей",
                                      .action = action_deleteAllRecordings},
-                                 "Deletes all recorded videos\n"
-                                 "WARNING: This action cannot\n"
-                                 "be undone!");
+                                 "Удаление всех записей в каталоге\n"
+                                 "Внимание: Это действие\n"
+                                 "не обратимо!");
     }
     int isRecordingActive = exists("/tmp/recorder_active");
     const char *recordingStatus = isRecordingActive ? "Статус: Запись..." : "Статус: Отключено.";
