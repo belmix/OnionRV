@@ -663,6 +663,70 @@ void menu_advanced(void *_)
     header_changed = true;
 }
 
+void menu_screen_recorder(void *pt) {
+    int isRecordingActive = exists("/tmp/recorder_active");
+    const char *recordingStatus = isRecordingActive ? "Статус: Запись..." : "Статус: Отключено.";
+
+    if (!_menu_screen_recorder._created) {
+        _menu_screen_recorder = list_createWithSticky(7, "Запись экрана");
+        list_addItemWithInfoNote(&_menu_screen_recorder,
+                                 (ListItem){
+                                     .label = "Вкл/выкл запись",
+                                     .sticky_note = "Статус:...",
+                                     .action = tool_screenRecorder},
+                                 "Запустить или остановить запись");
+        list_addItemWithInfoNote(&_menu_screen_recorder,
+                                 (ListItem){
+                                     .label = "Индикатор записи",
+                                     .sticky_note = "Отображение индикатора записи",
+                                     .item_type = TOGGLE,
+                                     .value = (int)settings.rec_indicator,
+                                     .action = action_toggleScreenRecIndicator},
+                                 "Toggles the display of a\n"
+                                 "a flashing icon to remind you\n"
+                                 "that you're still recording.");
+        list_addItemWithInfoNote(&_menu_screen_recorder,
+                                 (ListItem){
+                                     .label = "Обратный отсчёт",
+                                     .sticky_note = "Вкл/Выкл обратныйы отсчёт",
+                                     .item_type = TOGGLE,
+                                     .value = (int)settings.rec_countdown,
+                                     .action = action_toggleScreenRecCountdown},
+                                 "Countdown when starting recording");
+        list_addItemWithInfoNote(&_menu_screen_recorder,
+                                 (ListItem){
+                                     .label = "Горячие клавиши",
+                                     .sticky_note = "Включите/выключите горячую клавишу (Меню+A) ",
+                                     .item_type = TOGGLE,
+                                     .value = (int)settings.rec_hotkey,
+                                     .action = action_toggleScreenRecHotkey},
+                                 "Enable the hotkey function.\n\n"
+                                 "Recording can be started/stopped\n"
+                                 "with Menu+A");
+        list_addItemWithInfoNote(&_menu_screen_recorder,
+                                 (ListItem){
+                                     .label = "Сбросить запись экрана",
+                                     .sticky_note = "Принудительно завершить запись",
+                                     .action = action_hardKillFFmpeg},
+                                 "Performs a hard kill of ffmpeg\n"
+                                 "WARNING: If you're currently\n"
+                                 "recording, you may lose the file!");
+        list_addItemWithInfoNote(&_menu_screen_recorder,
+                                 (ListItem){
+                                     .label = "Удалить все записи",
+                                     .sticky_note = "Очистить каталог записей",
+                                     .action = action_deleteAllRecordings},
+                                 "Deletes all recorded videos\n"
+                                 "WARNING: This action cannot\n"
+                                 "be undone!");
+    }
+
+    strncpy(_menu_screen_recorder.items[0].sticky_note, recordingStatus, sizeof(_menu_screen_recorder.items[0].sticky_note) - 1);
+    _menu_screen_recorder.items[0].sticky_note[sizeof(_menu_screen_recorder.items[0].sticky_note) - 1] = '\0';
+    menu_stack[++menu_level] = &_menu_screen_recorder;
+    header_changed = true;
+}
+
 void menu_tools(void *_)
 {
     if (!_menu_tools._created) {
@@ -670,14 +734,14 @@ void menu_tools(void *_)
         strcpy(_menu_tools.title, "Утилиты");
         list_addItemWithInfoNote(&_menu_tools,
                                  (ListItem){
-                                     .label = "Generate CUE files for PSX games",
+                                     .label = "Сгенерировать CUE файл для PSX игр",
                                      .action = tool_generateCueFiles},
                                  "PSX roms in '.bin' format needs a\n"
                                  "matching '.cue' file. Use this tool\n"
                                  "to automatically generate them.");
         list_addItemWithInfoNote(&_menu_tools,
                                  (ListItem){
-                                     .label = "Generate game list for short name roms",
+                                     .label = "Создать список игр с короткими названиями",
                                      .action = tool_buildShortRomGameList},
                                  "This tool replaces the short names in\n"
                                  "game caches with their equivalent real\n"
@@ -685,7 +749,7 @@ void menu_tools(void *_)
                                  "correctly.");
         list_addItemWithInfoNote(&_menu_tools,
                                  (ListItem){
-                                     .label = "Generate miyoogamelist with digest names",
+                                     .label = "Miyoogamelist с цифровыми именами",
                                      .action = tool_generateMiyoogamelists},
                                  "Use this tool to clean your game names\n"
                                  "without having to rename the rom files\n"
@@ -695,13 +759,18 @@ void menu_tools(void *_)
                                  "as no subfolder support.");
         list_addItemWithInfoNote(&_menu_tools,
                                  (ListItem){
-                                     .label = "Regenerate game switcher list",
+                                     .label = "Обновить список игр переключателя",
                                      .action = tool_generateGsList},
                                  "Utilize this tool to recreate your game\n"
                                  "switcher list using the RetroArch history,\n"
                                  "particularly in instances of corruption.\n"
                                  "Keep in mind that NDS games and certain\n"
                                  "ports may require manual addition.");
+                    list_addItem(&_menu_tools,
+                                 (ListItem){
+                                     .label = "Запись экрана...",
+                                     .action = menu_screen_recorder});
+                                     
     }
     menu_stack[++menu_level] = &_menu_tools;
     header_changed = true;

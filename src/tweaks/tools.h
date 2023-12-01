@@ -106,7 +106,7 @@ void tool_buildShortRomGameList(void *pt)
 
 void tool_generateMiyoogamelists(void *pt)
 {
-    _runCommandPopup(tools_short_names[2], "/mnt/SDCARD/.tmp_update/script/miyoogamelist_gen.sh");
+   _runCommandPopup(tools_short_names[2], "/mnt/SDCARD/.tmp_update/script/miyoogamelist_gen.sh");
 }
 
 void tool_generateGsList(void *pt)
@@ -114,10 +114,36 @@ void tool_generateGsList(void *pt)
     _runCommandPopup(tools_short_names[3], "/mnt/SDCARD/.tmp_update/script/gameswitcher_list_gen.sh");
 }
 
+void tool_screenRecorder(void *pt) {
+    ListItem *item = (ListItem *)pt;
+    char cmd[STR_MAX];
+    char newestFile[STR_MAX / 2];
+    snprintf(cmd, sizeof(cmd), "/mnt/SDCARD/.tmp_update/script/screen_recorder.sh toggle &");
+    int fileCheck;
+    fileCheck = exists("/tmp/recorder_active");
+
+    if (!fileCheck) {
+        list_updateStickyNote(item, "Status: Now recording...");
+        system(cmd);
+    } else {
+        if (file_findNewest(RECORDED_DIR, newestFile, sizeof(newestFile))) {
+            char note[STR_MAX];
+            system(cmd);
+            snprintf(note, sizeof(note), "Stopped, saved as: %s", newestFile);
+            list_updateStickyNote(item, note);
+        } else {
+            list_updateStickyNote(item, "Status: Recording ended, no new file found.");
+        }
+    }
+    list_changed = true;
+}
+
+
+
 static void (*tools_pt[NUM_TOOLS])(void *) = {
     tool_generateCueFiles,
     tool_buildShortRomGameList,
     tool_generateMiyoogamelists,
     tool_generateGsList};
-
-#endif // TWEAKS_TOOLS_H__
+    
+#endif // TWEAKS_TOOLS_H__melists,
