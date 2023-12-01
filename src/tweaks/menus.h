@@ -664,9 +664,6 @@ void menu_advanced(void *_)
 }
 
 void menu_screen_recorder(void *pt) {
-    int isRecordingActive = exists("/tmp/recorder_active");
-    const char *recordingStatus = isRecordingActive ? "Статус: Запись..." : "Статус: Отключено.";
-
     if (!_menu_screen_recorder._created) {
         _menu_screen_recorder = list_createWithSticky(7, "Запись экрана");
         list_addItemWithInfoNote(&_menu_screen_recorder,
@@ -720,7 +717,8 @@ void menu_screen_recorder(void *pt) {
                                  "WARNING: This action cannot\n"
                                  "be undone!");
     }
-
+    int isRecordingActive = exists("/tmp/recorder_active");
+    const char *recordingStatus = isRecordingActive ? "Статус: Запись..." : "Статус: Отключено.";
     strncpy(_menu_screen_recorder.items[0].sticky_note, recordingStatus, sizeof(_menu_screen_recorder.items[0].sticky_note) - 1);
     _menu_screen_recorder.items[0].sticky_note[sizeof(_menu_screen_recorder.items[0].sticky_note) - 1] = '\0';
     menu_stack[++menu_level] = &_menu_screen_recorder;
