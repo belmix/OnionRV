@@ -316,9 +316,9 @@ void action_hardKillFFmpeg(void *pt) {
     ListItem *item = (ListItem *)pt;
     int status = system("/mnt/SDCARD/.tmp_update/script/screen_recorder.sh hardkill");
     if (status != 0) {
-        list_updateStickyNote(item, "Status: Error occurred.");
+        list_updateStickyNote(item, "Статус: Ошибка.");
     } else {
-       list_updateStickyNote(item, "Status: FFmpeg processed stopped");
+        list_updateStickyNote(item, "Статус: FFmpeg остановлен");
     }
     list_changed = true;
 }
@@ -326,7 +326,7 @@ void action_hardKillFFmpeg(void *pt) {
 void action_deleteAllRecordings(void *pt) {
     ListItem *item = (ListItem *)pt;
     system("rm -f /mnt/SDCARD/Media/Videos/Recorded/*");
-    list_updateStickyNote(item, "Recorded directory emptied!");
+    list_updateStickyNote(item, "Каталог записей пуст!");
     list_changed = true;
 }
 
