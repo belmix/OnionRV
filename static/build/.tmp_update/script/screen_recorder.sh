@@ -36,48 +36,50 @@ check_disp_init() {
 }
 
 # use the screen to countdown
-# red -> amber -> green ... recording (back to original screen prop)
+# pulse -> pulse -> pulse ... recording/stopped (then back to original screen prop)
 #  3        2        1          0
 # this display colour change doesn't appear in the video, neither does blue light filter.
 
 show_countdown() {  
     check_disp_init
     default_colour="128 128 128"
-
-    PASTEL_RED="230 110 110"
-    PASTEL_AMBER="230 191 85"
-    PASTEL_GREEN="110 230 110"
+    pulse_colour="200 200 200"
 
     if [ -f "$sysdir/config/.blf" ] && [ -f "/tmp/blueLightOn" ]; then
         combinedRGB=$(cat "$sysdir/config/display/blueLightRGB")
         combinedRGB=$(echo "$combinedRGB" | tr -d '[:space:]/#')
 
-        blfR=$(( (combinedRGB >> 16) & 0xFF ))
-        blfG=$(( (combinedRGB >> 8) & 0xFF ))
+
         blfB=$(( combinedRGB & 0xFF ))
-        current_colour="$blfR $blfG $blfB"
+        blfG=$(( (combinedRGB >> 8) & 0xFF ))
+        blfR=$(( (combinedRGB >> 16) & 0xFF ))
+        current_colour="$blfB $blfG $blfR"
+
     else
         current_colour=$default_colour
     fi
 
-    for target_colour in "$PASTEL_RED" "$PASTEL_AMBER" "$PASTEL_GREEN"; do
+    original_colour=$current_colour
+
+    for i in 1 2 3; do
         for step in $(seq 1 10); do
-            new_red=$(echo "$current_colour $target_colour" | awk -v step="$step" '{printf "%.0f", $1 + ($4 - $1) * step / 10}')
-            new_green=$(echo "$current_colour $target_colour" | awk -v step="$step" '{printf "%.0f", $2 + ($5 - $2) * step / 10}')
-            new_blue=$(echo "$current_colour $target_colour" | awk -v step="$step" '{printf "%.0f", $3 + ($6 - $3) * step / 10}')
+            new_blue=$(echo "$original_colour $pulse_colour" | awk -v step="$step" '{printf "%.0f", $1 + ($4 - $1) * step / 10}')
+            new_green=$(echo "$original_colour $pulse_colour" | awk -v step="$step" '{printf "%.0f", $2 + ($5 - $2) * step / 10}')
+            new_red=$(echo "$original_colour $pulse_colour" | awk -v step="$step" '{printf "%.0f", $3 + ($6 - $3) * step / 10}')
 
             echo "colortemp 0 0 0 0 $new_blue $new_green $new_red" > /proc/mi_modules/mi_disp/mi_disp0
-            usleep 50000
+            usleep 20000
+        done
 
-            current_colour="$new_red $new_green $new_blue"
+        for step in $(seq 1 10); do
+            new_blue=$(echo "$pulse_colour $original_colour" | awk -v step="$step" '{printf "%.0f", $1 + ($4 - $1) * step / 10}')
+            new_green=$(echo "$pulse_colour $original_colour" | awk -v step="$step" '{printf "%.0f", $2 + ($5 - $2) * step / 10}')
+            new_red=$(echo "$pulse_colour $original_colour" | awk -v step="$step" '{printf "%.0f", $3 + ($6 - $3) * step / 10}')
+
+            echo "colortemp 0 0 0 0 $new_blue $new_green $new_red" > /proc/mi_modules/mi_disp/mi_disp0
+            usleep 20000
         done
     done
-
-    if [ -f "$sysdir/config/.blf" ] && [ -f "/tmp/blueLightOn" ]; then
-        echo "colortemp 0 0 0 0 $blfB $blfG $blfR" > /proc/mi_modules/mi_disp/mi_disp0
-    else
-        echo "colortemp 0 0 0 0 $default_colour" > /proc/mi_modules/mi_disp/mi_disp0
-    fi
 }
 
 show_indicator() {
@@ -89,6 +91,11 @@ toggle_ffmpeg() {
     if pgrep -f "ffmpeg -f fbdev -nostdin" > /dev/null; then
         pkill -2 -f "ffmpeg -f fbdev -nostdin"
         killall -9 imgpop
+
+        if [ -f "$sysdir/config/.recCountdown" ]; then
+            show_countdown
+        fi
+
         rm -f "$active_file"
     else
 
@@ -102,7 +109,7 @@ toggle_ffmpeg() {
 
         echo performance > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 
-        ffmpeg -f fbdev -nostdin -framerate 25 -i /dev/fb0 -vf "vflip,hflip, format=yuv420p" -c:v libx264 -preset ultrafast -tune zerolatency -maxrate 6000k -bufsize 18000k -threads 0 "$(date +%Y%m%d%H%M%S).mp4" > /dev/null 2>&1 &
+        ffmpeg -f fbdev -nostdin -framerate 25 -i /dev/fb0 -vf "vflip,hflip, format=yuv420p" -c:v libx264 -preset ultrafast -tune zerolatency -maxrate 2000k -bufsize 6000k -threads 0 "$(date +%Y%m%d%H%M%S).mp4" > /dev/null 2>&1 &
 
         sleep 0.5
 
@@ -117,12 +124,16 @@ toggle_ffmpeg() {
 }
 
 hardkill_ffmpeg() {
-    killall -9 ffmpeg
+    killall -2 ffmpeg # give it a chance
+
     sleep 0.5
+
     if pgrep -f "ffmpeg -f fbdev -nostdin" > /dev/null; then
+        killall -9 ffmpeg
         rm -f "$lock_file"
         return 1
     fi
+
     rm -f "$active_file"
     rm -f "$lock_file"
     killall -9 imgpop

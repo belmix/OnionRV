@@ -437,6 +437,13 @@ void menu_themeOverrides(void *_)
                      (ListItem){
                          .label = "Индикатор заряда...",
                          .action = menu_batteryPercentage});
+		list_addItemWithInfoNote(&_menu_theme_overrides,
+                     (ListItem){
+                         .label = "Отключить фоновую музыку",
+                         .item_type = TOGGLE,
+                         .value = settings.bgm_mute,
+                         .action = action_toggleBackgroundMusic},
+                         "Отключить фоновую музыку для тем");
         list_addItemWithInfoNote(&_menu_theme_overrides,
                                  (ListItem){
                                      .label = "Названия меню",
@@ -664,21 +671,18 @@ void menu_advanced(void *_)
 }
 
 void menu_screen_recorder(void *pt) {
-    int isRecordingActive = exists("/tmp/recorder_active");
-    const char *recordingStatus = isRecordingActive ? "Статус: Запись..." : "Статус: Отключено.";
-
     if (!_menu_screen_recorder._created) {
         _menu_screen_recorder = list_createWithSticky(7, "Запись экрана");
         list_addItemWithInfoNote(&_menu_screen_recorder,
                                  (ListItem){
-                                     .label = "Вкл/выкл запись",
+                                     .label = "Вкл/Выкл запись",
                                      .sticky_note = "Статус:...",
                                      .action = tool_screenRecorder},
                                  "Запустить или остановить запись");
         list_addItemWithInfoNote(&_menu_screen_recorder,
                                  (ListItem){
                                      .label = "Индикатор записи",
-                                     .sticky_note = "Отображение индикатора записи",
+                                     .sticky_note = "Показывать индикатор записи",
                                      .item_type = TOGGLE,
                                      .value = (int)settings.rec_indicator,
                                      .action = action_toggleScreenRecIndicator},
@@ -688,39 +692,42 @@ void menu_screen_recorder(void *pt) {
         list_addItemWithInfoNote(&_menu_screen_recorder,
                                  (ListItem){
                                      .label = "Обратный отсчёт",
-                                     .sticky_note = "Вкл/Выкл обратныйы отсчёт",
+                                     .sticky_note = "Вкл/Выкл обратный отсчёт",
                                      .item_type = TOGGLE,
                                      .value = (int)settings.rec_countdown,
                                      .action = action_toggleScreenRecCountdown},
-                                 "Countdown when starting recording");
+                                 "Обратный отсчёт начала записи. \n\n"
+                                 "Индикатор мигает 3 раза сигнализируя\n"
+                                 "Включение/Остановку процесса записи");
         list_addItemWithInfoNote(&_menu_screen_recorder,
                                  (ListItem){
                                      .label = "Горячие клавиши",
-                                     .sticky_note = "Включите/выключите горячую клавишу (Меню+A) ",
+                                     .sticky_note = "Вкл/Выкл горячие кнопки (Меню+A) ",
                                      .item_type = TOGGLE,
                                      .value = (int)settings.rec_hotkey,
                                      .action = action_toggleScreenRecHotkey},
-                                 "Enable the hotkey function.\n\n"
-                                 "Recording can be started/stopped\n"
-                                 "with Menu+A");
+                                 "Включить горячие клавиши.\n\n"
+                                 "Меню +  A запускает процесс записи,\n"
+                                 "но их нужно удерживать в течение 2 секунд.");
         list_addItemWithInfoNote(&_menu_screen_recorder,
                                  (ListItem){
                                      .label = "Сбросить запись экрана",
                                      .sticky_note = "Принудительно завершить запись",
                                      .action = action_hardKillFFmpeg},
-                                 "Performs a hard kill of ffmpeg\n"
-                                 "WARNING: If you're currently\n"
-                                 "recording, you may lose the file!");
+                                 "Принудительно завершить ffmpeg\n"
+                                 "Внимание: При использовании\n"
+                                 "записи, файл может быть потерян!");
         list_addItemWithInfoNote(&_menu_screen_recorder,
                                  (ListItem){
                                      .label = "Удалить все записи",
                                      .sticky_note = "Очистить каталог записей",
                                      .action = action_deleteAllRecordings},
-                                 "Deletes all recorded videos\n"
-                                 "WARNING: This action cannot\n"
-                                 "be undone!");
+                                 "Удаление всех записей в каталоге\n"
+                                 "Внимание: Это действие\n"
+                                 "не обратимо!");
     }
-
+    int isRecordingActive = exists("/tmp/recorder_active");
+    const char *recordingStatus = isRecordingActive ? "Статус: Запись..." : "Статус: Отключено.";
     strncpy(_menu_screen_recorder.items[0].sticky_note, recordingStatus, sizeof(_menu_screen_recorder.items[0].sticky_note) - 1);
     _menu_screen_recorder.items[0].sticky_note[sizeof(_menu_screen_recorder.items[0].sticky_note) - 1] = '\0';
     menu_stack[++menu_level] = &_menu_screen_recorder;
@@ -759,7 +766,7 @@ void menu_tools(void *_)
                                  "as no subfolder support.");
         list_addItemWithInfoNote(&_menu_tools,
                                  (ListItem){
-                                     .label = "Обновить список игр переключателя",
+                                     .label = "Обновить список переключения игр",
                                      .action = tool_generateGsList},
                                  "Utilize this tool to recreate your game\n"
                                  "switcher list using the RetroArch history,\n"

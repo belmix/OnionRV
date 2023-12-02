@@ -360,6 +360,7 @@ int main(void)
     int konamiCodeIndex = 0;
     bool b_BTN_Not_Menu_Pressed = false;
     bool b_BTN_Menu_Pressed = false;
+    bool a_Pressed = false;
     bool power_pressed = false;
     bool volUp_state = false;
     bool volUp_active = false;
@@ -368,7 +369,9 @@ int main(void)
     bool comboKey_volume = false;
     bool comboKey_menu = false;
     bool comboKey_select = false;
-
+    bool menuAndAPressed = false;
+    int menuAndAPressedTime = 0;
+  
     int ticks = getMilliseconds();
     int hibernate_start = ticks;
     int hibernate_time;
@@ -561,6 +564,14 @@ int main(void)
             case HW_BTN_MENU:
 
                 if (!temp_flag_get("disable_menu_button")) {
+                    if (val == PRESSED) {
+                        if (a_Pressed) {
+                            menuAndAPressed = true;
+                            menuAndAPressedTime = getMilliseconds();
+                        }
+                    } else if (val == RELEASED) {
+                        menuAndAPressed = false;
+                    }
                     system_state_update();
                     comboKey_menu = menuButtonAction(val, comboKey_menu);
                 }
@@ -576,11 +587,16 @@ int main(void)
                 if (val == PRESSED)
                     applyExtraButtonShortcut(1);
                 break;
-            case HW_BTN_A:
-                if (comboKey_menu) {      
-                    if (exists("/mnt/SDCARD/.tmp_update/config/.recHotkey")) {
-                        system("/mnt/SDCARD/.tmp_update/script/screen_recorder.sh toggle &");
+            case HW_BTN_A: 
+                if (val == PRESSED) {
+                    a_Pressed = true;
+                    if (b_BTN_Menu_Pressed) {
+                        menuAndAPressed = true;
+                        menuAndAPressedTime = getMilliseconds();
                     }
+                } else if (val == RELEASED) {
+                    a_Pressed = false;
+                    menuAndAPressed = false;
                 }
                 break;
             case HW_BTN_B:
@@ -674,6 +690,13 @@ int main(void)
                 break;
             }
 
+            // start screen recording after holding for >2secs
+            if (menuAndAPressed && (getMilliseconds() - menuAndAPressedTime >= 2000)) {
+                system("/mnt/SDCARD/.tmp_update/script/screen_recorder.sh toggle &");
+                menuAndAPressed = false;
+                menuAndAPressedTime = 0;
+            }
+          
             if (val == PRESSED && !osd_bar_activated) {
                 osd_hideBar();
             }
