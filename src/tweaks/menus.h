@@ -668,14 +668,14 @@ void menu_screen_recorder(void *pt) {
         _menu_screen_recorder = list_createWithSticky(7, "Запись экрана");
         list_addItemWithInfoNote(&_menu_screen_recorder,
                                  (ListItem){
-                                     .label = "Вкл/выкл запись",
+                                     .label = "Вкл/Выкл запись",
                                      .sticky_note = "Статус:...",
                                      .action = tool_screenRecorder},
                                  "Запустить или остановить запись");
         list_addItemWithInfoNote(&_menu_screen_recorder,
                                  (ListItem){
                                      .label = "Индикатор записи",
-                                     .sticky_note = "Отображение индикатора записи",
+                                     .sticky_note = "Показывать индикатор записи",
                                      .item_type = TOGGLE,
                                      .value = (int)settings.rec_indicator,
                                      .action = action_toggleScreenRecIndicator},
