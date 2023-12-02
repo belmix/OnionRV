@@ -685,7 +685,7 @@ void menu_screen_recorder(void *pt) {
         list_addItemWithInfoNote(&_menu_screen_recorder,
                                  (ListItem){
                                      .label = "Обратный отсчёт",
-                                     .sticky_note = "Вкл/Выкл обратныйы отсчёт",
+                                     .sticky_note = "Вкл/Выкл обратный отсчёт",
                                      .item_type = TOGGLE,
                                      .value = (int)settings.rec_countdown,
                                      .action = action_toggleScreenRecCountdown},
@@ -695,13 +695,13 @@ void menu_screen_recorder(void *pt) {
         list_addItemWithInfoNote(&_menu_screen_recorder,
                                  (ListItem){
                                      .label = "Горячие клавиши",
-                                     .sticky_note = "Включите/выключите горячую клавишу (Меню+A) ",
+                                     .sticky_note = "Вкл/Выкл горячие кнопки (Меню+A) ",
                                      .item_type = TOGGLE,
                                      .value = (int)settings.rec_hotkey,
                                      .action = action_toggleScreenRecHotkey},
                                  "Включить горячие клавиши.\n\n"
-                                 "Меню + клавиша A запускает процесс записи,\n"
-                                 "но ее нужно удерживать в течение 2 секунд.");
+                                 "Меню +  A запускает процесс записи,\n"
+                                 "но их нужно удерживать в течение 2 секунд.");
         list_addItemWithInfoNote(&_menu_screen_recorder,
                                  (ListItem){
                                      .label = "Сбросить запись экрана",
@@ -759,7 +759,7 @@ void menu_tools(void *_)
                                  "as no subfolder support.");
         list_addItemWithInfoNote(&_menu_tools,
                                  (ListItem){
-                                     .label = "Обновить список игр переключателя",
+                                     .label = "Обновить список переключения игр",
                                      .action = tool_generateGsList},
                                  "Utilize this tool to recreate your game\n"
                                  "switcher list using the RetroArch history,\n"
