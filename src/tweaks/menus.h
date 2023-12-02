@@ -437,6 +437,13 @@ void menu_themeOverrides(void *_)
                      (ListItem){
                          .label = "Индикатор заряда...",
                          .action = menu_batteryPercentage});
+		list_addItemWithInfoNote(&_menu_theme_overrides,
+                     (ListItem){
+                         .label = "Отключить фоновую музыку",
+                         .item_type = TOGGLE,
+                         .value = settings.bgm_mute,
+                         .action = action_toggleBackgroundMusic},
+                         "Отключить фоновую музыку для тем");
         list_addItemWithInfoNote(&_menu_theme_overrides,
                                  (ListItem){
                                      .label = "Названия меню",
