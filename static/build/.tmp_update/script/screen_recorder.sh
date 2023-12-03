@@ -35,6 +35,51 @@ check_disp_init() {
     fi
 }
 
+file_write() {
+    echo "$2" > "$1"
+}
+
+setup_gpio_for_vibration() {
+    file_write "/sys/class/gpio/export" "48"
+    file_write "/sys/class/gpio/gpio48/direction" "out"
+}
+
+# use the vibration motor to countdown
+# pulse -> pulse -> pulse ... recording/stopped
+#  3        2        1          0
+
+vibrate() {
+    file_write "/sys/class/gpio/gpio48/value" "$([ "$1" -eq 1 ] && echo "0" || echo "1")"
+}
+
+short_vibration() {
+    vibrate 1
+    usleep 100000
+    vibrate 0
+}
+
+pulsating_vibration() {
+    setup_gpio_for_vibration
+
+    if pgrep -f "tweaks" > /dev/null; then
+        usleep_duration=500000
+    else
+        usleep_duration=400000
+    fi
+	
+    i=1
+    while [ "$i" -le 6 ]; do
+        vibrate 1
+        usleep 15000
+        vibrate 0
+        usleep "$usleep_duration"
+        i=$((i + 1))
+    done
+
+    short_vibration
+
+}
+
 # use the screen to countdown
 # pulse -> pulse -> pulse ... recording/stopped (then back to original screen prop)
 #  3        2        1          0
@@ -42,6 +87,7 @@ check_disp_init() {
 
 show_countdown() {  
     check_disp_init
+    pulsating_vibration &
     default_colour="128 128 128"
     pulse_colour="200 200 200"
 
@@ -80,6 +126,7 @@ show_countdown() {
             usleep 20000
         done
     done
+	
 }
 
 show_indicator() {
@@ -91,6 +138,7 @@ toggle_ffmpeg() {
     if pgrep -f "ffmpeg -f fbdev -nostdin" > /dev/null; then
         pkill -2 -f "ffmpeg -f fbdev -nostdin"
         killall -9 imgpop
+        short_vibration
 
         if [ -f "$sysdir/config/.recCountdown" ]; then
             show_countdown
@@ -101,6 +149,8 @@ toggle_ffmpeg() {
 
         if [ -f "$sysdir/config/.recCountdown" ]; then
             show_countdown
+		else 
+            short_vibration
         fi
 
         if [ -f "$sysdir/config/.recIndicator" ]; then
