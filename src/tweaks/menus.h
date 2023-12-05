@@ -773,6 +773,18 @@ void menu_tools(void *_)
                                  "particularly in instances of corruption.\n"
                                  "Keep in mind that NDS games and certain\n"
                                  "ports may require manual addition.");
+        list_addItemWithInfoNote(&_menu_tools,
+                                 (ListItem){
+                                     .label = "Сортировка приложений [A-Я]",
+                                     .action = tool_sortAppsAZ},
+                                 "Use this tool to sort your App list\n"
+                                 "ascending from A to Z.\n");
+        list_addItemWithInfoNote(&_menu_tools,
+                                 (ListItem){
+                                     .label = "Сортировка приложений [Я-A]",
+                                     .action = tool_sortAppsZA},
+                                 "Use this tool to sort your App list\n"
+                                 "descending from Z to A.\n");
                     list_addItem(&_menu_tools,
                                  (ListItem){
                                      .label = "Запись экрана...",

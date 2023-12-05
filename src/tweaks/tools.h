@@ -114,6 +114,16 @@ void tool_generateGsList(void *pt)
     _runCommandPopup(tools_short_names[3], "/mnt/SDCARD/.tmp_update/script/gameswitcher_list_gen.sh");
 }
 
+void tool_sortAppsAZ(void *pt)
+{
+    _runCommandPopup(tools_short_names[4], "/mnt/SDCARD/.tmp_update/script/app_sorter.sh");
+}
+
+void tool_sortAppsZA(void *pt)
+{
+    _runCommandPopup(tools_short_names[5], "/mnt/SDCARD/.tmp_update/script/app_sorter.sh desc");
+}
+
 void tool_screenRecorder(void *pt) {
     ListItem *item = (ListItem *)pt;
     char cmd[STR_MAX];
@@ -123,16 +133,16 @@ void tool_screenRecorder(void *pt) {
     fileCheck = exists("/tmp/recorder_active");
 
     if (!fileCheck) {
-        list_updateStickyNote(item, "Status: Now recording...");
+        list_updateStickyNote(item, "Статус: Запись...");
         system(cmd);
     } else {
         if (file_findNewest(RECORDED_DIR, newestFile, sizeof(newestFile))) {
             char note[STR_MAX];
             system(cmd);
-            snprintf(note, sizeof(note), "Stopped, saved as: %s", newestFile);
+            snprintf(note, sizeof(note), "Остановлено, сохр. как: %s", newestFile);
             list_updateStickyNote(item, note);
         } else {
-            list_updateStickyNote(item, "Status: Recording ended, no new file found.");
+            list_updateStickyNote(item, "Статус: Запись выкл., новых файлов не найдено.");
         }
     }
     list_changed = true;
@@ -144,6 +154,8 @@ static void (*tools_pt[NUM_TOOLS])(void *) = {
     tool_generateCueFiles,
     tool_buildShortRomGameList,
     tool_generateMiyoogamelists,
-    tool_generateGsList};
+    tool_generateGsList,
+    tool_sortAppsAZ,
+    tool_sortAppsZA};
     
 #endif // TWEAKS_TOOLS_H__melists,
