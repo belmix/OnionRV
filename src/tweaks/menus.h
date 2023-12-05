@@ -745,6 +745,25 @@ void menu_screen_recorder(void *pt) {
     header_changed = true;
 }
 
+void menu_tools_m3uGenerator(void *_)
+{
+    if (!_menu_tools_m3uGenerator._created) {
+        _menu_tools_m3uGenerator = list_createWithTitle(2, LIST_SMALL, "m3u Генератор");
+        list_addItemWithInfoNote(&_menu_tools_m3uGenerator,
+                                 (ListItem){
+                                     .label = "Мульти каталог (.Game_Name)",
+                                     .action = tool_generateM3uFiles_md},
+                                 "Отдельный каталог для каждой игры \".Game_Name\"");
+        list_addItemWithInfoNote(&_menu_tools_m3uGenerator,
+                                 (ListItem){
+                                     .label = "Общий каталог (.multi-disc)",
+                                     .action = tool_generateM3uFiles_sd},
+                                 "Один единственный каталог \".multi-disc\"\nбудет содержать все многодисковые файлы");
+    }
+    menu_stack[++menu_level] = &_menu_tools_m3uGenerator;
+    header_changed = true;
+}
+
 void menu_tools(void *_)
 {
     if (!_menu_tools._created) {
@@ -752,38 +771,46 @@ void menu_tools(void *_)
         strcpy(_menu_tools.title, "Утилиты");
         list_addItemWithInfoNote(&_menu_tools,
                                  (ListItem){
-                                     .label = "Сгенерировать CUE файл для PSX игр",
+                                     .label = "Генерировать CUE файлы для PSX игр",
                                      .action = tool_generateCueFiles},
-                                 "PSX roms in '.bin' format needs a\n"
-                                 "matching '.cue' file. Use this tool\n"
-                                 "to automatically generate them.");
+                                 "Для PSX-ромов в формате '.bin' требуется\n"
+                                 "файл '.cue'. Используйте этот инструмент\n"
+                                 "чтобы автоматически сгенерировать их.");
+        list_addItemWithInfoNote(&_menu_tools,
+                                 (ListItem){
+                                     .label = "Генерировать M3U файлы для PSX игр...",
+                                     .action = menu_tools_m3uGenerator},
+                                 "Многодисковые ромы PSX требуют создания\n"
+                                 "файла списка воспроизведения (.m3u). Это позволяет\n"
+                                 "иметь один выбор игры из Многодискового Rom\n"
+                                 "и один уникальный файл сохранения.");
         list_addItemWithInfoNote(&_menu_tools,
                                  (ListItem){
                                      .label = "Создать список игр с короткими названиями",
                                      .action = tool_buildShortRomGameList},
-                                 "This tool replaces the short names in\n"
-                                 "game caches with their equivalent real\n"
-                                 "names. This ensures the list is sorted\n"
-                                 "correctly.");
+                                 "Этот инструмент заменяет короткие имена в\n"
+                                 "игровых кэшах с их реальными эквивалентами\n"
+                                 "имён. Это гарантирует, что список будет\n"
+                                 "отсортирован правильно.");
         list_addItemWithInfoNote(&_menu_tools,
                                  (ListItem){
                                      .label = "Miyoogamelist с цифровыми именами",
                                      .action = tool_generateMiyoogamelists},
-                                 "Use this tool to clean your game names\n"
-                                 "without having to rename the rom files\n"
-                                 "(removes parens, rankings, and much more).\n"
-                                 "This generates a 'miyoogamelist.xml' file\n"
-                                 "which comes with some limitations, such\n"
-                                 "as no subfolder support.");
+                                 "Используйте этот инструмент для очистки названий игр\n"
+                                 "без необходимости переименовывать файлы ROM\n"
+                                 "(удаляет скобки, рейтинги и многое другое).\n"
+                                 "При этом создается файл miyoogamelist.xml\n"
+                                 "который имеет некоторые ограничения, например\n"
+                                 "поскольку нет поддержки вложеных каталогов.");
         list_addItemWithInfoNote(&_menu_tools,
                                  (ListItem){
                                      .label = "Обновить список переключения игр",
                                      .action = tool_generateGsList},
-                                 "Utilize this tool to recreate your game\n"
-                                 "switcher list using the RetroArch history,\n"
-                                 "particularly in instances of corruption.\n"
-                                 "Keep in mind that NDS games and certain\n"
-                                 "ports may require manual addition.");
+                                 "Используйте этот инструмент, чтобы создать свой\n"
+                                 "список переключателя игр с использованием истории\n"
+                                 "RetroArch.\n"
+                                 "Имейте в виду, что игры NDS и некоторые\n"
+                                 "порты могут потребовать добавления вручную.");
         list_addItemWithInfoNote(&_menu_tools,
                                  (ListItem){
                                      .label = "Сортировка списка прилож. [A-Я]",

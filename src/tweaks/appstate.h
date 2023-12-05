@@ -67,6 +67,7 @@ static List _menu_battery_percentage;
 static List _menu_advanced;
 static List _menu_reset_settings;
 static List _menu_tools;
+static List _menu_tools_m3uGenerator;
 static List _menu_diagnostics;
 static List _menu_screen_recorder;
 
@@ -86,6 +87,7 @@ void menu_free_all(void)
     list_free(&_menu_advanced);
     list_free(&_menu_reset_settings);
     list_free(&_menu_tools);
+    list_free(&_menu_tools_m3uGenerator);
     list_free(&_menu_diagnostics);
     list_free(&_menu_screen_recorder);
     menu_icons_free_all();
