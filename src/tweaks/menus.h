@@ -775,13 +775,13 @@ void menu_tools(void *_)
                                  "ports may require manual addition.");
         list_addItemWithInfoNote(&_menu_tools,
                                  (ListItem){
-                                     .label = "Сортировка приложений [A-Я]",
+                                     .label = "Сортировка списка приложений [A-Я]",
                                      .action = tool_sortAppsAZ},
                                  "Use this tool to sort your App list\n"
                                  "ascending from A to Z.\n");
         list_addItemWithInfoNote(&_menu_tools,
                                  (ListItem){
-                                     .label = "Сортировка приложений [Я-A]",
+                                     .label = "Сортировка списка приложений [Я-A]",
                                      .action = tool_sortAppsZA},
                                  "Use this tool to sort your App list\n"
                                  "descending from Z to A.\n");
