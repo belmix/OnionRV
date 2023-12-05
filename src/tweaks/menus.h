@@ -748,17 +748,17 @@ void menu_screen_recorder(void *pt) {
 void menu_tools_m3uGenerator(void *_)
 {
     if (!_menu_tools_m3uGenerator._created) {
-        _menu_tools_m3uGenerator = list_createWithTitle(2, LIST_SMALL, "m3u Generator");
+        _menu_tools_m3uGenerator = list_createWithTitle(2, LIST_SMALL, "m3u Генератор");
         list_addItemWithInfoNote(&_menu_tools_m3uGenerator,
                                  (ListItem){
-                                     .label = "Multiple directories (.Game_Name)",
+                                     .label = "Мульти каталог (.Game_Name)",
                                      .action = tool_generateM3uFiles_md},
-                                 "One directory for each game \".Game_Name\"");
+                                 "Отдельный каталог для каждой игры \".Game_Name\"");
         list_addItemWithInfoNote(&_menu_tools_m3uGenerator,
                                  (ListItem){
-                                     .label = "Single directory (.multi-disc)",
+                                     .label = "Общий каталог (.multi-disc)",
                                      .action = tool_generateM3uFiles_sd},
-                                 "One single directory \".multi-disc\"\nwill contains all multi-disc files");
+                                 "Один единственный каталог \".multi-disc\"\nбудет содержать все многодисковые файлы");
     }
     menu_stack[++menu_level] = &_menu_tools_m3uGenerator;
     header_changed = true;
@@ -771,7 +771,7 @@ void menu_tools(void *_)
         strcpy(_menu_tools.title, "Утилиты");
         list_addItemWithInfoNote(&_menu_tools,
                                  (ListItem){
-                                     .label = "Сгенерировать CUE файл для PSX игр",
+                                     .label = "Генерировать CUE файлы для PSX игр",
                                      .action = tool_generateCueFiles},
                                  "Для PSX-ромов в формате '.bin' требуется\n"
                                  "файл '.cue'. Используйте этот инструмент\n"
@@ -781,9 +781,9 @@ void menu_tools(void *_)
                                      .label = "Генерировать M3U файлы для PSX игр...",
                                      .action = menu_tools_m3uGenerator},
                                  "Многодисковые ромы PSX требуют создания\n"
-                                 "файла списка воспроизведения (.m3u). Это позволяет \n"
-                                 "иметь только одну запись для каждого мультидиска\n"
-                                 "игры и один уникальный файл сохранения");
+                                 "файла списка воспроизведения (.m3u). Это позволяет\n"
+                                 "иметь один выбор игры из Многодискового Rom\n"
+                                 "и один уникальный файл сохранения.");
         list_addItemWithInfoNote(&_menu_tools,
                                  (ListItem){
                                      .label = "Создать список игр с короткими названиями",
