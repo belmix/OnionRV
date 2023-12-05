@@ -13,16 +13,16 @@
 
 #define BUTTON_MAINUI_LABELS                          \
     {                                                 \
-        "Context menu", "GameSwitcher", "Resume game" \
+        "Контекстное меню", "Переключатель игр", "Возврат в игру" \
     }
 #define BUTTON_INGAME_LABELS                                  \
     {                                                         \
-        "Off", "GameSwitcher", "Exit to menu", "Quick switch" \
+        "Выкл", "Переключатель игр", "Выход в меню", "Быстрый доступ" \
     }
 
 #define THEME_TOGGLE_LABELS \
     {                       \
-        "-", "Off", "On"    \
+        "-", "Выкл.", "Вкл."    \
     }
 
 void formatter_timezone(void *pt, char *out_label)
