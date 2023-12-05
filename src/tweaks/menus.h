@@ -613,7 +613,7 @@ void menu_diagnostics(void *pt)
 void menu_advanced(void *_)
 {
     if (!_menu_advanced._created) {
-        _menu_advanced = list_createWithTitle(6, LIST_SMALL, "Расширенные");
+        _menu_advanced = list_createWithTitle(7, LIST_SMALL, "Расширенные");
         list_addItemWithInfoNote(&_menu_advanced,
                                  (ListItem){
                                      .label = "Замена тригеров (L<>L2, R<>R2)",
@@ -643,6 +643,17 @@ void menu_advanced(void *_)
                                      .value_formatter = formatter_fastForward,
                                      .action = action_advancedSetFrameThrottle},
                                  "Установите максимальную скорость игры.");
+        list_addItemWithInfoNote(&_menu_advanced,
+                                 (ListItem){
+                                     .label = "Частота PWM",
+                                     .item_type = MULTIVALUE,
+                                     .value_max = 9,
+                                     .value_labels = PWM_FREQUENCIES,
+                                     .value = value_getPWMFrequency(),
+                                     .action = action_advancedSetPWMFreqency},
+                                 "Изменить частоту PWM\n"
+                                 "Изменение частоты уменьшит уровень\n"
+                                 "шума экрана. Эксперементальная опция");
         if (DEVICE_ID == MIYOO354) {
             list_addItemWithInfoNote(&_menu_advanced,
                                      (ListItem){
@@ -775,16 +786,16 @@ void menu_tools(void *_)
                                  "ports may require manual addition.");
         list_addItemWithInfoNote(&_menu_tools,
                                  (ListItem){
-                                     .label = "Сортировка списка приложений [A-Я]",
+                                     .label = "Сортировка списка прилож. [A-Я]",
                                      .action = tool_sortAppsAZ},
-                                 "Use this tool to sort your App list\n"
-                                 "ascending from A to Z.\n");
+                                 "Утилита сортировки Списка приложений\n"
+                                 "сортировка по имени от А до Я.\n");
         list_addItemWithInfoNote(&_menu_tools,
                                  (ListItem){
-                                     .label = "Сортировка списка приложений [Я-A]",
+                                     .label = "Сортировка списка прилож. [Я-A]",
                                      .action = tool_sortAppsZA},
-                                 "Use this tool to sort your App list\n"
-                                 "descending from Z to A.\n");
+                                 "Утилита сортировки Списка приложений\n"
+                                 "обратная сортировка от Я до А.\n");
                     list_addItem(&_menu_tools,
                                  (ListItem){
                                      .label = "Запись экрана...",
