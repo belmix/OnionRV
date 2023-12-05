@@ -846,7 +846,7 @@ void menu_main(void)
                          .icon_ptr = _get_menu_icon("tweaks_user_interface")});
         list_addItem(&_menu_main,
                      (ListItem){
-                         .label = "Дополнительные",
+                         .label = "Расширенные настройки",
                          .description = "Диагностика, сброс настроек",
                          .action = menu_advanced,
                          .icon_ptr = _get_menu_icon("tweaks_advanced")});
