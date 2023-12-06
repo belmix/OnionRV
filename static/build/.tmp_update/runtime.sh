@@ -15,6 +15,9 @@ main() {
     axp 0 > /dev/null
     export DEVICE_ID=$([ $? -eq 0 ] && echo $MODEL_MMP || echo $MODEL_MM)
     echo -n "$DEVICE_ID" > /tmp/deviceModel
+    
+    SERIAL_NUMBER=$(read_uuid) 
+    echo -n "$SERIAL_NUMBER" > /tmp/deviceSN
 
     touch /tmp/is_booting
     check_installer
@@ -647,6 +650,7 @@ start_networking() {
 }
 
 check_networking() {
+    libpadspblocker &
     if [ $DEVICE_ID -ne $MODEL_MMP ] || [ ! -f /tmp/network_changed ] && [ -f /tmp/ntp_synced ]; then
         check_timezone
         return
@@ -675,6 +679,23 @@ check_installer() {
         reboot
         sleep 10
         exit
+    fi
+}
+
+# utility function to block a preload on the wpa_supp and udhcpc
+libpadspblocker() { 
+    wpa_pid=$(ps -e | grep "[w]pa_supplicant" | awk 'NR==1{print $1}')
+    udhcpc_pid=$(ps -e | grep "[u]dhcpc" | awk 'NR==1{print $1}')
+    if [ -n "$wpa_pid" ] && [ -n "$udhcpc_pid" ]; then
+        if grep -q "libpadsp.so" /proc/$wpa_pid/maps || grep -q "libpadsp.so" /proc/$udhcpc_pid/maps; then
+            echo "Network Checker: $wpa_pid(WPA) and $udhcpc_pid(UDHCPC) found preloaded with libpadsp.so"
+            unset LD_PRELOAD
+            killall -9 wpa_supplicant
+            killall -9 udhcpc 
+            $miyoodir/app/wpa_supplicant -B -D nl80211 -iwlan0 -c /appconfigs/wpa_supplicant.conf & 
+            udhcpc -i wlan0 -s /etc/init.d/udhcpc.script &
+            echo "Network Checker: Removing libpadsp.so preload on wpa_supp/udhcpc"
+        fi
     fi
 }
 
