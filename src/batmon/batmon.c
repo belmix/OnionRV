@@ -170,6 +170,44 @@ void cleanup(void)
     close(sar_fd);
 }
 
+void update_current_duration(void)
+{
+    if (open_battery_log_db() == 1) {
+        if (bat_log_db != NULL) {
+            const char *sql = "SELECT * FROM bat_activity WHERE device_serial = ? ORDER BY id DESC LIMIT 1;";
+            sqlite3_stmt *stmt;
+            int rc = sqlite3_prepare_v2(bat_log_db, sql, -1, &stmt, 0);
+
+            if (rc == SQLITE_OK) {
+                sqlite3_bind_text(stmt, 1, DEVICE_SN, -1, SQLITE_STATIC);
+                rc = sqlite3_step(stmt);
+                if (rc == SQLITE_ROW) {
+                    int current_duration = sqlite3_column_int(stmt, 3);
+                    int new_duration = current_duration + battery_current_state_duration;
+
+                    const char *update_sql = "UPDATE bat_activity SET duration = ? WHERE id = ?";
+
+                    sqlite3_stmt *update_stmt;
+                    rc = sqlite3_prepare_v2(bat_log_db, update_sql, -1, &update_stmt, 0);
+
+                    if (rc == SQLITE_OK) {
+                        sqlite3_bind_int(update_stmt, 1, new_duration);
+                        sqlite3_bind_int(update_stmt, 2, sqlite3_column_int(stmt, 0));
+
+                        // Exécuter la mise à jour
+                        rc = sqlite3_step(update_stmt);
+
+                        battery_current_state_duration = 0;
+                        sqlite3_finalize(stmt);
+                        sqlite3_finalize(update_stmt);
+                    }
+                }
+            }
+            close_battery_log_db();
+        }
+    }
+}
+
 void log_new_percentage(int new_bat_value, int is_charging)
 {
     if (open_battery_log_db() == 1) {
