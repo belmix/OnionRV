@@ -94,7 +94,7 @@ void secondsToHoursMinutes(int seconds, char *output)
 {
     int hours = seconds / 3600;
     int minutes = (seconds % 3600) / 60;
-    sprintf(output, "%dч%02д", hours, minutes);
+    sprintf(output, "%dч%02d", hours, minutes);
 }
 
 void drawLine(int x1, int y1, int x2, int y2, Uint32 color)
