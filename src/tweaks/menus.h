@@ -786,7 +786,7 @@ void menu_tools(void *_)
                                  "и один уникальный файл сохранения.");
         list_addItemWithInfoNote(&_menu_tools,
                                  (ListItem){
-                                     .label = "Создать список игр с короткими названиями",
+                                     .label = "Список игр с оригинальными названиями",
                                      .action = tool_buildShortRomGameList},
                                  "Этот инструмент заменяет короткие имена в\n"
                                  "игровых кэшах с их реальными эквивалентами\n"
@@ -794,7 +794,7 @@ void menu_tools(void *_)
                                  "отсортирован правильно.");
         list_addItemWithInfoNote(&_menu_tools,
                                  (ListItem){
-                                     .label = "Miyoogamelist с цифровыми именами",
+                                     .label = "Список игр с короткими названиями",
                                      .action = tool_generateMiyoogamelists},
                                  "Используйте этот инструмент для очистки названий игр\n"
                                  "без необходимости переименовывать файлы ROM\n"
