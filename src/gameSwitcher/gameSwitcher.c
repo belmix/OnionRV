@@ -503,7 +503,7 @@ void removeCurrentItem()
 {
     Game_s *game = &game_list[current_game];
 
-    printf_debug("removing: %s\n", game->name);
+    printf_debug("удаление: %s\n", game->name);
 
     // Check for duplicates
     if (game->is_duplicate > 0) {
@@ -791,8 +791,8 @@ int main(void)
             if (keystate[SW_BTN_X] == PRESSED) {
                 if (game_list_len != 0) {
                     theme_renderDialog(
-                        screen, "Remove from history",
-                        "Are you sure you want to\nremove game from history?",
+                        screen, "Удалить из Переключателя игр",
+                        "Выдействительно хотите\nудалить игру из Переключателя?",
                         true);
                     SDL_BlitSurface(screen, NULL, video, NULL);
                     SDL_Flip(video);
@@ -911,7 +911,7 @@ int main(void)
                     strcpy(game_name_str, game->shortname);
 
                 if (game->saveStateSelected >= 0)
-                    snprintf(game_name_str, STR_MAX * 2 + 18, "[SAVE -%d] %s", game->saveStateSelected + 1, strdup(game_name_str));
+                    snprintf(game_name_str, STR_MAX * 2 + 18, "[НОМЕР -%d] %s", game->saveStateSelected + 1, strdup(game_name_str));
 
                 if (current_game_changed) {
                     getRomSaves(current_game);
@@ -979,7 +979,7 @@ int main(void)
             }
 
             if (view_mode == VIEW_NORMAL) {
-                char title_str[STR_MAX] = "GameSwitcher";
+                char title_str[STR_MAX] = "Переключатель Игр";
                 if (show_time && game_list_len > 0) {
                     if (strlen(game->totalTime) == 0) {
                         str_serializeTime(game->totalTime, play_activity_get_play_time(game->path));
@@ -1053,13 +1053,13 @@ int main(void)
     remove("/mnt/SDCARD/.tmp_update/cmd_to_run.sh");
 
     if (exit_to_menu) {
-        print_debug("Exiting to menu");
+        print_debug("Выйти в меню");
         screen = SDL_CreateRGBSurface(SDL_HWSURFACE, 640, 480, 32, 0, 0, 0, 0);
         SDL_BlitSurface(screen, NULL, video, NULL);
         SDL_Flip(video);
     }
     else {
-        print_debug("Resuming game");
+        print_debug("Вернуться в игру");
         FILE *file = fopen("/mnt/SDCARD/.tmp_update/cmd_to_run.sh", "w");
         fputs(game_list[current_game].RACommand, file);
         fclose(file);
