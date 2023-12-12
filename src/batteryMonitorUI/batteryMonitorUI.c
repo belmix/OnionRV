@@ -94,7 +94,9 @@ void secondsToHoursMinutes(int seconds, char *output)
 {
     int hours = seconds / 3600;
     int minutes = (seconds % 3600) / 60;
+
     sprintf(output, "%dч%02d", hours, minutes);
+
 }
 
 void drawLine(int x1, int y1, int x2, int y2, Uint32 color)
@@ -173,6 +175,7 @@ void switch_zoom_profile(int segment_duration)
     switch (segment_duration) {
     case 7200:
         // A segemmt is 120 minutes
+
         sprintf(label[0], "%s", "4ч");
         sprintf(label[1], "%s", "8ч");
         sprintf(label[2], "%s", "12ч");
@@ -345,23 +348,30 @@ void renderPage()
 
     switch (current_zoom) {
     case 0:
+
         sprintf(sub_title, "%s", "16 ЧАСОВ");
         segment_duration = 7200;
         SDL_BlitSurface(right_arrow, NULL, screen, &(SDL_Rect){RIGHT_ARROW_X, RIGHT_ARROW_Y, ARROW_LENGHT, ARROW_WIDTH});
         break;
     case 1:
+
         sprintf(sub_title, "%s", "8 ЧАСОВ");
+
         segment_duration = 3600;
         SDL_BlitSurface(right_arrow, NULL, screen, &(SDL_Rect){RIGHT_ARROW_X, RIGHT_ARROW_Y, ARROW_LENGHT, ARROW_WIDTH});
         SDL_BlitSurface(left_arrow, NULL, screen, &(SDL_Rect){LEFT_ARROW_X, LEFT_ARROW_Y, ARROW_LENGHT, ARROW_WIDTH});
         break;
     case 2:
+
         sprintf(sub_title, "%s", "4 ЧАСА");
+
         segment_duration = 1800;
         SDL_BlitSurface(left_arrow, NULL, screen, &(SDL_Rect){LEFT_ARROW_X, LEFT_ARROW_Y, ARROW_LENGHT, ARROW_WIDTH});
         break;
     default:
+
         sprintf(sub_title, "%s", "8 ЧАСОВ");
+
         segment_duration = 3600;
         SDL_BlitSurface(right_arrow, NULL, screen, &(SDL_Rect){RIGHT_ARROW_X, RIGHT_ARROW_Y, ARROW_LENGHT, ARROW_WIDTH});
         SDL_BlitSurface(left_arrow, NULL, screen, &(SDL_Rect){LEFT_ARROW_X, LEFT_ARROW_Y, ARROW_LENGHT, ARROW_WIDTH});

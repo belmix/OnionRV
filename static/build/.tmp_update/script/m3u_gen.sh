@@ -65,9 +65,11 @@ elif [ "$1" = -md ]; then
 elif [ "$1" = -sd ]; then
   TARGETFOLDER="-sd"
 else # case for eventual GLO menu
+
   LD_PRELOAD=/mnt/SDCARD/miyoo/lib/libpadsp.so prompt -t "Мультидиск - Каталог" -m "Выберите имя каталога, куда\n будут сохраненны оригальные файлы игры." \
     "Общий каталог (\".multi-disc\")" \
     "Несколько каталогов (\".Game_Name\")"
+
   retcode=$?
 
   if [ $retcode -eq 0 ]; then
@@ -160,10 +162,14 @@ for dir in $DIR_LIST; do
       find "$DIR_NAME" ! -iname '*.m3u' -type f -iname "$SEARCH_NAME*.*[$EXT_INT]" | sed -e 's/^//' | sort >"$FILE_NAME".m3u
     done
   else
+
     echo "Директория $full_path не существует."
+
   fi
 done
 
 if [ "$#" -eq 0 ]; then # when launched by GLO menu, without args.
+
   infoPanel --title "Мультидиск - Генератор" --message "$(cat "$count_m3u") m3u файл создан." --auto
+
 fi

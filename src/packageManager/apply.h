@@ -37,7 +37,9 @@ void applyAllChanges(bool auto_update)
                 continue;
 
             if (should_install) {
+
                 printf_debug("Установка %s...\n", package->name);
+
                 SDL_BlitSurface(surfaceBackground, NULL, screen, NULL);
 
                 surfaceMessage = TTF_RenderUTF8_Blended(
@@ -55,7 +57,9 @@ void applyAllChanges(bool auto_update)
                 callPackageInstaller(data_path, package->name, true);
             }
             else if (package->installed) {
+
                 printf_debug("Удаление %s...\n", package->name);
+
                 callPackageInstaller(data_path, package->name, false);
 
                 // app removal

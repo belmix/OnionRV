@@ -145,7 +145,17 @@ void tool_buildShortRomGameList(void *pt)
 
 void tool_generateMiyoogamelists(void *pt)
 {
-   _runCommandPopup(tools_short_names[4], "/mnt/SDCARD/.tmp_update/script/miyoogamelist_gen.sh");
+    _runCommandPopup(tools_short_names[4], "/mnt/SDCARD/.tmp_update/script/miyoogamelist_gen.sh");
+}
+
+void tool_sortAppsAZ(void *pt)
+{
+    _runCommandPopup(tools_short_names[3], "/mnt/SDCARD/.tmp_update/script/app_sorter.sh");
+}
+
+void tool_sortAppsZA(void *pt)
+{
+    _runCommandPopup(tools_short_names[4], "/mnt/SDCARD/.tmp_update/script/app_sorter.sh desc");
 }
 
 void tool_generateGsList(void *pt)
@@ -199,4 +209,4 @@ static void (*tools_pt[NUM_TOOLS])(void *) = {
     tool_sortAppsAZ,
     tool_sortAppsZA};
     
-#endif // TWEAKS_TOOLS_H__melists,
+#endif // TWEAKS_TOOLS_H__

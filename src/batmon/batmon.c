@@ -24,8 +24,8 @@ int main(int argc, char *argv[])
     signal(SIGCONT, sigHandler);
 
     display_init();
-
     int ticks = CHECK_BATTERY_TIMEOUT_S;
+
     bool is_charging = false;
 
     while (!quit) {
@@ -58,11 +58,11 @@ int main(int argc, char *argv[])
         else if (is_charging) {
             // Charging just stopped
             is_charging = false;
-            
+
             printf_debug(
                 "Charging stopped: suspended = %d, perc = %d, warn = %d\n",
                 is_suspended, current_percentage, warn_at);
-            
+
             if (DEVICE_ID == MIYOO283) {
                 adc_value_g = updateADCValue(0);
                 saveFakeAxpResult(current_percentage);
@@ -90,6 +90,7 @@ int main(int argc, char *argv[])
                 printf_debug(
                     "проверка заряда: suspended = %d, perc = %d, warn = %d\n",
                     is_suspended, current_percentage, warn_at);
+
                 ticks = -1;
             }
 
@@ -101,7 +102,7 @@ int main(int argc, char *argv[])
                     is_suspended, current_percentage, warn_at);
                 old_percentage = current_percentage;
                 file_put_sync(fp, "/tmp/percBat", "%d", current_percentage);
-                
+
                 if (abs(last_logged_percentage - current_percentage) >= BATTERY_LOG_THRESHOLD) {
                     // Current battery state duration addition
                     update_current_duration();
@@ -109,7 +110,7 @@ int main(int argc, char *argv[])
                     log_new_percentage(current_percentage, is_charging);
                     last_logged_percentage = current_percentage;
                 }
-                
+
                 if (DEVICE_ID == MIYOO283) {
                     saveFakeAxpResult(current_percentage);
                 }
@@ -133,7 +134,9 @@ int main(int argc, char *argv[])
 
         sleep(1);
         battery_current_state_duration++;
-        ticks++;   
+
+        ticks++;
+
     }
 
     // Current battery state duration addition

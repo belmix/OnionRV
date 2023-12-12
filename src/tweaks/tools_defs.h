@@ -16,4 +16,5 @@ static char tools_short_names[NUM_TOOLS][STR_MAX] = {
     "sort_apps_za",
     "screen_recorder"};
 
+
 #endif // TWEAKS_TOOLS_DEFS_H__

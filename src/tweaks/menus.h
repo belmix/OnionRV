@@ -10,6 +10,7 @@
 #include <time.h>
 #include <unistd.h>
 
+#include "components/kbinput_wrapper.h"
 #include "components/list.h"
 #include "system/device_model.h"
 #include "system/display.h"
@@ -479,10 +480,79 @@ void menu_themeOverrides(void *_)
     header_changed = true;
 }
 
+void menu_blueLight(void *_)
+{
+    if (!_menu_user_blue_light._created) {
+        network_loadState();
+        _menu_user_blue_light = list_createWithTitle(6, LIST_SMALL, "Blue light filter schedule");
+        if (DEVICE_ID == MIYOO354) {
+            list_addItem(&_menu_user_blue_light,
+                         (ListItem){
+                             .label = "[DATESTRING]",
+                             .disabled = 1,
+                             .action = NULL});
+        }
+        list_addItemWithInfoNote(&_menu_user_blue_light,
+                                 (ListItem){
+                                     .label = "Toggle now",
+                                     .item_type = ACTION,
+                                     .action = action_blueLight},
+                                 "Test the selected strength \n");
+        if (DEVICE_ID == MIYOO354) {
+            list_addItemWithInfoNote(&_menu_user_blue_light,
+                                     (ListItem){
+                                         .label = "Enable schedule",
+                                         .disabled = !network_state.ntp,
+                                         .item_type = TOGGLE,
+                                         .value = (int)settings.blue_light_state,
+                                         .action = action_blueLightState},
+                                     "Turn bluelight filter on or off\n");
+        }
+        list_addItemWithInfoNote(&_menu_user_blue_light,
+                                 (ListItem){
+                                     .label = "Strength",
+                                     .item_type = MULTIVALUE,
+                                     .value_max = 5,
+                                     .value_labels = BLUELIGHT_LABELS,
+                                     .action = action_blueLightLevel,
+                                     .value = value_blueLightLevel()},
+                                 "Change the strength of the \n"
+                                 "Blue light filter");
+        if (DEVICE_ID == MIYOO354) {
+            list_addItemWithInfoNote(&_menu_user_blue_light,
+                                     (ListItem){
+                                         .label = "Time (On)",
+                                         .disabled = !network_state.ntp,
+                                         .item_type = MULTIVALUE,
+                                         .value_max = 95,
+                                         .value_formatter = formatter_Time,
+                                         .action = action_blueLightTimeOn,
+                                         .value = value_blueLightTimeOn()},
+                                     "Time schedule for the bluelight filter");
+            list_addItemWithInfoNote(&_menu_user_blue_light,
+                                     (ListItem){
+                                         .label = "Time (Off)",
+                                         .disabled = !network_state.ntp,
+                                         .item_type = MULTIVALUE,
+                                         .value_max = 95,
+                                         .value_formatter = formatter_Time,
+                                         .action = action_blueLightTimeOff,
+                                         .value = value_blueLightTimeOff()},
+                                     "Time schedule for the bluelight filter");
+        }
+    }
+    if (DEVICE_ID == MIYOO354) {
+        _writeDateString(_menu_user_blue_light.items[0].label);
+    }
+    menu_stack[++menu_level] = &_menu_user_blue_light;
+    header_changed = true;
+}
+
 void menu_userInterface(void *_)
 {
     if (!_menu_user_interface._created) {
-        _menu_user_interface = list_createWithTitle(5, LIST_SMALL, "Дополнительные настройки");
+        _menu_user_interface = list_createWithTitle(6, LIST_SMALL, "Дополнительные настройки");
+
         list_addItemWithInfoNote(&_menu_user_interface,
                                  (ListItem){
                                      .label = "Вкладка Последние",
@@ -511,14 +581,21 @@ void menu_userInterface(void *_)
                                  "Установите ширину бегунка, расположеного\n"
                                  "в левой части дисплея, отображаемого\n"
                                  "при регулировки яркости или громкости.");
+        
         list_addItem(&_menu_user_interface,
                      (ListItem){
                          .label = "Настройки оформления...",
                          .action = menu_themeOverrides});
+                         
         list_addItem(&_menu_user_interface,
                      (ListItem){
                          .label = "Настройки иконок...",
                          .action = menu_icons});
+                         
+	list_addItem(&_menu_user_interface,
+                     (ListItem){
+                         .label = "Авто яркость...",
+                         .action = menu_blueLight});
     }
     menu_stack[++menu_level] = &_menu_user_interface;
     header_changed = true;
@@ -613,7 +690,9 @@ void menu_diagnostics(void *pt)
 void menu_advanced(void *_)
 {
     if (!_menu_advanced._created) {
+
         _menu_advanced = list_createWithTitle(7, LIST_SMALL, "Расширенные");
+
         list_addItemWithInfoNote(&_menu_advanced,
                                  (ListItem){
                                      .label = "Замена тригеров (L<>L2, R<>R2)",
@@ -642,7 +721,8 @@ void menu_advanced(void *_)
                                      .value = value_getFrameThrottle(),
                                      .value_formatter = formatter_fastForward,
                                      .action = action_advancedSetFrameThrottle},
-                                 "Установите максимальную скорость игры.");
+				      "Установите максимальную скорость игры.");
+				      
         list_addItemWithInfoNote(&_menu_advanced,
                                  (ListItem){
                                      .label = "Частота PWM",
@@ -654,6 +734,7 @@ void menu_advanced(void *_)
                                  "Изменить частоту PWM\n"
                                  "Изменение частоты уменьшит уровень\n"
                                  "шума экрана. Эксперементальная опция");
+
         if (DEVICE_ID == MIYOO354) {
             list_addItemWithInfoNote(&_menu_advanced,
                                      (ListItem){
@@ -680,6 +761,7 @@ void menu_advanced(void *_)
     menu_stack[++menu_level] = &_menu_advanced;
     header_changed = true;
 }
+
 
 void menu_screen_recorder(void *pt) {
     if (!_menu_screen_recorder._created) {
@@ -759,6 +841,7 @@ void menu_tools_m3uGenerator(void *_)
                                      .label = "Общий каталог (.multi-disc)",
                                      .action = tool_generateM3uFiles_sd},
                                  "Один единственный каталог \".multi-disc\"\nбудет содержать все многодисковые файлы");
+
     }
     menu_stack[++menu_level] = &_menu_tools_m3uGenerator;
     header_changed = true;

@@ -53,7 +53,9 @@ void renderSummary()
             sprintf(line_str, "%s:", layer_names[nT]);
 
             if (changes_installs[nT] > 0)
-				sprintf(line_str + strlen(line_str), " %d добавлено",
+
+                sprintf(line_str + strlen(line_str), " %d добавлено",
+
                         changes_installs[nT]);
 
             if (changes_removals[nT] > 0) {
@@ -62,7 +64,9 @@ void renderSummary()
                     strcpy(line_str + len, ",");
                     len += 1;
                 }
-				sprintf(line_str + len, " %d удалено", changes_removals[nT]);
+
+                sprintf(line_str + len, " %d удалено", changes_removals[nT]);
+
             }
 
             pos_y += renderSummaryLine(surfaceTemp, pos_y, line_str, 255,

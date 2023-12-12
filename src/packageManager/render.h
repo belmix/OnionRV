@@ -102,7 +102,9 @@ void displayLayersInstall(void)
     }
 
     char footer_str[STR_MAX];
+
 	sprintf(footer_str, "%d добавлено  |  %d удалено  |  %d установлено  |  %d всего",
+
             changes_installs[nTab], changes_removals[nTab],
             package_installed_count[nTab], package_count[nTab]);
     renderFooter(footer_str);
@@ -301,17 +303,22 @@ void renderApplication(void)
         if (changes_total > 0) {
             renderSummary();
             showScroller();
+
             renderFooter("Нажмите A или START, чтобы применить изменения");
         }
         else {
             SDL_Surface *status = TTF_RenderUTF8_Blended(
                 font35, "НЕТ ИЗМЕНЕНИЙ", color_white);
+
+
             SDL_Rect status_rect = {
                 alignCoord(320, status->w, ALIGN_CENTER),
                 alignCoord(247, status->h, ALIGN_CENTER)};
             SDL_BlitSurface(status, NULL, screen, &status_rect);
             SDL_FreeSurface(status);
+
             renderFooter("Нажмите A или START для выхода");
+
         }
     }
     else if (package_count[nTab] > 0) {
