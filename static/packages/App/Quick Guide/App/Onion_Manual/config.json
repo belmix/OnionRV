@@ -1,6 +1,6 @@
 {
-"label":"Инструкция",
+"label":"Добро пожаловать!",
 "icon":"../../Icons/Default/app/manual.png",
 "launch":"launch.sh",
-"description":"Инструкция Onion"
+"description":"Информация Onion"
 }
