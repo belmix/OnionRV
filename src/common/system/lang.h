@@ -16,12 +16,12 @@
 #define LANG_DIR_BACKUP "/mnt/SDCARD/miyoo/app/lang_backup"
 
 #define LANG_FALLBACK_SELECT "SELECT"
-#define LANG_FALLBACK_BACK "BACK"
+#define LANG_FALLBACK_BACK "НАЗАД"
 #define LANG_FALLBACK_OK "OK"
-#define LANG_FALLBACK_CANCEL "CANCEL"
-#define LANG_FALLBACK_NEXT "NEXT"
-#define LANG_FALLBACK_EXIT "EXIT"
-#define LANG_FALLBACK_RESUME "RESUME"
+#define LANG_FALLBACK_CANCEL "ОТМЕНА"
+#define LANG_FALLBACK_NEXT "ДАЛЕЕ"
+#define LANG_FALLBACK_EXIT "ВЫХОД"
+#define LANG_FALLBACK_RESUME "ВОЗВРАТ"
 
 #define LANG_FALLBACK_RECENTS_TAB "Recents"
 #define LANG_FALLBACK_FAVORITES_TAB "Favorites"
