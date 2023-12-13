@@ -181,14 +181,14 @@ void str_serializeTime(char *dest_str, int nTime)
         int h = nTime / 3600;
         int m = (nTime - 3600 * h) / 60;
         if (h > 0) {
-            sprintf(dest_str, "%dh %dm", h, m);
+            sprintf(dest_str, "%dч %dм", h, m);
         }
         else {
-            sprintf(dest_str, "%dm %ds", m, nTime - 60 * m);
+            sprintf(dest_str, "%dм %dс", m, nTime - 60 * m);
         }
     }
     else {
-        sprintf(dest_str, "%ds", nTime);
+        sprintf(dest_str, "%dс", nTime);
     }
 }
 
