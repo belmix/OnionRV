@@ -483,7 +483,7 @@ void menu_blueLight(void *_)
 {
     if (!_menu_user_blue_light._created) {
         network_loadState();
-        _menu_user_blue_light = list_createWithTitle(6, LIST_SMALL, "Blue light filter schedule");
+        _menu_user_blue_light = list_createWithTitle(6, LIST_SMALL, "Ночной режим");
         if (DEVICE_ID == MIYOO354) {
             list_addItem(&_menu_user_blue_light,
                          (ListItem){
@@ -493,7 +493,7 @@ void menu_blueLight(void *_)
         }
         list_addItemWithInfoNote(&_menu_user_blue_light,
                                  (ListItem){
-                                     .label = "Включить",
+                                     .label = "Предпросмотр",
                                      .item_type = ACTION,
                                      .action = action_blueLight},
                                  "Проверить режим работы \n");
@@ -505,18 +505,18 @@ void menu_blueLight(void *_)
                                          .item_type = TOGGLE,
                                          .value = (int)settings.blue_light_state,
                                          .action = action_blueLightState},
-                                     "Включение и выключение по расписанию \n");
+                                     "Включение  по расписанию \n");
         }
         list_addItemWithInfoNote(&_menu_user_blue_light,
                                  (ListItem){
-                                     .label = "Strength",
+                                     .label = "Режим",
                                      .item_type = MULTIVALUE,
                                      .value_max = 5,
                                      .value_labels = BLUELIGHT_LABELS,
                                      .action = action_blueLightLevel,
                                      .value = value_blueLightLevel()},
-                                 "Change the strength of the \n"
-                                 "Blue light filter");
+                                 "Изменить Ночной режим \n"
+                                 "");
         if (DEVICE_ID == MIYOO354) {
             list_addItemWithInfoNote(&_menu_user_blue_light,
                                      (ListItem){
@@ -527,7 +527,7 @@ void menu_blueLight(void *_)
                                          .value_formatter = formatter_Time,
                                          .action = action_blueLightTimeOn,
                                          .value = value_blueLightTimeOn()},
-                                     "Time schedule for the bluelight filter");
+                                     "Врема включения ночного режима");
             list_addItemWithInfoNote(&_menu_user_blue_light,
                                      (ListItem){
                                          .label = "Время (Выкл)",
@@ -537,7 +537,7 @@ void menu_blueLight(void *_)
                                          .value_formatter = formatter_Time,
                                          .action = action_blueLightTimeOff,
                                          .value = value_blueLightTimeOff()},
-                                     "Time schedule for the bluelight filter");
+                                     "Время выключения ночного режима");
         }
     }
     if (DEVICE_ID == MIYOO354) {
@@ -581,7 +581,7 @@ void menu_userInterface(void *_)
                                  "при регулировки яркости или громкости.");
         list_addItem(&_menu_user_interface,
                      (ListItem){
-                         .label = "Blue light filter...",
+                         .label = "Ночной режим...",
                          .action = menu_blueLight});
         list_addItem(&_menu_user_interface,
                      (ListItem){
