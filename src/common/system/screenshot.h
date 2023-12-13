@@ -25,11 +25,7 @@ bool __get_path_romscreen(char *path_out)
         sprintf(filename, "%" PRIu32, FNV1A_Pippip_Yurii(file_path, strlen(file_path)));
     }
 
-    if (history_getRecentCorePath(core_path) != NULL) {
-        strcat(filename, "_");
-        strcat(filename, basename(core_path));
-        str_split(filename, "_libretro");
-    }
+
 
     if (strlen(filename) > 0) {
         sprintf(path_out, "/mnt/SDCARD/Saves/CurrentProfile/romScreens/%s.png", filename);
