@@ -581,7 +581,12 @@ void menu_userInterface(void *_)
                                  "Установите ширину бегунка, расположеного\n"
                                  "в левой части дисплея, отображаемого\n"
                                  "при регулировки яркости или громкости.");
-        
+
+	list_addItem(&_menu_user_interface,
+                     (ListItem){
+                         .label = "Авто яркость...",
+                         .action = menu_blueLight});
+                         
         list_addItem(&_menu_user_interface,
                      (ListItem){
                          .label = "Настройки оформления...",
@@ -592,10 +597,7 @@ void menu_userInterface(void *_)
                          .label = "Настройки иконок...",
                          .action = menu_icons});
                          
-	list_addItem(&_menu_user_interface,
-                     (ListItem){
-                         .label = "Авто яркость...",
-                         .action = menu_blueLight});
+
     }
     menu_stack[++menu_level] = &_menu_user_interface;
     header_changed = true;

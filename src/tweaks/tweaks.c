@@ -199,6 +199,7 @@ int main(int argc, char *argv[])
             battery_changed = true;
 
         if (acc_ticks >= time_step) {
+                
             if (isMenu(&_menu_date_time) || isMenu(&_menu_user_blue_light)) {
                 if (isMenu(&_menu_date_time)) {
                     if (_writeDateString(_menu_date_time.items[0].label)) {
@@ -211,6 +212,8 @@ int main(int argc, char *argv[])
                             list_changed = true;
                         }
                     }
+
+                    
                 }
             }
             if (isMenu(&_menu_network) || isMenu(&_menu_wifi)) {
