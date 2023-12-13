@@ -346,7 +346,7 @@ int main(int argc, char *argv[])
 
             char title[STR_MAX + 13];
             if (current_page == installed_page && !is_preview)
-                snprintf(title, STR_MAX + 12, "%s - Installed", theme.name);
+                snprintf(title, STR_MAX + 12, "%s - Текущая", theme.name);
             else
                 strcpy(title, theme.name);
 
