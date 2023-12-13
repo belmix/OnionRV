@@ -13,11 +13,11 @@ if [ "$1" == "skip_scan" ]; then
 fi
 
 main() {
-    prompt -t "$ui_title" -m "Choose naming scheme" \
-        "Use database name" \
-        "Use database name (no parens)" \
-        "Use directory name" \
-        "Use directory name (no parens)"
+    prompt -t "$ui_title" -m "Выберите тип имени" \
+        "Исп. имя database" \
+        "Исп. имя database (без скобок)" \
+        "Исп. имя каталога" \
+        "Исп. имя каталога (без скобок)"
     naming_mode=$?
 
     if [ $naming_mode -gt 3 ]; then
@@ -29,8 +29,8 @@ main() {
     echo "Naming scheme: $naming_mode"
 
     if [ $skip_scan -eq 0 ]; then
-        infoPanel -t "$ui_title" -m "Scanning..." --persistent 2> /dev/null &
-        echo -e "\nScanning...\n"
+        infoPanel -t "$ui_title" -m "Поиск..." --persistent 2> /dev/null &
+        echo -e "\nСканирование...\n"
         start=`date +%s`
 
         scummvm -c "$scummvm_config" -p "$romdir" --add --recursive 2> /dev/null
@@ -76,11 +76,11 @@ main() {
 		sync
 
         if [ $count -eq 0 ]; then
-            result_message="No games found"
+           result_message="Игры не найдены"
         elif [ $count -eq 1 ]; then
-            result_message="Found 1 game"
+            result_message="Найдена 1 игра"
         else
-            result_message="Found $count games"
+            result_message="Найдено $count игр"
         fi
 
         echo -e "\n================================= DONE! $result_message =================================\n\n"
