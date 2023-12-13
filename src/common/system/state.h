@@ -294,6 +294,37 @@ char *history_getRecentPath(char *rom_path)
     return NULL;
 }
 
+//
+//    [onion] get recent core path from content_history.lpl
+//
+char *history_getRecentCorePath(char *core_path)
+{
+    file_parseKeyValue(HISTORY_PATH, "core_path", core_path, ':', 0);
+    if (*core_path == 0)
+        return NULL;
+    return core_path;
+}
+
+char *history_getRecentCommand(char *RACommand, int index)
+{
+    char rom_path[STR_MAX], core_path[STR_MAX];
+
+    file_parseKeyValue(HISTORY_PATH, "path", rom_path, ':', index);
+    if (*rom_path == 0)
+        return NULL;
+
+    file_parseKeyValue(HISTORY_PATH, "core_path", core_path, ':', index);
+    if (*core_path == 0)
+        return NULL;
+
+    snprintf(RACommand, STR_MAX * 3,
+             "LD_PRELOAD=/mnt/SDCARD/miyoo/lib/libpadsp.so ./retroarch -v -L "
+             "\"%s\" \"%s\"",
+             core_path, rom_path);
+
+    return RACommand;
+}
+
 void resumeGame(int n)
 {
     FILE *file = fopen(getMiyooRecentFilePath(), "r");

@@ -14,6 +14,7 @@
 #include "utils/process.h"
 #include "utils/str.h"
 
+
 bool __get_path_romscreen(char *path_out)
 {
     char filename[STR_MAX] = "";
@@ -37,6 +38,7 @@ bool __get_path_romscreen(char *path_out)
 
     return false;
 }
+
 
 bool __get_path_recent(char *path_out)
 {
