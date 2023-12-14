@@ -1,9 +1,10 @@
 #!/bin/sh
+
 json_file="/mnt/SDCARD/system.json"
 currentThemefile="/mnt/SDCARD/Saves/CurrentProfile/theme/currentTheme"
+defautTheme="/mnt/SDCARD/Themes/Silky by DiMo/"
 
 progdir=`cd -- "$(dirname "$0")" >/dev/null 2>&1; pwd -P`
-
 cd $progdir
 
 # Save current time
@@ -22,6 +23,7 @@ if [ -d /mnt/SDCARD/Saves/GuestProfile ] ; then
 	cp ./data/configON.json ./config.json
 	mv /mnt/SDCARD/Saves/CurrentProfile /mnt/SDCARD/Saves/MainProfile
 	mv /mnt/SDCARD/Saves/GuestProfile /mnt/SDCARD/Saves/CurrentProfile
+
 else
 	# The guest profile is the current one
 	cp ./data/configOFF.json ./config.json
@@ -31,6 +33,11 @@ fi
 
 # Favourites + RecentList restoration
 cp /mnt/SDCARD/Saves/CurrentProfile/lists/*.json /mnt/SDCARD/Roms
+
+if [ ! -e "$currentThemefile" ]; then
+	# Default theme file
+    echo "$themeString" > "$currentThemefile"
+fi
 
 # Theme restoration
 if [ -e "$currentThemefile" ]; then
