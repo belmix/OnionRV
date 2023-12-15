@@ -32,7 +32,7 @@ typedef struct package_s {
     bool has_roms;
 } Package;
 
-static char layer_names[][STR_MAX] = {"ПРИСТАВКИ", "ПРИЛОЖЕНИЯ", "ЭКСПЕРТ", "ИЗМЕНЕНИЯ"};
+static char layer_names[][STR_MAX] = {"ПЛАТФОРМЫ", "ПРИЛОЖЕНИЯ", "ЭКСПЕРТ", "ИЗМЕНЕНИЯ"};
 static char layer_dirs[][STR_MAX] = {PACKAGE_DIR "Emu", PACKAGE_DIR "App",
                                      PACKAGE_DIR "RApp", ""};
 static bool layer_check_roms[] = {true, false, true, false};
