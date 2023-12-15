@@ -197,6 +197,27 @@ void getGameName(char *name_out, const char *rom_path)
 }
 
 /**
+ * @brief For debugging
+ *
+ */
+void printHistory()
+{
+    print_debug("---------------------------\n");
+    print_debug("---------------------------\n");
+    for (int i = 0; i < game_list_len; i++) {
+        printf_debug("name: %s\n", game_list[i].name);
+        printf_debug("shortname: %s\n", game_list[i].shortname);
+        printf_debug("LaunchCommand: %s\n", game_list[i].LaunchCommand);
+        printf_debug("totalTime: %i\n", game_list[i].totalTime);
+        printf_debug("gameIndex: %i\n", game_list[i].gameIndex);
+        printf_debug("lineNumber: %i\n", game_list[i].lineNumber);
+        printf_debug("romScreenPath: %s\n", game_list[i].romScreenPath);
+        printf_debug("path: %s\n", game_list[i].path);
+        print_debug("\n\n");
+    }
+}
+
+/**
  * @brief History extraction
  *
  */
@@ -299,6 +320,23 @@ void readHistory()
         if (!exists(rompath) || !exists(launch))
             continue;
 
+        // Search for duplicates
+        bool bGameExists = false;
+        for (int i = 0; i < nbGame; i++) {
+            printf_debug("%s  <---> %s\n", rompath, game_list[i].path);
+
+            if (strcmp(rompath, game_list[i].path) == 0) {
+                bGameExists = true;
+                break;
+            }
+        }
+        if (bGameExists) {
+            // recentlist line deletion
+            file_delete_line(getMiyooRecentFilePath(), lineCounter);
+            lineCounter --;
+            continue;
+        }
+
         Game_s *game = &game_list[nbGame];
 
         game->hash = FNV1A_Pippip_Yurii(rompath, strlen(rompath));
@@ -316,6 +354,8 @@ void readHistory()
 
 
         game = &game_list[nbGame];
+        
+        nbGame++;
 
         printf_debug("name: %s\n", game->name);
         printf_debug("shortname: %s\n", game->shortname);
@@ -324,9 +364,7 @@ void readHistory()
         printf_debug("gameIndex: %i\n", game->gameIndex);
         printf_debug("lineNumber: %i\n", game->lineNumber);
         printf_debug("romScreenPath: %s\n", game->romScreenPath);
-        printf_debug("path: %s\n", game->path);
-      
-        nbGame++;
+        printf_debug("path: %s\n", game->path);      
     }
 
     game_list_len = nbGame;
@@ -400,7 +438,7 @@ int main(int argc, char *argv[])
     SDL_Flip(video);
 
     readHistory();
-
+    printHistory();
     settings_load();
     lang_load();
 
@@ -855,7 +893,7 @@ int main(int argc, char *argv[])
     }
 
     else {
-        print_debug("Возобновление игры");
+        printf_debug("Возобновление игры - Игра : %i - gameIndex: %i", current_game, game_list[current_game].gameIndex);
         resumeGame(game_list[current_game].gameIndex);
 
     }
