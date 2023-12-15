@@ -711,8 +711,8 @@ void menu_network(void *_)
                                      .arrow_action = network_toggleVNC,
                                      .value = (int)network_state.vncserv,
                                      .action = menu_vnc},
-                                 "Connect to your MMP from another device\n"
-                                 "to view the screen and interact with it.");
+                                 "Подключитесь к своему MMP с другого устройства,\n"
+                                 "чтобы просматривать экран и взаимодействовать с ним.");
         list_addItemWithInfoNote(&_menu_network,
                                  (ListItem){
                                      .label = "Выключать во время игры",
