@@ -163,7 +163,8 @@ void tool_sortAppsZA(void *pt)
     _runCommandPopup(tools_short_names[7], "/mnt/SDCARD/.tmp_update/script/app_sorter.sh desc");
 }
 
-void tool_screenRecorder(void *pt) {
+void tool_screenRecorder(void *pt)
+{
     ListItem *item = (ListItem *)pt;
     char cmd[STR_MAX];
     char newestFile[STR_MAX / 2];
@@ -174,20 +175,21 @@ void tool_screenRecorder(void *pt) {
     if (!fileCheck) {
         list_updateStickyNote(item, "Статус: Запись...");
         system(cmd);
-    } else {
+    }
+    else {
         if (file_findNewest(RECORDED_DIR, newestFile, sizeof(newestFile))) {
             char note[STR_MAX];
             system(cmd);
             snprintf(note, sizeof(note), "Остановлено, сохр. как: %s", newestFile);
             list_updateStickyNote(item, note);
-        } else {
+        }
+        else {
             list_updateStickyNote(item, "Статус: Запись выкл., новых файлов не найдено.");
+            snprintf(cmd, sizeof(cmd), "/mnt/SDCARD/.tmp_update/script/screen_recorder.sh hardkill &");
         }
     }
     list_changed = true;
 }
-
-
 
 static void (*tools_pt[NUM_TOOLS])(void *) = {
     tool_generateCueFiles,

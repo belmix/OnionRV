@@ -197,10 +197,9 @@ void settings_load(void)
     settings.mute = config_flag_get(".muteVolume");
     settings.disable_standby = config_flag_get(".disableStandby");
     settings.enable_logging = config_flag_get(".logging");
-    settings.blue_light_state = config_flag_get(".blf");
-    settings.rec_countdown = config_flag_get(".recCountdown");
     settings.rec_indicator = config_flag_get(".recIndicator");
     settings.rec_hotkey = config_flag_get(".recHotkey");
+    settings.blue_light_state = config_flag_get(".blf");
 
     if (config_flag_get(".noLowBatteryAutoSave")) // flag is deprecated, but keep compatibility
         settings.low_battery_autosave_at = 0;
@@ -222,6 +221,7 @@ void settings_load(void)
     config_get("display/blueLightTimeOff", CONFIG_STR, &settings.blue_light_time_off);
     config_get("display/blueLightRGB", CONFIG_INT, &settings.blue_light_rgb);
     config_get("pwmfrequency", CONFIG_INT, &settings.pwmfrequency);
+    config_get("recCountdown", CONFIG_INT, &settings.rec_countdown);
 
     if (config_flag_get(".menuInverted")) { // flag is deprecated, but keep compatibility
         settings.ingame_single_press = 2;
@@ -338,16 +338,16 @@ void settings_save(void)
     config_flag_set(".muteVolume", settings.mute);
     config_flag_set(".disableStandby", settings.disable_standby);
     config_flag_set(".logging", settings.enable_logging);
-    config_flag_set(".blf", settings.blue_light_state);
-    config_flag_set(".recCountdown", settings.rec_countdown);
     config_flag_set(".recIndicator", settings.rec_indicator);
     config_flag_set(".recHotkey", settings.rec_hotkey);
+    config_flag_set(".blf", settings.blue_light_state);
     config_setNumber("battery/warnAt", settings.low_battery_warn_at);
     config_setNumber("battery/exitAt", settings.low_battery_autosave_at);
     config_setNumber("startup/app", settings.startup_application);
     config_setNumber("startup/addHours", settings.time_skip);
     config_setNumber("vibration", settings.vibration);
     config_setNumber("startup/tab", settings.startup_tab);
+    config_setNumber("recCountdown", settings.rec_countdown);
     config_setNumber("display/blueLightLevel", settings.blue_light_level);
     config_setNumber("display/blueLightRGB", settings.blue_light_rgb);
     config_setString("display/blueLightTime", settings.blue_light_time);

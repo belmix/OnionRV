@@ -765,16 +765,6 @@ void menu_screen_recorder(void *pt) {
                                  "Запустить или остановить запись");
         list_addItemWithInfoNote(&_menu_screen_recorder,
                                  (ListItem){
-                                     .label = "Индикатор записи",
-                                     .sticky_note = "Показывать индикатор записи",
-                                     .item_type = TOGGLE,
-                                     .value = (int)settings.rec_indicator,
-                                     .action = action_toggleScreenRecIndicator},
-                                 "Toggles the display of a\n"
-                                 "a flashing icon to remind you\n"
-                                 "that you're still recording.");
-        list_addItemWithInfoNote(&_menu_screen_recorder,
-                                 (ListItem){
                                      .label = "Обратный отсчёт",
                                      .sticky_note = "Вкл/Выкл обратный отсчёт",
                                      .item_type = TOGGLE,
@@ -785,7 +775,17 @@ void menu_screen_recorder(void *pt) {
                                  "Включение/Остановку процесса записи");
         list_addItemWithInfoNote(&_menu_screen_recorder,
                                  (ListItem){
-                                     .label = "Горячие клавиши",
+                                     .label = "Индикатор записи",
+                                     .sticky_note = "Показывать индикатор записи",
+                                     .item_type = TOGGLE,
+                                     .value = (int)settings.rec_indicator,
+                                     .action = action_toggleScreenRecIndicator},
+                                 "Toggles the display of a\n"
+                                 "a flashing icon to remind you\n"
+                                 "that you're still recording.");
+        list_addItemWithInfoNote(&_menu_screen_recorder,
+                                 (ListItem){
+                                     .label = "Горячие клавиши Menu+A",
                                      .sticky_note = "Вкл/Выкл горячие кнопки (Меню+A) ",
                                      .item_type = TOGGLE,
                                      .value = (int)settings.rec_hotkey,
