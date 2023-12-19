@@ -223,8 +223,6 @@ void printHistory()
  */
 void readHistory()
 {
-  game_list_len = 0;
-
     FILE *file;
     char line[STR_MAX * 3];
     char *jsonContent;
@@ -233,7 +231,6 @@ void readHistory()
     file = fopen(getMiyooRecentFilePath(), "r");
 
     if (file == NULL) {
-
         print_debug("Отсутствует файл истории");
         return;
     }
@@ -351,10 +348,7 @@ void readHistory()
         strcpy(game->path, rompath);
         file_cleanName(game->shortname, game->name);
         game->gameIndex = nbGame + 1;
-
-
         game = &game_list[nbGame];
-        
         nbGame++;
 
         printf_debug("name: %s\n", game->name);
@@ -375,10 +369,8 @@ void removeCurrentItem()
 {
     Game_s *game = &game_list[current_game];
 
-
     printf_debug("removing: %s\n", game->name);
     printf_debug("linenumber: %i\n", game->lineNumber);
-
 
     if (game->romScreen != NULL) {
         SDL_FreeSurface(game->romScreen);
@@ -885,7 +877,6 @@ int main(int argc, char *argv[])
 
     screen = SDL_CreateRGBSurface(SDL_HWSURFACE, 640, 480, 32, 0, 0, 0, 0);
 
-
     if (exit_to_menu) {
         print_debug("Выход в меню");
         remove("/mnt/SDCARD/.tmp_update/.runGameSwitcher");
@@ -895,7 +886,6 @@ int main(int argc, char *argv[])
     else {
         printf_debug("Возобновление игры - Игра : %i - gameIndex: %i", current_game, game_list[current_game].gameIndex);
         resumeGame(game_list[current_game].gameIndex);
-
     }
 
 #ifndef PLATFORM_MIYOOMINI
