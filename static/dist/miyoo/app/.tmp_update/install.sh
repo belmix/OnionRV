@@ -610,6 +610,9 @@ refresh_roms() {
     if [ -d /mnt/SDCARD/Roms ]; then
         cd /mnt/SDCARD/Roms
         find . -type f -name "*_cache[0-9].db" -exec rm -f {} \;
+        # Исправление для Переключателя игр
+        echo ":: Отчистка истории"
+        find . -type f -name "recentlist-hidden.json" -exec rm -f {} \;
     fi
 }
 
