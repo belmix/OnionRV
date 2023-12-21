@@ -15,10 +15,10 @@ main() {
     axp 0 > /dev/null
     export DEVICE_ID=$([ $? -eq 0 ] && echo $MODEL_MMP || echo $MODEL_MM)
     echo -n "$DEVICE_ID" > /tmp/deviceModel
-
+    
     SERIAL_NUMBER=$(read_uuid) 
     echo -n "$SERIAL_NUMBER" > /tmp/deviceSN
-    
+
     touch /tmp/is_booting
     check_installer
     clear_logs
@@ -57,15 +57,10 @@ main() {
 
     # Make sure MainUI doesn't show charging animation
     touch /tmp/no_charging_ui
-    
-    # Check if blf needs enabling
-    if [ -f $sysdir/config/.blfOn ]; then
-        /mnt/SDCARD/.tmp_update/script/blue_light.sh enable &
-    fi
 
     cd $sysdir
     bootScreen "Boot"
-    
+
     # Set filebrowser branding to "Onion" and apply custom theme
     if [ -f "$sysdir/config/filebrowser/first.run" ]; then
         $sysdir/bin/filebrowser config set --branding.name "Onion" -d $sysdir/config/filebrowser/filebrowser.db
@@ -86,7 +81,7 @@ main() {
     
     # Disable VNC server flag at boot
     rm $sysdir/config/.vncServer
-    
+
     # Detect if MENU button is held
     detectKey 1
     menu_pressed=$?
@@ -102,7 +97,6 @@ main() {
 
     # Bind arcade name library to customer path
     mount -o bind $miyoodir/lib/libgamename.so /customer/lib/libgamename.so
-
 
     rm -rf /tmp/is_booting
 
@@ -603,10 +597,6 @@ save_settings() {
 }
 
 update_time() {
-    # Give hardware modders an option to disable time restore
-    if [ -f $sysdir/config/.noTimeRestore ]; then
-        return
-    fi
     timepath=/mnt/SDCARD/Saves/CurrentProfile/saves/currentTime.txt
     currentTime=0
     # Load current time
