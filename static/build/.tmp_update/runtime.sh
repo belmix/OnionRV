@@ -100,6 +100,15 @@ main() {
 
     rm -rf /tmp/is_booting
 
+    #Startup scripts
+	mkdir -p "$sysdir/startup"
+	mkdir -p "$sysdir/checkoff"
+	startup_scripts=$(find "$sysdir/startup" -type f -name "*.sh")
+
+	for startup_script in $startup_scripts; do
+	  sh "$startup_script"
+	done
+
     # Auto launch
     if [ ! -f $sysdir/config/.noAutoStart ]; then
         state_change check_game
@@ -448,6 +457,12 @@ launch_switcher() {
 
 check_off_order() {
     if [ -f /tmp/.offOrder ]; then
+    	#CheckOff scripts
+		check_off_scripts=$(find "$sysdir/checkoff" -type f -name "*.sh")
+
+		for check_off_script in $check_off_scripts; do
+	  		sh "$check_off_script"
+		done
         bootScreen "$1" &
         sleep 1 # Allow the bootScreen to be displayed
         shutdown
