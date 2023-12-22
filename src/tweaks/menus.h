@@ -494,7 +494,7 @@ void menu_blueLight(void *_)
         }
         list_addItemWithInfoNote(&_menu_user_blue_light,
                                  (ListItem){
-                                     .label = "Предпросмотр",
+                                     .label = "Включить",
                                      .disable_arrows = blf_changing,
                                      .disable_a_btn = blf_changing,
                                      .item_type = TOGGLE,
@@ -509,7 +509,7 @@ void menu_blueLight(void *_)
                                          .item_type = TOGGLE,
                                          .value = (int)settings.blue_light_schedule,
                                          .action = action_blueLightSchedule},
-                                     "Включение по расписанию\n");
+                                     "Включение по расписанию при запущенной синхронизации времени\n");
         }
         list_addItemWithInfoNote(&_menu_user_blue_light,
                                  (ListItem){
@@ -549,7 +549,7 @@ void menu_blueLight(void *_)
     if (DEVICE_ID == MIYOO354) {
         _writeDateString(_menu_user_blue_light.items[0].label);
         char scheduleToggleLabel[100];
-        strcpy(scheduleToggleLabel, exists("/tmp/.blfIgnoreSchedule") ? "Schedule (ignored)" : "Schedule");
+        strcpy(scheduleToggleLabel, exists("/tmp/.blfIgnoreSchedule") ? "Планировщик (отключен)" : "Планировщик");
         strcpy(_menu_user_blue_light.items[2].label, scheduleToggleLabel);
     }
     menu_stack[++menu_level] = &_menu_user_blue_light;
