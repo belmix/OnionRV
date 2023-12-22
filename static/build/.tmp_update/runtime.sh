@@ -382,9 +382,9 @@ launch_game() {
     log "cmd retval: $retval"
 
     if [ $retval -eq 404 ]; then
-        infoPanel --title "File not found" --message "The requested file was not found." --auto
+        infoPanel --title "Файл не найден" --message "Файл запроса не найден." --auto
     elif [ $retval -ge 128 ] && [ $retval -ne 143 ] && [ $retval -ne 255 ]; then
-        infoPanel --title "Fatal error occurred" --message "The program exited unexpectedly.\n(Error code: $retval)" --auto
+        infoPanel --title "Фатальная ошибка" --message "Программа завершилась с ошибкой.\n(Error code: $retval)" --auto
     fi
 
     # Reset CPU frequency
