@@ -57,17 +57,15 @@ typedef struct settings_s {
     bool disable_standby;
     int pwmfrequency;
     bool enable_logging;
-    // Light filter
+    bool rec_indicator;
+    bool rec_hotkey;
+    int rec_countdown;
     int blue_light_state;
     int blue_light_schedule;
     int blue_light_level;
     int blue_light_rgb;
     char blue_light_time[16];
     char blue_light_time_off[16];
-    
-    bool rec_countdown;
-    bool rec_indicator;
-    bool rec_hotkey;
 
     char mainui_button_x[JSON_STRING_LEN];
     char mainui_button_y[JSON_STRING_LEN];
@@ -114,7 +112,6 @@ static settings_s __default_settings = (settings_s){
     .ingame_double_press = 3,
     .disable_standby = false,
     .enable_logging = false,
-    // Filter
     .blue_light_state = false,
     .blue_light_schedule = false,
     .blue_light_level = 0,
@@ -362,6 +359,7 @@ void settings_save(void)
     config_setNumber("display/blueLightRGB", settings.blue_light_rgb);
     config_setString("display/blueLightTime", settings.blue_light_time);
     config_setString("display/blueLightTimeOff", settings.blue_light_time_off);
+
     config_setNumber("pwmfrequency", settings.pwmfrequency);
     // remove deprecated flags
     remove(CONFIG_PATH ".noLowBatteryAutoSave");

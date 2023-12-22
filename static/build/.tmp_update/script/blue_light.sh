@@ -30,6 +30,7 @@ setRGBValues() {
         4)
             endB=70;  endG=105; endR=140 ;;
         *)
+            endB=128; endG=128; endR=128 ;;
     esac
 }
 
@@ -106,7 +107,6 @@ check_disp_init() {
     fi
 }
 
-
 blueLightStart() {
     sync
     value=$(cat $sysdir/config/display/blueLightLevel)
@@ -155,11 +155,6 @@ to_minutes_since_midnight() {
 }
 
 enable_blue_light_filter() {   
-    value=$(cat $sysdir/config/display/blueLightLevel)
-    if [ "$value" -eq 0 ]; then
-        return
-    fi
-    
     check_disp_init
     sync
     blueLightStart

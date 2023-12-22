@@ -369,10 +369,10 @@ int main(void)
     bool comboKey_menu = false;
     bool comboKey_select = false;
     bool menuAndAPressed = false; // screen recorder
-    bool menuAndBPressed = false; // light filter
+    bool menuAndBPressed = false; // blue light filter
     int menuAndAPressedTime = 0;
     int menuAndBPressedTime = 0;
-  
+
     int ticks = getMilliseconds();
     int hibernate_start = ticks;
     int hibernate_time;
@@ -580,13 +580,14 @@ int main(void)
                 if (val == PRESSED)
                     applyExtraButtonShortcut(1);
                 break;
-            case HW_BTN_A: 
+            case HW_BTN_A:
                 if (val == PRESSED) {
                     if (b_BTN_Menu_Pressed) {
                         menuAndAPressed = true;
                         menuAndAPressedTime = getMilliseconds();
                     }
-                } else if (val == RELEASED) {
+                }
+                else if (val == RELEASED) {
                     menuAndAPressed = false;
                 }
                 break;
@@ -695,8 +696,11 @@ int main(void)
                 if (access("/mnt/SDCARD/.tmp_update/config/.recHotkey", F_OK) != -1) {
                     system("/mnt/SDCARD/.tmp_update/script/screen_recorder.sh toggle &");
                 }
+
+                menuAndAPressed = false;
+                menuAndAPressedTime = 0;
             }
-          
+
             // toggle blue light filter
             if (menuAndBPressed && (getMilliseconds() - menuAndBPressedTime >= 2000)) {
                 if (access("/tmp/.blfOn", F_OK) != -1) {
@@ -710,8 +714,8 @@ int main(void)
 
                 menuAndBPressed = false;
                 menuAndBPressedTime = 0;
-            }          
-          
+            }
+
             if (val == PRESSED && !osd_bar_activated) {
                 osd_hideBar();
             }
@@ -764,7 +768,6 @@ int main(void)
         }
 
         // Comes here every CHECK_SEC(def:15) seconds interval
-
         if (delete_flag) {
             if (exists("/tmp/state_changed")) {
                 system_state_update();
@@ -793,7 +796,7 @@ int main(void)
             }
         }
 
-        // Check light filter
+        // Check bluelight filter
         if (DEVICE_ID == MIYOO354) {
             system("/mnt/SDCARD/.tmp_update/script/blue_light.sh check");
         }

@@ -95,6 +95,7 @@ void menu_free_all(void)
     list_free(&_menu_diagnostics);
     list_free(&_menu_screen_recorder);
     list_free(&_menu_user_blue_light);
+
     menu_icons_free_all();
     menu_network_free_all();
 }
