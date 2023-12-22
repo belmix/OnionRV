@@ -200,11 +200,6 @@ int main(int argc, char *argv[])
 
         blf_changing = exists("/tmp/blue_light_script.lock");
 
-        if (blf_changing != prev_blf_changing) {
-            reset_menus = true;
-            prev_blf_changing = blf_changing;
-        }
-
         if (acc_ticks >= time_step) {
             if (isMenu(&_menu_date_time)) {
                 if (_writeDateString(_menu_date_time.items[0].label)) {
