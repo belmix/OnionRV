@@ -365,7 +365,7 @@ launch_game() {
             $sysdir/cmd_to_run.sh
             retval=$?
             if [ $is_game -eq 1 ] && [ ! -f /tmp/.offOrder ]; then
-                infoPanel --title " " --message  "Saving ..." --persistent --no-footer &
+                infoPanel --title " " --message  "Сохранение ..." --persistent --no-footer &
                 touch /tmp/dismiss_info_panel
                 sync
             fi
