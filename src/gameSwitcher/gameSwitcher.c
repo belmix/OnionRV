@@ -132,6 +132,7 @@ SDL_Surface *loadRomScreen(int index)
     if (game->romScreen == NULL) {
         char currPicture[STR_MAX * 2];
         sprintf(currPicture, ROM_SCREENS_DIR "/%" PRIu32 ".png", game->hash);
+
         // Show artwork
         if (!exists(currPicture))
             sprintf(currPicture, "%s/Imgs/%s.png", extractPath(game->path), file_removeExtension(game->name));
@@ -320,8 +321,6 @@ void readHistory()
         // Search for duplicates
         bool bGameExists = false;
         for (int i = 0; i < nbGame; i++) {
-            printf_debug("%s  <---> %s\n", rompath, game_list[i].path);
-
             if (strcmp(rompath, game_list[i].path) == 0) {
                 bGameExists = true;
                 break;
@@ -349,6 +348,7 @@ void readHistory()
         file_cleanName(game->shortname, game->name);
         game->gameIndex = nbGame + 1;
         game = &game_list[nbGame];
+
         nbGame++;
 
         printf_debug("name: %s\n", game->name);
@@ -358,7 +358,7 @@ void readHistory()
         printf_debug("gameIndex: %i\n", game->gameIndex);
         printf_debug("lineNumber: %i\n", game->lineNumber);
         printf_debug("romScreenPath: %s\n", game->romScreenPath);
-        printf_debug("path: %s\n", game->path);      
+        printf_debug("path: %s\n", game->path);
     }
 
     game_list_len = nbGame;
@@ -431,6 +431,7 @@ int main(int argc, char *argv[])
 
     readHistory();
     printHistory();
+
     settings_load();
     lang_load();
 
@@ -490,7 +491,6 @@ int main(int argc, char *argv[])
         footer_height = 0;
 
     SDL_Surface *current_bg = NULL;
-    SDL_Rect frame = {theme()->frame.border_left, 0, 640 - theme()->frame.border_left - theme()->frame.border_right, 480};
 
     while (!quit) {
         uint32_t ticks = SDL_GetTicks();
@@ -693,21 +693,27 @@ int main(int argc, char *argv[])
                     current_bg = loadRomScreen(current_game);
 
                     if (current_bg != NULL) {
-						if (current_bg->w != 640 || current_bg->h != 480) {
+                        if (current_bg->w > 640 || current_bg->h > 480) {
                             printf_debug("Scaling screenshot from %dx%d to 640x480\n", current_bg->w, current_bg->h);
                             SDL_Rect dest_rect = {0, 0, 640, 480};
                             SDL_SoftStretch(current_bg, NULL, current_bg, &dest_rect);
                             current_bg->w = 640;
                             current_bg->h = 480;
                         }
+
+                        int offSetX = (int)(640 - current_bg->w) / 2;
+                        int offSetY = (int)(480 - current_bg->h) / 2;
+
+                        SDL_Rect game_name_bg_size = {0, 0, 640, 480};
+                        SDL_Rect game_name_bg_pos = {offSetX, offSetY};
+
+                        SDL_Rect frame = {theme()->frame.border_left, 0, 640 - theme()->frame.border_left - theme()->frame.border_right, 480};
+                        SDL_Rect frame_pos = {offSetX+theme()->frame.border_left, offSetY};
+
                         if (view_mode == VIEW_NORMAL)
-                            SDL_BlitSurface(current_bg, &frame, screen, &frame);
+                            SDL_BlitSurface(current_bg, &frame, screen, &frame_pos);
                         else
-                            SDL_BlitSurface(current_bg, NULL, screen, NULL);
-                        int x_offset = (int)((640 - current_bg->w) / 2);
-                        int y_offset = (int)((480 - current_bg->h) / 2);
-                        SDL_Rect frame_bg = {x_offset, y_offset, 640, 480};
-                        SDL_BlitSurface(current_bg, NULL, screen, &frame_bg);
+                            SDL_BlitSurface(current_bg, &game_name_bg_size, screen, &game_name_bg_pos);
                     }
                 }
             }
