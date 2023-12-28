@@ -3,7 +3,7 @@
 TARGET=OnionRV
 VERSION=4.2.3RV8.4
 
-RA_SUBVERSION=1.15.0.7
+RA_SUBVERSION=1.15.0.8
 
 ###########################################################
 
