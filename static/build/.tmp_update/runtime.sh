@@ -431,9 +431,9 @@ launch_game() {
                 change_resolution "640x480"
             fi
             retval=$?
-                infoPanel --title " " --message  "Сохранение ..." --persistent --no-footer &
             if [ $is_game -eq 1 ] && [ ! -f /tmp/.offOrder ] && [ -f /tmp/.displaySavingMessage ]; then
                 rm /tmp/.displaySavingMessage
+                infoPanel --title " " --message  "Сохранение ..." --persistent --no-footer &
                 touch /tmp/dismiss_info_panel
                 sync
             fi
