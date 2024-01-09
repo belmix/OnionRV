@@ -124,16 +124,18 @@ get_release_info() {
 		return 1
 	fi
 
-	Release_asset=$(echo "$Release_assets_info" | jq '.assets[]? | select(.name | contains("OnionRV-v"))')
+	Release_asset=$(echo "$Release_assets_info" | jq '.assets[]? | select(.name | contains("OnionRV_"))')
 
-	Release_url=$(echo $Release_asset | jq '.browser_download_url' | tr -d '"')
-	Release_FullVersion=$(echo $Release_asset | jq '.name' | tr -d "\"" | sed 's/^OnionRV-v//g' | sed 's/\.zip$//g')
-	Release_Version=$(echo $Release_FullVersion | sed 's/-dev.*$//g')
-	Release_size=$(echo $Release_asset | jq -r '.size')
+
+	Release_url=$(echo $Release_assets_info | jq '.assets[0] .browser_download_url' | tr -d '"')
+	Release_FullVersion=$(echo $Release_assets_info | jq '.assets[0].name' | tr -d "\"" | sed 's/^OnionRV_//g' | sed 's/\.zip$//g')
+	Release_Version=$(echo $Release_assets_info | sed 's/-dev.*$//g')
+	Release_size=$(echo $Release_assets_info | jq -r '.assets[0] .size')
 	Release_info=$(echo $Release_assets_info | jq '.body')
 
+
 	Current_FullVersion=$(installUI --version)
-	Current_Version=$(echo $Current_FullVersion | sed 's/-dev.*$//g')
+	Current_Version=$(echo $Current_FullVersion | sed 's/-dev.*$//g' | sed 's/RV//g')
 
 	echo -e "${GREEN}DONE${NC}"
 
@@ -145,7 +147,7 @@ get_release_info() {
 		"${BLUE}======== Online Version  =========${NC}\n" \
 		" Version: $Release_FullVersion \n" \
 		" Channel: $channel \n" \
-		" Size:    $Release_size \n" \
+		" Size:    ($((($Release_size / 1024) / 1024))MB) \n" \
 		" URL:     $Release_url \n" \
 		"${BLUE}==================================${NC}\n\n\n"
 
