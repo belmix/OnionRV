@@ -11,7 +11,7 @@ BLUE='\033[1;34m'
 NC='\033[0m' # No Color
 
 # Repository name :
-GITHUB_REPOSITORY=OnionUI/Onion
+GITHUB_REPOSITORY=belmix/OnionRV
 
 # channel : stable or beta
 channel=$(cat "$sysdir/config/ota_channel" 2> /dev/null)
@@ -99,7 +99,7 @@ check_connection() {
 }
 
 run_bootstrap() {
-	curl -k -s https://raw.githubusercontent.com/OnionUI/Onion/main/static/build/.tmp_update/script/ota_bootstrap.sh | sh
+	curl -k -s https://raw.githubusercontent.com/belmix/OnionRV/main/static/build/.tmp_update/script/ota_bootstrap.sh | sh
 }
 
 channel_choice() {
