@@ -87,13 +87,13 @@ enable_wifi() {
 }
 
 check_connection() {
-	echo -n "Checking internet connection... "
+	echo -n "Checking Иnternet connection... "
 	if wget -q --spider https://github.com > /dev/null; then
 		echo -e "${GREEN}OK${NC}"
 	else
 		echo -e "${RED}FAIL${NC}\nError: https://github.com not reachable. Check your wifi connection."
 		echo -ne "${YELLOW}"
-		read -n 1 -s -r -p "Press A to exit"
+		read -n 1 -s -r -p "Нажмите A для выхода"
 		exit 2
 	fi
 }
@@ -124,10 +124,10 @@ get_release_info() {
 		return 1
 	fi
 
-	Release_asset=$(echo "$Release_assets_info" | jq '.assets[]? | select(.name | contains("Onion-v"))')
+	Release_asset=$(echo "$Release_assets_info" | jq '.assets[]? | select(.name | contains("OnionRV-v"))')
 
 	Release_url=$(echo $Release_asset | jq '.browser_download_url' | tr -d '"')
-	Release_FullVersion=$(echo $Release_asset | jq '.name' | tr -d "\"" | sed 's/^Onion-v//g' | sed 's/\.zip$//g')
+	Release_FullVersion=$(echo $Release_asset | jq '.name' | tr -d "\"" | sed 's/^OnionRV-v//g' | sed 's/\.zip$//g')
 	Release_Version=$(echo $Release_FullVersion | sed 's/-dev.*$//g')
 	Release_size=$(echo $Release_asset | jq -r '.size')
 	Release_info=$(echo $Release_assets_info | jq '.body')
