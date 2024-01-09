@@ -16,10 +16,10 @@ main() {
     axp 0 > /dev/null
     export DEVICE_ID=$([ $? -eq 0 ] && echo $MODEL_MMP || echo $MODEL_MM)
     echo -n "$DEVICE_ID" > /tmp/deviceModel
-    
+
     SERIAL_NUMBER=$(read_uuid) 
     echo -n "$SERIAL_NUMBER" > /tmp/deviceSN
-
+    
     touch /tmp/is_booting
     check_installer
     clear_logs
@@ -66,7 +66,7 @@ main() {
 
     cd $sysdir
     bootScreen "Boot"
-
+    
     # Set filebrowser branding to "Onion" and apply custom theme
     if [ -f "$sysdir/config/filebrowser/first.run" ]; then
         $sysdir/bin/filebrowser config set --branding.name "Onion" -d $sysdir/config/filebrowser/filebrowser.db
@@ -87,7 +87,7 @@ main() {
     
     # Disable VNC server flag at boot
     rm $sysdir/config/.vncServer
-
+    
     # Detect if MENU button is held
     detectKey 1
     menu_pressed=$?
@@ -103,6 +103,7 @@ main() {
 
     # Bind arcade name library to customer path
     mount -o bind $miyoodir/lib/libgamename.so /customer/lib/libgamename.so
+
 
     rm -rf /tmp/is_booting
 
@@ -283,7 +284,7 @@ change_resolution() {
         res_x=$(echo "$screen_resolution" | cut -d 'x' -f 1)
         res_y=$(echo "$screen_resolution" | cut -d 'x' -f 2)
     fi
-    log "change resolution to $res_x x $res_y"
+    log "Changing resolution to $res_x x $res_y"
 
     fbset -g "$res_x" "$res_y" "$res_x" "$((res_y * 2))" 32
     # inform batmon and keymon of resolution change
@@ -300,6 +301,7 @@ launch_game() {
     romext=""
     romcfgpath=""
     retroarch_core=""
+    full_resolution_path=""
 
     start_audioserver
     save_settings
@@ -330,6 +332,33 @@ launch_game() {
             log "rompath: $rompath (ext: $romext)"
             log "romcfgpath: $romcfgpath"
             is_game=1
+        fi
+    fi
+
+    if [ -f /tmp/new_res_available ]; then
+        # Check if the program to be launched supports 560p
+        # Different programs need different checks (Apps vs Ports vs the rest)
+        full_resolution_path=""
+        if grep -qF "/mnt/SDCARD/App/" $sysdir/cmd_to_run.sh; then
+            # ----- App launch ----- #
+
+            full_resolution_path=$(cat $sysdir/cmd_to_run.sh | cut -d' ' -f 2 | sed 's/;/\/full_resolution/')
+
+        elif grep -qF "/mnt/SDCARD/Roms/PORTS/" $sysdir/cmd_to_run.sh; then
+            # ----- Port launch ----- #
+
+            dot_port_path=$(grep -o '\/mnt\/SDCARD\/Roms\/PORTS.*\.port' $sysdir/cmd_to_run.sh)
+
+            if grep -qF "FullResolution=1" "$dot_port_path"; then
+                # Look for FullResolution=1 in the .port file
+                # set full_resolution_path to a file that will always exist
+                full_resolution_path="/tmp/new_res_available"
+            fi
+
+        else
+            # ----- Everything else ----- #
+
+            full_resolution_path=$(grep -o '".*launch\.sh"' $sysdir/cmd_to_run.sh | sed 's/"//g; s/launch\.sh/full_resolution/')
         fi
     fi
 
@@ -378,6 +407,7 @@ launch_game() {
 
     if [ $is_game -eq 0 ] || [ -f "$rompath" ]; then
         if [ "$romext" == "miyoocmd" ]; then
+            /mnt/SDCARD/.tmp_update/script/remove_last_recent_entry.sh
             emupath=$(dirname $(echo "$cmd" | awk '{ gsub(/"/, "", $2); st = index($2,".."); if (st) { print substr($2,0,st) } else { print $2 } }'))
             cd "$emupath"
             chmod a+x "$rompath"
@@ -385,36 +415,25 @@ launch_game() {
             retval=$?
         else
             # GAME LAUNCH
-        if [ -f /tmp/new_res_available ]; then
-                # check for games that don't work with 752x560 resolution
-                exceptions_file="$sysdir/config/res_exceptions"
-                exception_found=false
-                while IFS= read -r exception; do
-                    case "$exception" in
-                        ""|\#*)
-                            continue
-                            ;;
-                    esac
-                    if grep -qF "$exception" $sysdir/cmd_to_run.sh; then
-                        exception_found=true
-                        log "exception found: $exception"
-                        break
-                    fi
-                done < "$exceptions_file"
-                if ! $exception_found ; then
-                    change_resolution
-                fi
+
+            # Change resolution if needed
+            if [ -f /tmp/new_res_available ] && [ -f "$full_resolution_path" ]; then
+                log "Found full_resolution file, changing resolution to 560p"
+                change_resolution
             fi
+
             # Free memory
             $sysdir/bin/freemma
             cd /mnt/SDCARD/RetroArch/
             $sysdir/cmd_to_run.sh
             if [ -f /tmp/new_res_available ]; then
+                # Restore resolution
                 change_resolution "640x480"
             fi
             retval=$?
-            if [ $is_game -eq 1 ] && [ ! -f /tmp/.offOrder ]; then
                 infoPanel --title " " --message  "Сохранение ..." --persistent --no-footer &
+            if [ $is_game -eq 1 ] && [ ! -f /tmp/.offOrder ] && [ -f /tmp/.displaySavingMessage ]; then
+                rm /tmp/.displaySavingMessage
                 touch /tmp/dismiss_info_panel
                 sync
             fi
@@ -512,6 +531,7 @@ check_off_order() {
 		for check_off_script in $check_off_scripts; do
 	  		sh "$check_off_script"
 		done
+
         bootScreen "$1" &
         sleep 1 # Allow the bootScreen to be displayed
         shutdown
@@ -531,7 +551,6 @@ check_hide_recents() {
             mv -f $recentlist_temp $recentlist_hidden
             rm -f $recentlist
         fi
-        # Hide recents off
     else
         # Restore recentlist
         if [ -f $recentlist_hidden ]; then
@@ -600,12 +619,11 @@ get_screen_resolution() {
 }
 
 mute_theme_bgm() {
-    bgm_muted=$(/customer/app/jsonval bgmmute)
     system_theme="$(/customer/app/jsonval theme)"
     bgm_file="${system_theme}sound/bgm.mp3"
     muted_bgm_file="${system_theme}sound/bgm_muted.mp3"
 
-    if [ $bgm_muted -eq 1 ]; then
+    if [ -f "$sysdir/config/.bgmMute" ]; then
         if [[ -f "$bgm_file" ]]; then
             mv -f "$bgm_file" "$muted_bgm_file"
         fi
@@ -647,7 +665,7 @@ init_system() {
     echo $frequency > /sys/class/pwm/pwmchip0/pwm0/period
     echo $brightness_raw > /sys/class/pwm/pwmchip0/pwm0/duty_cycle
     echo 1 > /sys/class/pwm/pwmchip0/pwm0/enable
-	
+
     get_screen_resolution
 }
 
