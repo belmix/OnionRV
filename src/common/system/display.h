@@ -47,10 +47,13 @@ void display_getRenderResolution()
 void display_getResolution()
 {
     FILE *file = fopen("/tmp/screen_resolution", "r");
-    if (file == NULL || !(fscanf(file, "%dx%d", &DISPLAY_WIDTH, &DISPLAY_HEIGHT) == 2))
-        printf("failed to get screen resolution\n");
+    if (file == NULL) {
+        printf("Failed to open screen resolution file\n");
+        return;
+    }
+    if (fscanf(file, "%dx%d", &DISPLAY_WIDTH, &DISPLAY_HEIGHT) != 2)
+        printf("Failed to get screen resolution\n");
     fclose(file);
-    display_getRenderResolution();
 }
 
 void display_init(void)
@@ -60,7 +63,8 @@ void display_init(void)
     ioctl(fb_fd, FBIOGET_FSCREENINFO, &finfo);
     fb_addr = (uint32_t *)mmap(0, finfo.smem_len, PROT_READ | PROT_WRITE,
                                MAP_SHARED, fb_fd, 0);
-display_getResolution();
+    display_getResolution();
+    display_getRenderResolution();
 }
 
 //
@@ -215,14 +219,14 @@ void display_drawBatteryIcon(uint32_t color, int x, int y, int level,
     int levelWidth = (level * 26) / 100;
     for (i = x + 3 + 26 - levelWidth; i < x + 1 + 26; i++) {
         for (j = y + 3; j < y + 12; j++) {
-        ofs[i + j * RENDER_WIDTH] = fillColor;
+            ofs[i + j * RENDER_WIDTH] = fillColor;
         }
     }
 
     // Draw battery head wireframe
     for (i = x - 4; i < x; i++) {
         for (j = y + 2; j < y + 13; j++) {
-        ofs[i + j * RENDER_WIDTH] = color;
+            ofs[i + j * RENDER_WIDTH] = color;
         }
     }
 }
