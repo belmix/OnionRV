@@ -128,8 +128,8 @@ get_release_info() {
 
 
 	Release_url=$(echo $Release_assets_info | jq '.assets[0] .browser_download_url' | tr -d '"')
-	Release_FullVersion=$(echo $Release_assets_info | jq '.assets[0].name' | tr -d "\"" | sed 's/^OnionRV_//g' | sed 's/\.zip$//g')
-	Release_Version=$(echo $Release_assets_info | sed 's/-dev.*$//g')
+	Release_FullVersion=$(echo $Release_assets_info | jq '.assets[0].name' | sed 's/-dev.*$//g')
+	Release_Version=$(echo $Release_assets_info | jq '.assets[0].name' | tr -d "\"" | sed 's/^OnionRV_//g' | sed 's/\.zip$//g')
 	Release_size=$(echo $Release_assets_info | jq -r '.assets[0] .size')
 	Release_info=$(echo $Release_assets_info | jq '.body')
 
@@ -141,7 +141,7 @@ get_release_info() {
 
 	echo -ne "\n\n" \
 		"${BLUE}======= Installed Version ========${NC}\n" \
-		" Version: $Current_FullVersion \n" \
+		" Version: $Current_Version \n" \
 		"${BLUE}==================================${NC}\n"
 	echo -ne "\n\n" \
 		"${BLUE}======== Online Version  =========${NC}\n" \
