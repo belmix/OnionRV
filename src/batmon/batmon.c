@@ -1,5 +1,6 @@
 #include "batmon.h"
 #include "system/device_model.h"
+#include "utils/process.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,8 +26,8 @@ int main(int argc, char *argv[])
     signal(SIGUSR1, sigHandler);
 
     display_init();
-
     int ticks = CHECK_BATTERY_TIMEOUT_S;
+
     bool is_charging = false;
 
     while (!quit) {
@@ -59,13 +60,14 @@ int main(int argc, char *argv[])
         else if (is_charging) {
             // Charging just stopped
             is_charging = false;
-            
+
             printf_debug(
                 "Charging stopped: suspended = %d, perc = %d, warn = %d\n",
                 is_suspended, current_percentage, warn_at);
-            
+
             if (DEVICE_ID == MIYOO283) {
                 adc_value_g = updateADCValue(0);
+                current_percentage = batteryPercentage(adc_value_g);
                 saveFakeAxpResult(current_percentage);
             }
             else if (DEVICE_ID == MIYOO354) {
@@ -91,6 +93,7 @@ int main(int argc, char *argv[])
                 printf_debug(
                     "проверка заряда: suspended = %d, perc = %d, warn = %d\n",
                     is_suspended, current_percentage, warn_at);
+
                 ticks = -1;
             }
 
@@ -102,7 +105,7 @@ int main(int argc, char *argv[])
                     is_suspended, current_percentage, warn_at);
                 old_percentage = current_percentage;
                 file_put_sync(fp, "/tmp/percBat", "%d", current_percentage);
-                
+
                 if (abs(last_logged_percentage - current_percentage) >= BATTERY_LOG_THRESHOLD) {
                     // Current battery state duration addition
                     update_current_duration();
@@ -110,7 +113,7 @@ int main(int argc, char *argv[])
                     log_new_percentage(current_percentage, is_charging);
                     last_logged_percentage = current_percentage;
                 }
-                
+
                 if (DEVICE_ID == MIYOO283) {
                     saveFakeAxpResult(current_percentage);
                 }
@@ -121,20 +124,22 @@ int main(int argc, char *argv[])
         }
 
 #ifdef PLATFORM_MIYOOMINI
-        if (is_suspended || current_percentage == 500)
+        if (is_suspended || current_percentage == 500) {
             batteryWarning_hide();
-        else if (current_percentage < warn_at &&
-                 !config_flag_get(".noBatteryWarning"))
+        }
+        else if (current_percentage < warn_at && !warningDisabled()) {
             batteryWarning_show();
-        else
+        }
+        else {
             batteryWarning_hide();
+        }
 #endif
         if (battery_current_state_duration > MAX_DURATION_BEFORE_UPDATE)
             update_current_duration();
 
         sleep(1);
         battery_current_state_duration++;
-        ticks++;   
+        ticks++;
     }
 
     // Current battery state duration addition
@@ -159,7 +164,7 @@ static void sigHandler(int sig)
         }
         is_suspended = false;
         break;
-	case SIGUSR1:
+    case SIGUSR1:
         display_getRenderResolution();
         break;
     default:
@@ -382,6 +387,8 @@ int batteryPercentage(int value)
 static void *batteryWarning_thread(void *param)
 {
     while (1) {
+        if (temp_flag_get("hasBatteryDisplay"))
+            break;
         display_drawBatteryIcon(0x00FF0000, 15, RENDER_HEIGHT - 30, 10,
                                 0x00FF0000); // draw red battery icon
         usleep(0x4000);
@@ -404,4 +411,9 @@ void batteryWarning_hide(void)
     pthread_cancel(adc_pt);
     pthread_join(adc_pt, NULL);
     adcthread_active = false;
+}
+
+bool warningDisabled(void)
+{
+    return config_flag_get(".noBatteryWarning") || temp_flag_get("hasBatteryDisplay") || process_isRunning("MainUI");
 }
