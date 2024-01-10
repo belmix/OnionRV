@@ -1,0 +1,6 @@
+{
+	"label": "Скачать игры",
+	"icon": "/mnt/SDCARD/Icons/Default/app/romsloader.png",
+	"launch": "launch.sh",
+	"description": "Загрузить Roms через WIFI"
+}
