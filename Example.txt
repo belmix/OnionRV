@@ -13,6 +13,25 @@ NC='\033[0m' # No Color
 # Repository name :
 GITHUB_REPOSITORY=belmix/OnionRV
 
+
+Меню
+Пример кода меню и передачи значения переменной channel
+-e значения(пункты меню)
+-t заголовок
+-b подксказка
+
+channel_choice() {
+	channel=$(echo -e "roms\nexit" | $sysdir/script/shellect.sh -t "Select distribution channel:" -b "Press A to validate your choice.")
+	clear
+	if [ "$channel" = "roms" ]; then
+	echo "$channel" > "$sysdir/config/ota_channel"
+	else
+		exit 4 #  Выход
+	fi
+}
+
+
+
 WIFI
 Пример кода проверки и включения WIFI
 
