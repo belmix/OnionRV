@@ -103,7 +103,7 @@ run_bootstrap() {
 }
 
 channel_choice() {
-	channel=$(echo -e "roms\nexit" | $sysdir/script/shellect.sh -t "Select distribution channel:" -b "Press A to validate your choice.")
+	channel=$(echo -e "Roms\nImages\nExit\n" | $sysdir/script/shellect.sh -t "Select Downloads:" -b "Press A to validate your choice.")
 	clear
 	echo "$channel" > "$sysdir/config/ota_channel"
 }
