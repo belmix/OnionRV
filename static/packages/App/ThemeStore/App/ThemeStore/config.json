@@ -1,0 +1,10 @@
+
+{
+"label":"Менеджер Тем",
+"icon":"../../Icons/Default/app/mtheme.png",
+"launch":"launch.sh",
+"description":"Просмотр и загрузка тем"
+}
+
+
+
