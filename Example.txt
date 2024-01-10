@@ -1,0 +1,134 @@
+#!/bin/sh
+# ROMS for Onion.
+cmd=$1
+sysdir=/mnt/SDCARD/.tmp_update
+
+# Colors
+RED='\033[1;31m'
+GREEN='\033[1;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[1;34m'
+NC='\033[0m' # No Color
+
+# Repository name :
+GITHUB_REPOSITORY=belmix/OnionRV
+
+WIFI
+Пример кода проверки и включения WIFI
+
+enable_wifi() {
+	# Enable wifi if necessary
+	IP=$(ip route get 1 | awk '{print $NF;exit}')
+	if [ "$IP" = "" ]; then
+		echo "Wifi is disabled - trying to enable it..."
+		insmod /mnt/SDCARD/8188fu.ko
+		ifconfig lo up
+		/customer/app/axp_test wifion
+		sleep 2
+		ifconfig wlan0 up
+		wpa_supplicant -B -D nl80211 -iwlan0 -c /appconfigs/wpa_supplicant.conf
+		udhcpc -i wlan0 -s /etc/init.d/udhcpc.script
+		sleep 3
+		clear
+	fi
+}
+
+Проверка сети
+Пример кода проверки доступности сайта
+
+# Checking github.com
+check_connection() {
+	echo -n "Checking Internet connection... "
+	if wget -q --spider https://github.com > /dev/null; then
+		echo -e "${GREEN}OK${NC}"
+	else
+		echo -e "${RED}FAIL${NC}\nError: https://github.com not reachable. Check your wifi connection."
+		echo -ne "${YELLOW}"
+		read -n 1 -s -r -p "Press A exit"
+		exit 2
+	fi
+}
+
+SD карта
+Пример кода проверки свободного места на SD карте
+
+check_available_space() {
+	# Available space in MB
+	mount_point=$(mount | grep -m 1 '/mnt/SDCARD' | awk '{print $1}') # it could be /dev/mmcblk0p1 or /dev/mmcblk0
+	available_space=$(df -m $mount_point | awk 'NR==2{print $4}')
+
+	# Check available space
+	if [ "$available_space" -lt "1000" ]; then
+		echo -e "${RED}Available space is insufficient on SD card${NC}\n"
+		echo -ne "${YELLOW}"
+		read -n 1 -s -r -p "Press A to exit"
+		exit 1
+	fi
+}
+
+Загрузка архива
+Пример кода загрузки файла 
+
+download_update() {
+	echo -ne "${YELLOW}"
+	read -n 1 -s -r -p "Press A to continue"
+	echo -ne "${NC}"
+
+	Mychoice=$(echo -e "No\nYes" | $sysdir/script/shellect.sh -t "Download $Release_Version ($((($Release_size / 1024) / 1024))MB) ?" -b "Press A to validate your choice.")
+	clear
+	if [ "$Mychoice" = "Yes" ]; then
+
+		echo -ne "\n${BLUE}================== CHECKDISK ==================${NC}\n"
+		/mnt/SDCARD/.tmp_update/script/stop_audioserver.sh > nul 2> nul # we need a maximum of memory available to run fsck.fat
+		/mnt/SDCARD/.tmp_update/bin/freemma > NUL
+		echo -ne "\n" \
+			"Please wait during FAT file system integrity check.\n" \
+			"Issues should be fixed automatically.\n" \
+			"The process can be long:\n" \
+			"about 2 minutes for 128GB SD card\n\n\n"
+		fsck.fat -a $mount_point
+
+		mkdir -p $sysdir/download/
+		echo -ne "\n\n" \
+			"${BLUE}== Downloading Onion $Release_Version ($channel channel) ==${NC}\n"
+		/mnt/SDCARD/.tmp_update/bin/freemma > NUL
+		sync
+		wget --no-check-certificate $Release_url -O "$sysdir/download/$Release_Version.zip"
+		echo -ne "\n\n" \
+			"${GREEN}================== Download done ==================${NC}\n"
+		sync
+		sleep 2
+	else
+		exit 4
+	fi
+
+	Downloaded_size=$(stat -c %s "$sysdir/download/$Release_Version.zip")
+	if [ "$Downloaded_size" -eq "$Release_size" ]; then
+		echo -e "${GREEN}File size OK!${NC} ($Downloaded_size)"
+		sleep 3
+	else
+		echo -ne "\n\n" \
+			"${RED}Error: Wrong download size${NC} ($Downloaded_size instead of $Release_size)\n"
+		echo -ne "${YELLOW}"
+		read -n 1 -s -r -p "Press A to exit"
+		exit 5
+	fi
+}
+
+
+Распаковка
+Пример кода распаковки скачанного обновления
+
+unzip_update() {
+# unzip -o "$sysdir/download/$Release_Version.zip" -d "/mnt/SDCARD"
+echo -n "Unpack zip... "
+sysdir=/mnt/SDCARD/.tmp_update
+7z x -aoa -o"/mnt/SDCARD" "$sysdir/download/$Release_Version.zip"
+}
+
+
+check_available_space
+enable_wifi
+check_connection
+download_update
+unzip_update
