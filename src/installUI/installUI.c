@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
     char message_str[STR_MAX] = " ";
 
     if (argc == 2 && strcmp("--version", argv[1]) == 0) {
-        printf("%s\n", ONION_VERSION);
+        // printf("%s\n", ONION_VERSION);
         return EXIT_SUCCESS;
     }
 
@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
     SDL_Color fg_color = {255, 255, 255, 0};
 
     char version_str[STR_MAX];
-    sprintf(version_str, "v%s", ONION_VERSION);
+    // sprintf(version_str, "v%s", ONION_VERSION);
 
     SDL_Surface *surface_version = TTF_RenderUTF8_Blended(font_small, version_str, fg_color);
     SDL_Rect rect_version = {10, 10};

@@ -87,13 +87,13 @@ enable_wifi() {
 }
 
 check_connection() {
-	echo -n "Checking Иnternet connection... "
+	echo -n "Checking Internet connection... "
 	if wget -q --spider https://github.com > /dev/null; then
 		echo -e "${GREEN}OK${NC}"
 	else
 		echo -e "${RED}FAIL${NC}\nError: https://github.com not reachable. Check your wifi connection."
 		echo -ne "${YELLOW}"
-		read -n 1 -s -r -p "Нажмите A для выхода"
+		read -n 1 -s -r -p "Press A for exit"
 		exit 2
 	fi
 }

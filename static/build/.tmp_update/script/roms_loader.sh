@@ -1,5 +1,5 @@
 #!/bin/sh
-# Roms for Onion.
+# OTA updates for Onion.
 cmd=$1
 sysdir=/mnt/SDCARD/.tmp_update
 
@@ -13,238 +13,192 @@ NC='\033[0m' # No Color
 # Repository name :
 GITHUB_REPOSITORY=belmix/OnionRV
 
-# channel : stable or beta
-channel=$(cat "$sysdir/config/ota_channel" 2> /dev/null)
-if [ "$channel" == "" ]; then
-	channel="stable"
-fi
+# Define submenu items
+submenu_indicator=('1')  # Indicates which items are submenus
+submenu_items=('Dandy' 'Sega' 'Back')
 
-main() {
-	if [ "$cmd" == "check" ]; then
-		IP=$(ip route get 1 | awk '{print $NF;exit}')
-		if [ "$IP" != "" ]; then
-			get_release_info
-			if [ $? -eq 0 ]; then
-				touch "$sysdir/.updateAvailable"
-				exit 0
-			fi
-		fi
-		exit 1
-	fi
+# Define submenu2 items
+submenu2_items=('Profile' 'Settings' 'Back')
 
-	rm $sysdir/cmd_to_run.sh 2> /dev/null
+# Define main menu items
+selected_item=0
+menu_items=('Main' 'Submenu' 'Submenu2' 'Exit')
 
-	check_available_space
-	enable_wifi
-	check_connection
-	run_bootstrap
+print_menu()  # selected_item, submenu_indicator, ...menu_items
+{
+  local function_arguments=($@)
 
-	sleep 2
-	channel_choice
+  local selected_item="$1"
+  local submenu_indicator=(${function_arguments[1]})
+  local menu_items=(${function_arguments[@]:2})
+  local menu_size="${#menu_items[@]}"
 
-	get_release_info
-	if [ $? -eq 1 ]; then
-		echo -ne "${YELLOW}"
-		read -n 1 -s -r -p "Press A to exit"
-		exit 3
-	else
-		touch "$sysdir/.updateAvailable"
-	fi
-
-	download_update
-	apply_update
+  for (( i = 0; i < $menu_size; ++i ))
+  do
+    if [ $i -eq $selected_item ]
+    then
+      echo -e "\e[1;37;44m ${menu_items[i]}\e[0m"  # Highlighted text (white text on blue background)
+    elif [ "${submenu_indicator[i]}" = "1" ]
+    then
+      echo -e "\e[1;33m ${menu_items[i]}\e[0m"  # Submenu text (bold yellow text)
+    else
+      echo -e "\e[1;37m ${menu_items[i]}\e[0m"  # Regular text (bold white text)
+    fi
+  done
 }
 
-check_available_space() {
-	# Available space in MB
-	mount_point=$(mount | grep -m 1 '/mnt/SDCARD' | awk '{print $1}') # it could be /dev/mmcblk0p1 or /dev/mmcblk0
-	available_space=$(df -m $mount_point | awk 'NR==2{print $4}')
+main()  # selected_item, submenu_indicator, ...menu_items
+{
+  local function_arguments=($@)
 
-	# Check available space
-	if [ "$available_space" -lt "1000" ]; then
-		echo -e "${RED}Available space is insufficient on SD card${NC}\n"
-		echo -ne "${YELLOW}"
-		read -n 1 -s -r -p "Press A to exit"
-		exit 1
-	fi
+  local selected_item="$1"
+  local submenu_indicator=(${function_arguments[1]})
+  local menu_items=(${function_arguments[@]:2})
+  local menu_size="${#menu_items[@]}"
+  local menu_limit=$((menu_size - 1))
+
+  local submenu_level=0
+  local submenu_indices=()  # Stack to keep track of submenu indices
+
+  clear
+  print_menu "$selected_item" "${submenu_indicator[@]}" "${menu_items[@]}"
+  
+  while read -rsn1 input
+  do
+    case "$input"
+    in
+      $'\x1B')  # ESC ASCII code
+        read -rsn1 -t 0.1 input
+        if [ "$input" = "[" ]  # occurs before arrow code
+        then
+          read -rsn1 -t 0.1 input
+          case "$input"
+          in
+            A)  # Up Arrow
+              if [ "$submenu_level" -eq 0 ] && [ "$selected_item" -ge 1 ]
+              then
+                selected_item=$((selected_item - 1))
+                clear
+                print_menu "$selected_item" "${submenu_indicator[@]}" "${menu_items[@]}"
+              fi
+              ;;
+            B)  # Down Arrow
+              if [ "$submenu_level" -eq 0 ] && [ "$selected_item" -lt "$menu_limit" ]
+              then
+                selected_item=$((selected_item + 1))
+                clear
+                print_menu "$selected_item" "${submenu_indicator[@]}" "${menu_items[@]}"
+              fi
+              ;;
+          esac
+        fi
+        read -rsn5 -t 0.1  # flushing stdin
+        ;;
+      "c")  # Enter 'c' key (for "choose" submenu)
+        if [ "${submenu_indicator[selected_item]}" = "1" ]
+        then
+          submenu_level=$((submenu_level + 1))
+          submenu_indices+=("$selected_item")
+          selected_item=0  # Select the first item of the submenu
+          clear
+          print_menu "$selected_item" "${submenu_indicator[@]}" "${menu_items[@]}"
+        fi
+        ;;
+      "b")  # Enter 'b' key (for "back" from submenu)
+        if [ "$submenu_level" -gt 0 ]
+        then
+          submenu_level=$((submenu_level - 1))
+          selected_item=${submenu_indices[-1]}  # Pop the last index from stack
+          unset 'submenu_indices[${#submenu_indices[@]}-1]'  # Remove the last index from stack
+          clear
+          print_menu "$selected_item" "${submenu_indicator[@]}" "${menu_items[@]}"
+        fi
+        ;;
+      "")  # Enter key
+        if [ "$submenu_level" -eq 0 ]
+        then
+          return "$selected_item"
+        else
+          if [ "${menu_items[selected_item]}" = "Back" ]
+          then
+            submenu_level=$((submenu_level - 1))
+            selected_item=${submenu_indices[-1]}  # Pop the last index from stack
+            unset 'submenu_indices[${#submenu_indices[@]}-1]'  # Remove the last index from stack
+            clear
+            print_menu "${selected_item}" "${submenu_indicator[@]}" "${menu_items[@]}"
+          else
+            # Implement your submenu item selection logic here
+            echo "Selected submenu item: ${menu_items[selected_item]}"
+          fi
+        fi
+        ;;
+    esac
+  done
 }
 
-enable_wifi() {
-	# Enable wifi if necessary
-	IP=$(ip route get 1 | awk '{print $NF;exit}')
-	if [ "$IP" = "" ]; then
-		echo "Wifi is disabled - trying to enable it..."
-		insmod /mnt/SDCARD/8188fu.ko
-		ifconfig lo up
-		/customer/app/axp_test wifion
-		sleep 2
-		ifconfig wlan0 up
-		wpa_supplicant -B -D nl80211 -iwlan0 -c /appconfigs/wpa_supplicant.conf
-		udhcpc -i wlan0 -s /etc/init.d/udhcpc.script
-		sleep 3
-		clear
-	fi
-}
-
-check_connection() {
-	echo -n "Checking Иnternet connection... "
-	if wget -q --spider https://github.com > /dev/null; then
-		echo -e "${GREEN}OK${NC}"
-	else
-		echo -e "${RED}FAIL${NC}\nError: https://github.com not reachable. Check your wifi connection."
-		echo -ne "${YELLOW}"
-		read -n 1 -s -r -p "Нажмите A для выхода"
-		exit 2
-	fi
-}
-
-run_bootstrap() {
-	curl -k -s https://raw.githubusercontent.com/belmix/OnionRV/main/static/build/.tmp_update/script/ota_bootstrap.sh | sh
-}
-
-channel_choice() {
-	channel=$(echo -e "Roms\nImages\nThemes\nSaves\nConfigs\nExit\n" | $sysdir/script/shellect.sh -t "Select Downloads:" -b "Press A to validate your choice.")
-	clear
-	echo "$channel" > "$sysdir/config/ota_channel"
-}
-
-get_release_info() {
-	echo -n "Retrieving release information... "
-
-	# Github source api url
-	if [ "$channel" = "roms" ]; then
-		Release_assets_info=$(curl -k -s https://api.github.com/repos/$GITHUB_REPOSITORY/releases/tags/latest)
-	else
-		Release_assets_info=$(curl -k -s https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest)
-	fi
-
-	if echo "$Release_assets_info" | grep -q '"message": "Not Found"'; then
-		echo -e "${GREEN}DONE${NC}\n\n" \
-			"No update available for $channel channel\n"
-		return 1
-	fi
-
-	Release_asset=$(echo "$Release_assets_info" | jq '.assets[]? | select(.name | contains("OnionRV_"))')
+# Usage example:
 
 
-	Release_url=$(echo $Release_assets_info | jq '.assets[0] .browser_download_url' | tr -d '"')
-	Release_FullVersion=$(echo $Release_assets_info | jq '.assets[0].name' | sed 's/-dev.*$//g')
-	Release_Version=$(echo $Release_assets_info | jq '.assets[0].name' | tr -d "\"" | sed 's/^OnionRV_//g' | sed 's/\.zip$//g')
-	Release_size=$(echo $Release_assets_info | jq -r '.assets[0] .size')
-	Release_info=$(echo $Release_assets_info | jq '.body')
 
+# Main menu
+main "$selected_item" "${submenu_indicator[@]}" "${menu_items[@]}"
+menu_result="$?"
 
-	Current_FullVersion=$(installUI --version)
-	Current_Version=$(echo $Current_FullVersion | sed 's/-dev.*$//g' | sed 's/RV//g')
+# Process the main menu selection
+case "$menu_result" 
+in
+  0)
+		echo 'Main item selected'
+		;;
+  1)
+    # Submenu
+    submenu_selected_item=0
+    main "$submenu_selected_item" "${submenu_indicator[@]}" "${submenu_items[@]}"
+    submenu_result="$?"
+    
+    # Process the submenu selection
+    case "$submenu_result" 
+	in
+      0)
+        echo 'Dandy item selected'
+        # Implement your profile logic here
+        ;;
+      1)
+        echo 'Sega item selected'
+        # Implement your settings logic here
+        ;;
+      2)
+        # Back selected
+         exec "$0"
+         ;;
+    esac
+    ;;
+  2)
+    # Submenu2
+    submenu_selected_item=0
+    main "$submenu_selected_item" "${submenu_indicator[@]}" "${submenu2_items[@]}"
+    submenu_result="$?"
+    
+    # Process the submenu selection
+    case "$submenu_result" 
+	in
+      0)
+        echo 'Profile item selected'
+        # Implement your profile logic here
+        ;;
+      1)
+        echo 'Settings item selected'
+        # Implement your settings logic here
+        ;;
+      2)
+        # Back selected
+         exec "$0"
+         ;;
+    esac
+    ;;
+  3)
+    echo 'Exit item selected'
+    # Implement your exit logic here
+    ;;
+esac
 
-	echo -e "${GREEN}DONE${NC}"
-
-	echo -ne "\n\n" \
-		"${BLUE}======= Installed Version ========${NC}\n" \
-		" Version: $Current_Version \n" \
-		"${BLUE}==================================${NC}\n"
-	echo -ne "\n\n" \
-		"${BLUE}======== Online Version  =========${NC}\n" \
-		" Version: $Release_FullVersion \n" \
-		" Channel: $channel \n" \
-		" Size:    ($((($Release_size / 1024) / 1024))MB) \n" \
-		" URL:     $Release_url \n" \
-		"${BLUE}==================================${NC}\n\n\n"
-
-	v1=$(get_version $Current_Version)
-	v2=$(get_version $Release_Version)
-
-	if [ $v1 -gt $v2 ] || ([ $v1 -eq $v2 ] && [ "$Current_FullVersion" = "$Release_FullVersion" ]); then
-		echo -e "Version is up to date\n"
-		return 1
-	fi
-
-	echo -e "${GREEN}Update available!${NC}\n"
-	return 0
-}
-
-download_update() {
-	echo -ne "${YELLOW}"
-	read -n 1 -s -r -p "Press A to continue"
-	echo -ne "${NC}"
-
-	Mychoice=$(echo -e "No\nYes" | $sysdir/script/shellect.sh -t "Download $Release_Version ($((($Release_size / 1024) / 1024))MB) ?" -b "Press A to validate your choice.")
-	clear
-	if [ "$Mychoice" = "Yes" ]; then
-
-		echo -ne "\n${BLUE}================== CHECKDISK ==================${NC}\n"
-		/mnt/SDCARD/.tmp_update/script/stop_audioserver.sh > nul 2> nul # we need a maximum of memory available to run fsck.fat
-		/mnt/SDCARD/.tmp_update/bin/freemma > NUL
-		echo -ne "\n" \
-			"Please wait during FAT file system integrity check.\n" \
-			"Issues should be fixed automatically.\n" \
-			"The process can be long:\n" \
-			"about 2 minutes for 128GB SD card\n\n\n"
-		fsck.fat -a $mount_point
-
-		mkdir -p $sysdir/download/
-		echo -ne "\n\n" \
-			"${BLUE}== Downloading Onion $Release_Version ($channel channel) ==${NC}\n"
-		/mnt/SDCARD/.tmp_update/bin/freemma > NUL
-		sync
-		wget --no-check-certificate $Release_url -O "$sysdir/download/$Release_Version.zip"
-		echo -ne "\n\n" \
-			"${GREEN}================== Download done ==================${NC}\n"
-		sync
-		sleep 2
-	else
-		exit 4
-	fi
-
-	Downloaded_size=$(stat -c %s "$sysdir/download/$Release_Version.zip")
-	if [ "$Downloaded_size" -eq "$Release_size" ]; then
-		echo -e "${GREEN}File size OK!${NC} ($Downloaded_size)"
-		sleep 3
-	else
-		echo -ne "\n\n" \
-			"${RED}Error: Wrong download size${NC} ($Downloaded_size instead of $Release_size)\n"
-		echo -ne "${YELLOW}"
-		read -n 1 -s -r -p "Press A to exit"
-		exit 5
-	fi
-}
-
-apply_update() {
-	Mychoice=$(echo -e "No\nYes" | $sysdir/script/shellect.sh -t "Apply update $Release_Version ?" -b "Press A to validate your choice.")
-	clear
-	if [ "$Mychoice" = "Yes" ]; then
-		echo "Applying update... "
-
-		umount /mnt/SDCARD/miyoo/app/MainUI 2> /dev/null
-		/mnt/SDCARD/.tmp_update/bin/freemma > NUL
-
-		# unzip -o "$sysdir/download/$Release_Version.zip" -d "/mnt/SDCARD"
-		7z x -aoa -o"/mnt/SDCARD" "$sysdir/download/$Release_Version.zip"
-
-		if [ $? -eq 0 ]; then
-			echo -e "${GREEN}Decompression successful.${NC}"
-			sync
-			sleep 3
-			echo -ne "\n\n" \
-				"Update $Release_Version applied.\n" \
-				"Rebooting to run installation...\n"
-			echo -ne "${YELLOW}"
-			read -n 1 -s -r -p "Press A to reboot"
-			sleep 1
-			reboot
-		else
-			echo -ne "\n\n" \
-				"${RED}Error: Something wrong happened during decompression.${NC}\n" \
-				"Try to run OTA update again or do a manual update.\n"
-			echo -ne "${YELLOW}"
-			read -n 1 -s -r -p "Press A to exit"
-			exit 6
-		fi
-	else
-		exit 7
-	fi
-}
-
-get_version() { echo $@ | tr -d [:alpha:] | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; }
-
-main

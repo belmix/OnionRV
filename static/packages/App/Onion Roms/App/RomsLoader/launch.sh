@@ -4,4 +4,4 @@ scriptdir=/mnt/SDCARD/.tmp_update/script
 touch /tmp/stay_awake
 
 cd $scriptdir
-st -q -e sh $scriptdir/roms_loader.sh 
+st -q -e sh $scriptdir/roms_loader.sh
