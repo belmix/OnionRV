@@ -1,6 +1,6 @@
 {
-	"label": "Игры и обложки",
+	"label": "Онлайн библиотека WIFI",
 	"icon": "/mnt/SDCARD/Icons/Default/app/romsloader.png",
 	"launch": "launch.sh",
-	"description": "Загрузить Roms,Imgs через WIFI"
+	"description": "Скачать Игры, Обложки, Темы"
 }
