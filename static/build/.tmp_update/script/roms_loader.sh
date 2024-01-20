@@ -452,7 +452,7 @@ apply_romsfc() {
 	clear
 	
 	if [ "$Mychoice" = "Yes" ]; then
-		echo "${YELLOW}Unpack Roms...${NC}"
+		echo -e "${YELLOW}Unpack Roms...${NC}"
 
 		umount /mnt/SDCARD/miyoo/app/MainUI 2> /dev/null
 		/mnt/SDCARD/.tmp_update/bin/freemma > NUL
@@ -493,7 +493,7 @@ apply_romsmd() {
 	clear
 	
 	if [ "$Mychoice" = "Yes" ]; then
-		echo "${YELLOW}Unpack Roms...${NC}"
+		echo -e "${YELLOW}Unpack Roms...${NC}"
 
 		umount /mnt/SDCARD/miyoo/app/MainUI 2> /dev/null
 		/mnt/SDCARD/.tmp_update/bin/freemma > NUL
@@ -537,7 +537,7 @@ apply_imgfc() {
 	clear
 	
 	if [ "$Mychoice" = "Yes" ]; then
-		echo "${YELLOW}Unpack Imgs...${NC}"
+		echo -e "${YELLOW}Unpack Imgs...${NC}"
 
 		umount /mnt/SDCARD/miyoo/app/MainUI 2> /dev/null
 		/mnt/SDCARD/.tmp_update/bin/freemma > NUL
@@ -586,7 +586,7 @@ apply_imgmd() {
 	clear
 	
 	if [ "$Mychoice" = "Yes" ]; then
-		echo "${YELLOW}Unpack Imgs...${NC}"
+		echo -e "${YELLOW}Unpack Imgs...${NC}"
 
 		umount /mnt/SDCARD/miyoo/app/MainUI 2> /dev/null
 		/mnt/SDCARD/.tmp_update/bin/freemma > NUL
