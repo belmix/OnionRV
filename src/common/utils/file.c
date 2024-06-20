@@ -1,4 +1,4 @@
-#include _LARGEFILE64_SOURCE
+#define _LARGEFILE64_SOURCE
 
 #include "file.h"
 
@@ -374,7 +374,7 @@ bool file_findNewest(const char *dir_path, char *newest_file, size_t buffer_size
 }
 char *file_read_lineN(const char *filename, int n)
 {
-    char line[STR_MAX*4]; 
+    char line[STR_MAX * 4];
     int lineNumber = 1;
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
@@ -400,8 +400,9 @@ char *file_read_lineN(const char *filename, int n)
     return NULL;
 }
 
-void file_delete_line(const char *fileName, int n){
-    
+void file_delete_line(const char *fileName, int n)
+{
+
     FILE *file = fopen(fileName, "r");
     if (file == NULL) {
         print_debug("Error opening file");
@@ -415,7 +416,7 @@ void file_delete_line(const char *fileName, int n){
         return;
     }
 
-    char line[STR_MAX*4];
+    char line[STR_MAX * 4];
     int lineNumber = 1;
 
     while (fgets(line, sizeof(line), file) != NULL) {
@@ -459,7 +460,7 @@ void file_add_line_to_beginning(const char *filename, const char *lineToAdd)
     }
     fputs(lineToAdd, tempFile);
 
-    char line[STR_MAX*4];
+    char line[STR_MAX * 4];
     while (fgets(line, sizeof(line), file) != NULL) {
         fputs(line, tempFile);
     }
@@ -478,9 +479,8 @@ void file_add_line_to_beginning(const char *filename, const char *lineToAdd)
 
 long file_get_size(char *filename)
 {
-    struct stat file_status;
-    if (stat(filename, &file_status) < 0)
+    struct stat64 file_status;
+    if (stat64(filename, &file_status) < 0)
         return -1;
     return file_status.st_size;
 }
-
