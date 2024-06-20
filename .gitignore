@@ -62,4 +62,4 @@ src/**/batteryMonitorUI
 !batteryMonitorUI/
 src/**/emusort
 !emuSort/
-
+src/**/libmainuihooks.so
