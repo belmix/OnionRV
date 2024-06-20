@@ -1,0 +1,6 @@
+{
+	"label":	"Сортировка консолей",
+	"icon":	"../../Icons/Default/app/emusort.png",
+	"launch":	"launch.sh",
+	"description":	"Сортировать игровые консоли"
+}

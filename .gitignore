@@ -60,3 +60,6 @@ src/**/axp
 !axp/
 src/**/batteryMonitorUI
 !batteryMonitorUI/
+src/**/emusort
+!emuSort/
+
