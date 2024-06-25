@@ -138,6 +138,9 @@ core: $(CACHE)/.setup
 	@cd $(SRC_DIR)/pngScale && BUILD_DIR=$(BIN_DIR) make
 	@cd $(SRC_DIR)/libgamename && BUILD_DIR=$(BIN_DIR) make
 	@cd $(SRC_DIR)/gameNameList && BUILD_DIR=$(BIN_DIR) make
+	@cd $(SRC_DIR)/tree && BUILD_DIR=$(BIN_DIR) make
+	@cd $(SRC_DIR)/pippi && BUILD_DIR=$(BIN_DIR) make
+	@cd $(SRC_DIR)/sendUDP && BUILD_DIR=$(BIN_DIR) make
 # these need to be rebuilt with -fPIC
 	@rm -f $(ROOT_DIR)/include/cjson/cJSON.o
 	@rm -f $(SRC_DIR)/common/utils/*.o
@@ -177,7 +180,7 @@ $(THIRD_PARTY_DIR)/RetroArch/retroarch_miyoo354:
 # RetroArch
 	@$(ECHO) $(COLOR_BLUE)"\n-- Build RetroArch"$(COLOR_NORMAL)
 	@cd $(THIRD_PARTY_DIR)/RetroArch && make clean all
-	@cd $(THIRD_PARTY_DIR)/RetroArch && make clean all ADD_NETWORKING=1 PACKAGE_NAME=retroarch_miyoo354
+	@cd $(THIRD_PARTY_DIR)/RetroArch && make clean all MIYOO354=1 PACKAGE_NAME=retroarch_miyoo354
 
 external: $(CACHE)/.setup $(THIRD_PARTY_DIR)/RetroArch/retroarch_miyoo354
 	@$(ECHO) $(PRINT_RECIPE)
