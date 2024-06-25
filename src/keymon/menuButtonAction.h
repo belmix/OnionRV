@@ -166,7 +166,7 @@ void action_RA_gameSwitcher(void)
 void action_RA_exitToMenu(void)
 {
     temp_flag_set(".displaySavingMessage", true);
-	screenshot_system();
+    screenshot_system();
     terminate_retroarch();
 }
 
@@ -185,7 +185,7 @@ void action_RA_toggleMenu(void)
 void action_drastic_gameSwitcher(void)
 {
     temp_flag_set(".displaySavingMessage", true);
-	screenshot_system();
+    screenshot_system();
     set_gameSwitcher();
     terminate_drastic();
 }
@@ -193,7 +193,7 @@ void action_drastic_gameSwitcher(void)
 void action_drastic_exitToMenu(void)
 {
     temp_flag_set(".displaySavingMessage", true);
-	screenshot_system();
+    screenshot_system();
     terminate_drastic();
 }
 
