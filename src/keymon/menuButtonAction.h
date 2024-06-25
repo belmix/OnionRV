@@ -230,7 +230,7 @@ void activate_RA_action(int action_id)
     case 3:
         action_RA_quickSwitch();
         break;
-	case 4:
+    case 4:
         action_RA_toggleMenu();
         break;
     default:
