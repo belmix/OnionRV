@@ -273,7 +273,7 @@ void menu_buttonActionInGameMenu(void *_)
                                  (ListItem){
                                      .label = "Быстрое нажатие",
                                      .item_type = MULTIVALUE,
-                                     .value_max = 3,
+                                     .value_max = 4,
                                      .value_labels = BUTTON_INGAME_LABELS,
                                      .value = settings.ingame_single_press,
                                      .action_id = 3,
@@ -284,7 +284,7 @@ void menu_buttonActionInGameMenu(void *_)
                                  (ListItem){
                                      .label = "Долгое удержание",
                                      .item_type = MULTIVALUE,
-                                     .value_max = 3,
+                                     .value_max = 4,
                                      .value_labels = BUTTON_INGAME_LABELS,
                                      .value = settings.ingame_long_press,
                                      .action_id = 4,
@@ -295,7 +295,7 @@ void menu_buttonActionInGameMenu(void *_)
                                  (ListItem){
                                      .label = "Двойное нажатие",
                                      .item_type = MULTIVALUE,
-                                     .value_max = 3,
+                                     .value_max = 4,
                                      .value_labels = BUTTON_INGAME_LABELS,
                                      .value = settings.ingame_double_press,
                                      .action_id = 5,
