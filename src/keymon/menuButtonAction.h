@@ -157,6 +157,7 @@ void action_MainUI_resumeGame(void)
 
 void action_RA_gameSwitcher(void)
 {
+    temp_flag_set(".displaySavingMessage", true);
     screenshot_system();
     set_gameSwitcher();
     terminate_retroarch();
