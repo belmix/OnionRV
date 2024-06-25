@@ -281,7 +281,7 @@ run_installation() {
 
     run_migration_scripts
 
-    echo "Завершена - Всё готово!" >> /tmp/.update_msg
+    echo "Завершена - Почти готово!" >> /tmp/.update_msg
 
     if [ $reset_configs -eq 1 ]; then
         refresh_roms
