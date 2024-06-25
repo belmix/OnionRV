@@ -110,7 +110,7 @@ bool terminate_drastic(void)
             usleep(200000); // 0.2s
             system("sendkeys 1 0, 15 0");
         } 
-		else {
+        else {
             system("sendkeys 1 1, 18 1");
             usleep(200000); // 0.2s
             system("sendkeys 1 0, 18 0");
