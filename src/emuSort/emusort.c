@@ -108,7 +108,7 @@ void freeResources(AppState *st)
 
 void showHelp(AppState *st)
 {
-    theme_renderDialog(screen, "EmuSort", "[L2/R2] Перемещение\n[X] Сортировка A-Z/Z-A\n[Y] Сортировка по времени\n \n[A] Продолжить", false);
+    theme_renderDialog(screen, "Сортировка игр", "[L2/R2] Перемещение\n[X] Сортировка A-Z/Z-A\n[Y] Сортировка по времени\n \n[A] Продолжить", false);
     blitFlip();
     while (!quit)
         if (updateKeystate(st->keystate, &quit, true, NULL) && st->keystate[SW_BTN_A] == PRESSED)
@@ -119,7 +119,7 @@ void showHelp(AppState *st)
 
 void showSplashScreen(AppState *st)
 {
-    theme_renderDialog(screen, "EmuSort", "[L2/R2] Перемещение\n[X] Сортировка A-Z/Z-A\n[Y] Сортировка по времени\n[START] Помощь\n[SELECT] Не показывать это сообщение\n[Any key] Продолжить", false);
+    theme_renderDialog(screen, "Сортировка игр", "[L2/R2] Перемещение\n[X] Сортировка A-Z/Z-A\n[Y] Сортировка по времени\n[START] Помощь\n[SELECT] Не показывать это сообщение\n[Любая кнопка] Продолжить", false);
     blitFlip();
     while (!quit) {
         if (updateKeystate(st->keystate, &quit, true, NULL)) {
@@ -635,7 +635,7 @@ void render(AppState *st)
 
     if (st->header_changed || st->battery_changed || st->all_changed) {
         START_TIMER(tm_renderHeader);
-        theme_renderHeader(screen, "EmuSort", false);
+        theme_renderHeader(screen, "Сортировка игр", false);
         theme_renderHeaderBattery(screen, st->battery_percentage);
         END_TIMER(tm_renderHeader);
     }
@@ -647,7 +647,7 @@ void render(AppState *st)
         END_TIMER(tm_renderList);
         START_TIMER(tm_renderFooter);
         theme_renderFooter(screen);
-        theme_renderStandardHint(screen, "SAVE", "CANCEL");
+        theme_renderStandardHint(screen, "Сохранить", "Отмена");
         theme_renderFooterStatus(screen, st->emu_list.active_pos + 1, st->emu_count);
         END_TIMER(tm_renderFooter);
     }
