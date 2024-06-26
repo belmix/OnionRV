@@ -551,4 +551,3 @@ void play_activity_list_all(void)
 }
 
 #endif // PLAY_ACTIVITY_DB_H
-

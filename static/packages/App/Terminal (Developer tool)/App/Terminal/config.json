@@ -1,6 +1,6 @@
 {
-"label":"Терминал",
+"label":"Terminal",
 "icon":"../../Icons/Default/app/terminal.png",
 "launch":"launch.sh",
-"description":"Терминал системы"
+"description":"st - Simple Terminal"
 }

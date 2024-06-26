@@ -138,9 +138,9 @@ core: $(CACHE)/.setup
 	@cd $(SRC_DIR)/pngScale && BUILD_DIR=$(BIN_DIR) make
 	@cd $(SRC_DIR)/libgamename && BUILD_DIR=$(BIN_DIR) make
 	@cd $(SRC_DIR)/gameNameList && BUILD_DIR=$(BIN_DIR) make
+	@cd $(SRC_DIR)/sendUDP && BUILD_DIR=$(BIN_DIR) make
 	@cd $(SRC_DIR)/tree && BUILD_DIR=$(BIN_DIR) make
 	@cd $(SRC_DIR)/pippi && BUILD_DIR=$(BIN_DIR) make
-	@cd $(SRC_DIR)/sendUDP && BUILD_DIR=$(BIN_DIR) make
 # these need to be rebuilt with -fPIC
 	@rm -f $(ROOT_DIR)/include/cjson/cJSON.o
 	@rm -f $(SRC_DIR)/common/utils/*.o
@@ -273,12 +273,12 @@ external-libs:
 	@cd $(ROOT_DIR)/include/cJSON && make clean && make
 	@cd $(ROOT_DIR)/include/SDL && make clean && make
 
-test:
+test: external-libs
 	@mkdir -p $(BUILD_TEST_DIR)/infoPanel_test_data && cd $(TEST_SRC_DIR) && BUILD_DIR=$(BUILD_TEST_DIR)/ make dev
 	@cp -R $(TEST_SRC_DIR)/infoPanel_test_data $(BUILD_TEST_DIR)/
 	cd $(BUILD_TEST_DIR) && ./test
 
-static-analysis:
+static-analysis: external-libs
 	@cd $(ROOT_DIR) && cppcheck -I $(INCLUDE_DIR) --enable=all $(SRC_DIR)
 
 format:

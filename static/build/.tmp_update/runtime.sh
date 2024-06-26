@@ -17,9 +17,9 @@ main() {
     export DEVICE_ID=$([ $? -eq 0 ] && echo $MODEL_MMP || echo $MODEL_MM)
     echo -n "$DEVICE_ID" > /tmp/deviceModel
 
-    SERIAL_NUMBER=$(read_uuid) 
+    SERIAL_NUMBER=$(read_uuid)
     echo -n "$SERIAL_NUMBER" > /tmp/deviceSN
-    
+
     touch /tmp/is_booting
     check_installer
     clear_logs
@@ -58,7 +58,7 @@ main() {
 
     # Make sure MainUI doesn't show charging animation
     touch /tmp/no_charging_ui
-    
+
     # Check if blf needs enabling
     if [ -f $sysdir/config/.blfOn ]; then
         /mnt/SDCARD/.tmp_update/script/blue_light.sh enable &
@@ -66,7 +66,7 @@ main() {
 
     cd $sysdir
     bootScreen "Boot"
-    
+
     # Set filebrowser branding to "Onion" and apply custom theme
     if [ -f "$sysdir/config/filebrowser/first.run" ]; then
         $sysdir/bin/filebrowser config set --branding.name "Onion" -d $sysdir/config/filebrowser/filebrowser.db
@@ -84,12 +84,12 @@ main() {
     # Init
     rm /tmp/.offOrder 2> /dev/null
     HOME=/mnt/SDCARD/RetroArch/
-    
+
     # Disable VNC server flag at boot
     if [ -f "$sysdir/config/.vncServer" ]; then
         rm "$sysdir/config/.vncServer"
     fi
-    
+
     # Detect if MENU button is held
     detectKey 1
     menu_pressed=$?
@@ -106,17 +106,16 @@ main() {
     # Bind arcade name library to customer path
     mount -o bind $miyoodir/lib/libgamename.so /customer/lib/libgamename.so
 
-
     rm -rf /tmp/is_booting
 
-    #Startup scripts
-	mkdir -p "$sysdir/startup"
-	mkdir -p "$sysdir/checkoff"
-	startup_scripts=$(find "$sysdir/startup" -type f -name "*.sh")
+    #EmuDeck - Startup scripts
+    mkdir -p "$sysdir/startup"
+    mkdir -p "$sysdir/checkoff"
+    startup_scripts=$(find "$sysdir/startup" -type f -name "*.sh")
 
-	for startup_script in $startup_scripts; do
-	  sh "$startup_script"
-	done
+    for startup_script in $startup_scripts; do
+        sh "$startup_script"
+    done
 
     # Auto launch
     if [ ! -f $sysdir/config/.noAutoStart ]; then
@@ -193,34 +192,10 @@ check_main_ui() {
     fi
 }
 
-toggle_topbar() {
-    theme_path="$(/customer/app/jsonval theme)"
-    config_path="${theme_path%/}/config.json"
-    regular_path="${theme_path%/}/skin/miyoo-topbar.png"
-    hidden_path="${theme_path%/}/skin/miyoo-topbar-hidden.png"
-    invis_path=/mnt/SDCARD/.tmp_update/res/miyoo-topbar-invis.png
-    hide_logo=$(sed -n 's/.*"hidelogo": \([^,}]*\).*/\1/p' "$config_path")
-
-    if [ $hide_logo == "true" ]; then
-        if  [ ! $(xcrc "$regular_path") == $(xcrc "$invis_path") ]; then
-            cp -f "$regular_path" "$hidden_path"
-            cp -f "$invis_path" "$regular_path"
-        fi
-    else
-        if [ -f "$hidden_path" ] && [ $(xcrc "$regular_path") == $(xcrc "$invis_path") ]; then
-            cp -f "$hidden_path" "$regular_path"
-        fi
-    fi
-    sync
-}
-
 launch_main_ui() {
     log "\n:: Launch MainUI"
 
     cd $sysdir
-
-    # hide or unhide miyoo-topbar
-    toggle_topbar
 
     # Generate battery percentage image
     mainUiBatPerc
@@ -242,8 +217,8 @@ launch_main_ui() {
     cd $miyoodir/app
     PATH="$miyoodir/app:$PATH" \
         LD_LIBRARY_PATH="$miyoodir/lib:/config/lib:/lib" \
-        LD_PRELOAD="$sysdir/lib/libmainuihooks.so:$miyoodir/lib/libpadsp.so" \
-        ./MainUI
+        LD_PRELOAD="$miyoodir/lib/libpadsp.so" \
+        ./MainUI 2>&1 > /dev/null
 
     # Merge the last game launched into the recent list
     check_hide_recents
@@ -321,6 +296,7 @@ change_resolution() {
 launch_game() {
     log "\n:: Launch game"
     cmd=$(cat $sysdir/cmd_to_run.sh)
+    TZ_VALUE=$(cat "$sysdir/config/.tz")
 
     is_game=0
     rompath=""
@@ -332,7 +308,6 @@ launch_game() {
     start_audioserver
     save_settings
 
-    # TIMER BEGIN
     if check_is_game "$cmd"; then
         rompath=$(echo "$cmd" | awk '{ st = index($0,"\" \""); print substr($0,st+3,length($0)-st-3)}')
 
@@ -361,50 +336,11 @@ launch_game() {
         fi
     fi
 
-    if [ -f /tmp/new_res_available ]; then
-        # Check if the program to be launched supports 560p
-        # Different programs need different checks (Apps vs Ports vs the rest)
-        full_resolution_path=""
-        if grep -qF "/mnt/SDCARD/App/" $sysdir/cmd_to_run.sh; then
-            # ----- App launch ----- #
-
-            full_resolution_path=$(cat $sysdir/cmd_to_run.sh | cut -d' ' -f 2 | sed 's/;/\/full_resolution/')
-
-        elif grep -qF "/mnt/SDCARD/Roms/PORTS/" $sysdir/cmd_to_run.sh; then
-            # ----- Port launch ----- #
-
-            dot_port_path=$(grep -o '\/mnt\/SDCARD\/Roms\/PORTS.*\.port' $sysdir/cmd_to_run.sh)
-
-            if grep -qF "FullResolution=1" "$dot_port_path"; then
-                # Look for FullResolution=1 in the .port file
-                # set full_resolution_path to a file that will always exist
-                full_resolution_path="/tmp/new_res_available"
-            fi
-
-        else
-            # ----- Everything else ----- #
-
-            full_resolution_path=$(grep -o '".*launch\.sh"' $sysdir/cmd_to_run.sh | sed 's/"//g; s/launch\.sh/full_resolution/')
-        fi
-    fi
+    full_resolution_path="$(get_full_resolution_path)"
 
     if [ $is_game -eq 1 ]; then
         if [ -f "$romcfgpath" ]; then
-            romcfg=$(cat "$romcfgpath")
-            retroarch_core=$(get_info_value "$romcfg" core)
-            corepath=".retroarch/cores/$retroarch_core.so"
-
-            log "per game core: $retroarch_core" >> $sysdir/logs/game_list_options.log
-
-            if [ -f "/mnt/SDCARD/RetroArch/$corepath" ] &&
-                # Do not override game core when launching from GS
-                echo "$cmd" | grep -qv "retroarch/cores"; then
-                if echo "$cmd" | grep -q "$sysdir/reset.cfg"; then
-                    echo "LD_PRELOAD=$miyoodir/lib/libpadsp.so ./retroarch -v --appendconfig \"$sysdir/reset.cfg\" -L \"$corepath\" \"$rompath\"" > $sysdir/cmd_to_run.sh
-                else
-                    echo "LD_PRELOAD=$miyoodir/lib/libpadsp.so ./retroarch -v -L \"$corepath\" \"$rompath\"" > $sysdir/cmd_to_run.sh
-                fi
-            fi
+            override_game_core "$romcfgpath"
         fi
 
         # Handle dollar sign
@@ -440,8 +376,6 @@ launch_game() {
             "$rompath" "$rompath" "$emupath"
             retval=$?
         else
-            # GAME LAUNCH
-
             # Change resolution if needed
             if [ -f /tmp/new_res_available ] && [ -f "$full_resolution_path" ]; then
                 log "Found full_resolution file, changing resolution to 560p"
@@ -450,16 +384,22 @@ launch_game() {
 
             # Free memory
             $sysdir/bin/freemma
+
+            # GAME LAUNCH
             cd /mnt/SDCARD/RetroArch/
-            $sysdir/cmd_to_run.sh
+
+            # make the cmd_to_run shell env aware of the new timezone
+            TZ="$TZ_VALUE" $sysdir/cmd_to_run.sh
+            retval=$?
+
             if [ -f /tmp/new_res_available ]; then
                 # Restore resolution
                 change_resolution "640x480"
             fi
-            retval=$?
+
             if [ $is_game -eq 1 ] && [ ! -f /tmp/.offOrder ] && [ -f /tmp/.displaySavingMessage ]; then
                 rm /tmp/.displaySavingMessage
-                infoPanel --title " " --message  "Сохранение ..." --persistent --no-footer &
+                infoPanel --title " " --message "Saving ..." --persistent --no-footer &
                 touch /tmp/dismiss_info_panel
                 sync
             fi
@@ -471,17 +411,42 @@ launch_game() {
     log "cmd retval: $retval"
 
     if [ $retval -eq 404 ]; then
-        infoPanel --title "Файл не найден" --message "Файл запроса не найден." --auto
+        infoPanel --title "File not found" --message "The requested file was not found." --auto
     elif [ $retval -ge 128 ] && [ $retval -ne 143 ] && [ $retval -ne 255 ]; then
-        infoPanel --title "Фатальная ошибка" --message "Программа завершилась с ошибкой.\n(Error code: $retval)" --auto
+        infoPanel --title "Fatal error occurred" --message "The program exited unexpectedly.\n(Error code: $retval)" --auto
     fi
+
+    launch_game_postprocess $is_game "$cmd" "$rompath"
+}
+
+override_game_core() {
+    romcfgpath="$1"
+    romcfg=$(cat "$romcfgpath")
+    retroarch_core=$(get_info_value "$romcfg" core)
+    corepath=".retroarch/cores/$retroarch_core.so"
+
+    log "per game core: $retroarch_core" >> $sysdir/logs/game_list_options.log
+
+    if [ -f "/mnt/SDCARD/RetroArch/$corepath" ] && echo "$cmd" | grep -qv "retroarch/cores"; then # Do not override game core when launching from GS
+        if echo "$cmd" | grep -q "$sysdir/reset.cfg"; then
+            echo "LD_PRELOAD=$miyoodir/lib/libpadsp.so ./retroarch -v --appendconfig \"$sysdir/reset.cfg\" -L \"$corepath\" \"$rompath\"" > $sysdir/cmd_to_run.sh
+        else
+            echo "LD_PRELOAD=$miyoodir/lib/libpadsp.so ./retroarch -v -L \"$corepath\" \"$rompath\"" > $sysdir/cmd_to_run.sh
+        fi
+    fi
+}
+
+launch_game_postprocess() {
+    is_game=$1
+    cmd="$2"
+    rompath="$3"
 
     # Reset CPU frequency
     echo ondemand > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 
     # Reset flags
     rm /tmp/stay_awake 2> /dev/null
-        
+
     # TIMER END + SHUTDOWN CHECK
     if [ $is_game -eq 1 ]; then
         if echo "$cmd" | grep -q "$sysdir/reset.cfg"; then
@@ -512,6 +477,33 @@ launch_game() {
     else
         set_prev_state "app"
         check_off_order "End"
+    fi
+}
+
+get_full_resolution_path() {
+    if [ -f /tmp/new_res_available ]; then
+        # Check if the program to be launched supports 560p
+        # Different programs need different checks (Apps vs Ports vs the rest)
+        if grep -qF "/mnt/SDCARD/App/" $sysdir/cmd_to_run.sh; then
+            # ----- App launch ----- #
+
+            echo "$(cat $sysdir/cmd_to_run.sh | cut -d' ' -f 2 | sed 's/;/\/full_resolution/')"
+
+        elif grep -qF "/mnt/SDCARD/Roms/PORTS/" $sysdir/cmd_to_run.sh; then
+            # ----- Port launch ----- #
+
+            dot_port_path=$(grep -o '\/mnt\/SDCARD\/Roms\/PORTS.*\.port' $sysdir/cmd_to_run.sh)
+
+            if grep -qF "FullResolution=1" "$dot_port_path"; then
+                # Look for FullResolution=1 in the .port file
+                # set full_resolution_path to a file that will always exist
+                echo "/tmp/new_res_available"
+            fi
+
+        else
+            # ----- Everything else ----- #
+            echo "$(grep -o '".*launch\.sh"' $sysdir/cmd_to_run.sh | sed 's/"//g; s/launch\.sh/full_resolution/')"
+        fi
     fi
 }
 
@@ -551,13 +543,14 @@ launch_switcher() {
 
 check_off_order() {
     if [ -f /tmp/.offOrder ]; then
-    	touch /tmp/shutting_down
-    	#CheckOff scripts
-		check_off_scripts=$(find "$sysdir/checkoff" -type f -name "*.sh")
+        touch /tmp/shutting_down
 
-		for check_off_script in $check_off_scripts; do
-	  		sh "$check_off_script"
-		done
+        #EmuDeck - CheckOff scripts
+        check_off_scripts=$(find "$sysdir/checkoff" -type f -name "*.sh")
+
+        for check_off_script in $check_off_scripts; do
+            sh "$check_off_script"
+        done
 
         bootScreen "$1" &
         sleep 1 # Allow the bootScreen to be displayed
@@ -674,7 +667,7 @@ create_swap() {
 
 init_system() {
     log "\n:: Init system"
-    
+
     create_swap
     load_settings
 
@@ -748,6 +741,16 @@ load_settings() {
                 sed 's/^\s*"vol":\s*[0-9][0-9]*/\t"vol":\t20/g' |
                 sed 's/^\s*"mute":\s*[0-9][0-9]*/\t"mute":\t0/g' \
                     > temp
+            mv -f temp /mnt/SDCARD/system.json
+        fi
+    fi
+
+    default_volume="${sysdir}/config/.defaultVolume-${device_uuid}"
+    if [ -f "$default_volume" ]; then
+        volume=$(printf '%d' "$(cat "$default_volume")")
+        if [ $? -eq 0 ]; then
+            cat /mnt/SDCARD/system.json |
+                sed 's/^\s*"vol":\s*[0-9][0-9]*/\t"vol":\t'$volume'/g' > temp
             mv -f temp /mnt/SDCARD/system.json
         fi
     fi
@@ -825,12 +828,6 @@ start_networking() {
 }
 
 check_networking() {
-    libpadspblocker &
-    if [ $DEVICE_ID -ne $MODEL_MMP ] || [ ! -f /tmp/network_changed ] && [ -f /tmp/ntp_synced ]; then
-        check_timezone
-        return
-    fi
-
     if pgrep -f update_networking.sh; then
         log "update_networking already running"
     else
@@ -839,12 +836,6 @@ check_networking() {
         fi
         $sysdir/script/network/update_networking.sh check
     fi
-
-    check_timezone
-}
-
-check_timezone() {
-    export TZ=$(cat "$sysdir/config/.tz")
 }
 
 check_installer() {
@@ -856,23 +847,6 @@ check_installer() {
         reboot
         sleep 10
         exit
-    fi
-}
-
-# utility function to block a preload on the wpa_supp and udhcpc
-libpadspblocker() { 
-    wpa_pid=$(ps -e | grep "[w]pa_supplicant" | awk 'NR==1{print $1}')
-    udhcpc_pid=$(ps -e | grep "[u]dhcpc" | awk 'NR==1{print $1}')
-    if [ -n "$wpa_pid" ] && [ -n "$udhcpc_pid" ]; then
-        if grep -q "libpadsp.so" /proc/$wpa_pid/maps || grep -q "libpadsp.so" /proc/$udhcpc_pid/maps; then
-            echo "Network Checker: $wpa_pid(WPA) and $udhcpc_pid(UDHCPC) found preloaded with libpadsp.so"
-            unset LD_PRELOAD
-            killall -9 wpa_supplicant
-            killall -9 udhcpc 
-            $miyoodir/app/wpa_supplicant -B -D nl80211 -iwlan0 -c /appconfigs/wpa_supplicant.conf & 
-            udhcpc -i wlan0 -s /etc/init.d/udhcpc.script &
-            echo "Network Checker: Removing libpadsp.so preload on wpa_supp/udhcpc"
-        fi
     fi
 }
 

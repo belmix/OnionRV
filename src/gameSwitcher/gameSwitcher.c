@@ -39,7 +39,6 @@
 
 #include "../playActivity/cacheDB.h"
 #include "../playActivity/playActivityDB.h"
-#include "./listMigration.h"
 
 #define MAXHISTORY 100
 #define MAXHROMNAMESIZE 250
@@ -84,7 +83,6 @@ static char sTotalTimePlayed[50] = "";
 
 // Game history list
 typedef struct {
-    uint32_t hash;
     char name[MAXHROMNAMESIZE * 2];
     char shortname[STR_MAX * 2];
     char LaunchCommand[STR_MAX * 3 + 80];
@@ -92,7 +90,7 @@ typedef struct {
     int gameIndex;
     int lineNumber;
     SDL_Surface *romScreen;
-    char romScreenPath[STR_MAX * 4];
+    char romImagePath[STR_MAX * 4];
     char path[PATH_MAX * 2];
 } Game_s;
 static Game_s game_list[MAXHISTORY];
@@ -131,20 +129,16 @@ SDL_Surface *loadRomScreen(int index)
 
     if (game->romScreen == NULL) {
         char currPicture[STR_MAX * 2];
-        sprintf(currPicture, ROM_SCREENS_DIR "/%" PRIu32 ".png", game->hash);
+        uint32_t hash;
+        hash = FNV1A_Pippip_Yurii(game->path, strlen(game->path));
+        sprintf(currPicture, ROM_SCREENS_DIR "/%" PRIu32 ".png", hash);
 
         // Show artwork
         if (!exists(currPicture))
-            sprintf(currPicture, "%s/Imgs/%s.png", extractPath(game->path), file_removeExtension(game->name));
-
-        // ports
-        if (!exists(currPicture)) {
-            sprintf(currPicture, "/mnt/SDCARD/Roms/PORTS/Imgs/%s.png", file_removeExtension(game->name));
-            printf_debug("mario64 path %s\n", currPicture);
-        }
+            sprintf(currPicture, game->romImagePath);
 
         if (exists(currPicture)) {
-            strcpy(game->romScreenPath, currPicture);
+            strcpy(game->romImagePath, currPicture);
             game->romScreen = IMG_Load(currPicture);
         }
     }
@@ -212,7 +206,7 @@ void printHistory()
         printf_debug("totalTime: %i\n", game_list[i].totalTime);
         printf_debug("gameIndex: %i\n", game_list[i].gameIndex);
         printf_debug("lineNumber: %i\n", game_list[i].lineNumber);
-        printf_debug("romScreenPath: %s\n", game_list[i].romScreenPath);
+        printf_debug("romImagePath: %s\n", game_list[i].romImagePath);
         printf_debug("path: %s\n", game_list[i].path);
         print_debug("\n\n");
     }
@@ -232,7 +226,7 @@ void readHistory()
     file = fopen(getMiyooRecentFilePath(), "r");
 
     if (file == NULL) {
-        print_debug("Отсутствует файл истории");
+        print_debug("Error opening file");
         return;
     }
 
@@ -256,7 +250,7 @@ void readHistory()
 
         sscanf(strstr(jsonContent, "\"type\":") + 7, "%d", &type);
 
-        if (type != 5)
+        if ((type != 5) && (type != 17))
             continue;
 
         print_debug("type 5");
@@ -284,6 +278,7 @@ void readHistory()
             strncpy(imgpath, imgpathStart, imgpathEnd - imgpathStart);
             imgpath[imgpathEnd - imgpathStart] = '\0';
         }
+        printf_debug("imgpath: %s\n", imgpath);
 
         char *colonPosition = strchr(rompath, ':');
         if (colonPosition != NULL) {
@@ -335,8 +330,6 @@ void readHistory()
 
         Game_s *game = &game_list[nbGame];
 
-        game->hash = FNV1A_Pippip_Yurii(rompath, strlen(rompath));
-
         game->lineNumber = lineCounter;
         game->romScreen = NULL;
         game->totalTime[0] = '\0';
@@ -345,6 +338,7 @@ void readHistory()
 
         getGameName(game->name, rompath);
         strcpy(game->path, rompath);
+        strcpy(game->romImagePath, imgpath);
         file_cleanName(game->shortname, game->name);
         game->gameIndex = nbGame + 1;
         game = &game_list[nbGame];
@@ -357,7 +351,7 @@ void readHistory()
         printf_debug("totalTime: %i\n", game->totalTime);
         printf_debug("gameIndex: %i\n", game->gameIndex);
         printf_debug("lineNumber: %i\n", game->lineNumber);
-        printf_debug("romScreenPath: %s\n", game->romScreenPath);
+        printf_debug("romImagePath: %s\n", game->romImagePath);
         printf_debug("path: %s\n", game->path);
     }
 
@@ -379,8 +373,11 @@ void removeCurrentItem()
 
     file_delete_line(getMiyooRecentFilePath(), game->lineNumber);
 
-    if (strlen(game->romScreenPath) > 0 && is_file(game->romScreenPath))
-        remove(game->romScreenPath);
+    if (strlen(game->romImagePath) > 0 && is_file(game->romImagePath)) {
+        if (strncmp(game->romImagePath, ROM_SCREENS_DIR, strlen(ROM_SCREENS_DIR)) == 0) {
+            remove(game->romImagePath);
+        }
+    }
 
     // Copy next element value to current element
     for (int i = current_game; i < game_list_len - 1; i++) {
@@ -405,23 +402,10 @@ int checkQuitAction(void)
 int main(int argc, char *argv[])
 {
     log_setName("gameSwitcher");
-    print_debug("\n\nВключен журнал отладки");
+    print_debug("\n\nDebug logging enabled");
 
     signal(SIGINT, sigHandler);
     signal(SIGTERM, sigHandler);
-
-    int b_force_migration = (argc > 1 && strcmp(argv[1], "force_migration") == 0);
-
-    if (!is_file(RECENTLISTMIGRATED) || b_force_migration) {
-        print_debug("Recent list migration started");
-        migrateGameSwitcherList();
-        char s_command[STR_MAX];
-        sprintf(s_command, "touch %s", RECENTLISTMIGRATED);
-        system(s_command);
-
-        if (b_force_migration)
-            return EXIT_SUCCESS;
-    }
 
     SDL_InitDefault(true);
 
@@ -430,7 +414,7 @@ int main(int argc, char *argv[])
     SDL_Flip(video);
 
     readHistory();
-    printHistory();
+    //printHistory();
 
     settings_load();
     lang_load();
@@ -630,8 +614,8 @@ int main(int argc, char *argv[])
             if (keystate[SW_BTN_X] == PRESSED) {
                 if (game_list_len != 0) {
                     theme_renderDialog(
-                        screen, "Удалить из списка",
-                        "Вы уверены, что хотите удалить\nигру из переключателя?",
+                        screen, "Remove from history",
+                        "Are you sure you want to\nremove game from history?",
                         true);
                     SDL_BlitSurface(screen, NULL, video, NULL);
                     SDL_Flip(video);
@@ -693,6 +677,7 @@ int main(int argc, char *argv[])
                     current_bg = loadRomScreen(current_game);
 
                     if (current_bg != NULL) {
+
                         if (current_bg->w > 640 || current_bg->h > 480) {
                             printf_debug("Scaling screenshot from %dx%d to 640x480\n", current_bg->w, current_bg->h);
                             SDL_Rect dest_rect = {0, 0, 640, 480};
@@ -708,7 +693,7 @@ int main(int argc, char *argv[])
                         SDL_Rect game_name_bg_pos = {offSetX, offSetY};
 
                         SDL_Rect frame = {theme()->frame.border_left, 0, 640 - theme()->frame.border_left - theme()->frame.border_right, 480};
-                        SDL_Rect frame_pos = {offSetX+theme()->frame.border_left, offSetY};
+                        SDL_Rect frame_pos = {offSetX + theme()->frame.border_left, offSetY};
 
                         if (view_mode == VIEW_NORMAL)
                             SDL_BlitSurface(current_bg, &frame, screen, &frame_pos);
@@ -822,7 +807,7 @@ int main(int argc, char *argv[])
             }
 
             if (view_mode == VIEW_NORMAL) {
-                char title_str[STR_MAX] = "Переключение игр";
+                char title_str[STR_MAX] = "GameSwitcher";
                 if (show_time && game_list_len > 0) {
                     if (strlen(game->totalTime) == 0) {
                         str_serializeTime(game->totalTime, play_activity_get_play_time(game->path));
@@ -895,13 +880,13 @@ int main(int argc, char *argv[])
     screen = SDL_CreateRGBSurface(SDL_HWSURFACE, 640, 480, 32, 0, 0, 0, 0);
 
     if (exit_to_menu) {
-        print_debug("Выход в меню");
+        print_debug("Exiting to menu");
         remove("/mnt/SDCARD/.tmp_update/.runGameSwitcher");
         remove("/mnt/SDCARD/.tmp_update/cmd_to_run.sh");
     }
 
     else {
-        printf_debug("Возобновление игры - Игра : %i - gameIndex: %i", current_game, game_list[current_game].gameIndex);
+        printf_debug("Resuming game - current_game : %i - gameIndex: %i", current_game, game_list[current_game].gameIndex);
         resumeGame(game_list[current_game].gameIndex);
     }
 

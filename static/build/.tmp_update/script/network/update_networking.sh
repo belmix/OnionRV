@@ -33,7 +33,7 @@ main() {
                     ;;
                 authed)
                     ${service}_authed &
-                    store_state &
+                    store_state & 
                     ;;
                 *)
                     print_usage
@@ -63,7 +63,7 @@ main() {
             ;;
         full_reset) # Do a full reset of the json file
             full_reset
-            ;;         
+            ;;
         *)
             print_usage
             ;;
@@ -76,21 +76,7 @@ check() {
     if wifi_enabled && [ "$is_booting" -eq 1 ]; then
         bootScreen Boot "Проверка сети..."
     fi
-
-# Check to see if mainui has demanded wifi go down
-    local current_main_ui_control=$(get_main_ui_control &)
-    local wifi_status=$(wifi_enabled && echo "1" || echo "0")
-
-    if [ "$wifi_status" != "$current_main_ui_control" ]; then
-        update_main_ui_control "$wifi_status" &
-        if [ "$wifi_status" = "1" ]; then
-            # Being turned on, restore the previous state of net servs
-            if [ $is_booting -eq 0 ]; then
-                restore_state
-            fi
-        fi
-    fi
-
+    
     check_wifi
     check_ftpstate &
     check_sshstate &
@@ -99,7 +85,7 @@ check() {
     check_smbdstate &
 
     if wifi_enabled && flag_enabled ntpWait && [ $is_booting -eq 1 ]; then
-        bootScreen Boot "Синхронизация времени..."
+        bootScreen Boot "Syncing time..."
         check_ntpstate && bootScreen Boot "Time synced: $(date +"%H:%M")" || bootScreen Boot "Time sync failed"
         sleep 1
     else
@@ -107,13 +93,13 @@ check() {
     fi
 
     if [ -f "$sysdir/.updateAvailable" ] && [ $is_booting -eq 1 ]; then
-        bootScreen Boot "Готово!"
+        bootScreen Boot "Update available!"
         sleep 1
     elif wifi_enabled && [ ! -f /tmp/update_checked ]; then
         touch /tmp/update_checked
         $sysdir/script/ota_update.sh check &
-
     fi
+
 }
 
 # Function to help disable and kill off all processes
@@ -136,14 +122,15 @@ disable_all_services() {
 
 # Core function
 check_wifi() {
-   # Fixes lockups entering some apps after enabling wifi (because wpa_supp/udhcpc are preloaded with libpadsp.so)
+    # Fixes lockups entering some apps after enabling wifi (because wpa_supp/udhcpc are preloaded with libpadsp.so)
     libpadspblocker &
-
+    
     if is_running hostapd; then
         return
     else
         if wifi_enabled; then
             if ! ifconfig wlan0 >> /dev/null 2>&1 || [ -f /tmp/restart_wifi ]; then
+                restore_state
                 if [ -f /tmp/restart_wifi ]; then
                     pkill -9 wpa_supplicant
                     pkill -9 udhcpc
@@ -159,6 +146,7 @@ check_wifi() {
             fi
         else
             if [ ! -f "/tmp/dont_restart_wifi" ]; then
+                store_state
                 pkill -9 wpa_supplicant
                 pkill -9 udhcpc
                 /customer/app/axp_test wifioff
@@ -266,7 +254,7 @@ check_sshstate() {
             fi
         else
             if wifi_enabled; then
-            mkdir -p $sysdir/etc/dropbear
+                mkdir -p $sysdir/etc/dropbear
                 sync
                 if flag_enabled authsshState; then
                     ssh_authed
@@ -400,7 +388,6 @@ start_hotspot() {
     ifconfig wlan1 $hotspot0addr netmask $subnetmask >> /dev/null 2>&1
 
     # Start
-
     $sysdir/bin/dnsmasq --conf-file=$sysdir/config/dnsmasq.conf -u root &
     $sysdir/bin/hostapd -i wlan1 $sysdir/config/hostapd.conf >> /dev/null 2>&1 &
 
@@ -450,7 +437,6 @@ check_hotspotstate() {
 # This is the fallback!
 # We need to check if NTP is enabled and then check the state of tzselect in /.tmp_update/config/tzselect, based on the value we'll pass the TZ via the env var to ntpd and get the time (has to be POSIX)
 # This will work but it will not export the TZ var across all opens shells so you may find the hwclock (and clock app, retroarch time etc) are correct but terminal time is not.
-# It does set TZ on the tty that Main is running in so this is ok
 
 check_ntpstate() {
     ret_val=0
@@ -493,7 +479,7 @@ check_ntpstate() {
         if [ "$got_ip" -eq 1 ]; then
             while true; do
                 log "NTPwait: get_time attempt $attempts"
-               if ping -q -c 1 -W 1 worldtimeapi.org > /dev/null 2>&1; then
+                if ping -q -c 1 -W 1 worldtimeapi.org > /dev/null 2>&1; then
                     if get_time; then
                         ret_val=0
                         break
@@ -579,10 +565,6 @@ init_json() {
     if [ ! -s "$jsonfile" ]; then
         echo '{}' > "$jsonfile"
     fi
-
-    if ! grep -q '"main_ui_control":' "$jsonfile"; then
-        sed -i 's/}$/,"main_ui_control": "0"}/' "$jsonfile"
-    fi
 }
 
 # unhook libpadsp.so on the wifi servs
@@ -604,22 +586,27 @@ libpadspblocker() {
 
 # Store the network service state currently
 store_state() {
-    # Make sure main_ui_control gets set at the start
-    local main_ui_control=$(get_main_ui_control)
-    local json_content="{\"main_ui_control\": \"$main_ui_control\""
+    service_key="{"
+    first_item=true
 
     for service in $services; do
+        if [ "$first_item" = true ]; then
+            first_item=false
+        else
+            service_key="$service_key,"
+        fi
+
         if [ -f "$sysdir/config/.$service" ]; then
-            json_content="$json_content, \"$service\": \"1\""
-        elif [ -f "$sysdir/config/.$service_" ]; then
-            json_content="$json_content, \"$service\": \"0\""
+            service_key="$service_key \"$service\": \"1\""
+        else
+            service_key="$service_key \"$service\": \"0\""
         fi
     done
-
-    # Echo the changes in, jq is too slow for this
-    json_content="$json_content }"
-    echo "$json_content" > "$jsonfile"
+    
+    service_key="$service_key }"
+    echo "$service_key" > "$jsonfile"
 }
+
 
 # Restore the network service state, don't use jq it's too slow and holds the UI thread until it returns 
 # (you can't background this, you'll miss the checks for net servs as the flags won't be set)
@@ -630,7 +617,7 @@ restore_state() {
     grep -E '"(httpState|ftpState|smbdState|sshState|authsshState|authftpState|authhttpState)":\s*"[01]"' "$jsonfile" | while IFS=":" read -r key value; do
         key=$(echo "$key" | tr -d ' "{}')
         value=$(echo "$value" | tr -d ' ",')
-
+        
         if echo "$services" | grep -wq "$key"; then
             if [ "$value" = "1" ]; then
                 enable_flag "$key"
@@ -646,16 +633,6 @@ full_reset() {
         disable_flag "$service"
     done
     rm -f "$jsonfile"
-}
-
-update_main_ui_control() {
-    control_status="$1"
-    sed -i'' -e "/\"main_ui_control\"/s/: \".*\"/: \"$control_status\"/" "$jsonfile"
-}
-
-get_main_ui_control() {
-    value=$(grep '"main_ui_control"' "$jsonfile" | sed -n 's/.*"main_ui_control": "\([^"]*\)".*/\1/p')
-    echo "${value:-0}"
 }
 
 convert_seconds_to_utc_offset() {
@@ -719,7 +696,7 @@ enable_flag() {
 
 disable_flag() {
     flag="$1"
-    rm "$sysdir/config/.$flag" /dev/null 2>&1
+    mv "$sysdir/config/.$flag" "$sysdir/config/.$flag_" 
 }
 
 is_running() {

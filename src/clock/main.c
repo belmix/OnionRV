@@ -31,7 +31,7 @@ SOFTWARE.
 
 #define MAX_YEAR 2100
 #define MIN_YEAR 1970
-#define DEFAULT_YEAR 2023
+#define DEFAULT_YEAR 2024
 #define MAX_DAY 31
 #define MIN_DAY 1
 #define MAX_MONTH 12

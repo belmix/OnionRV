@@ -199,6 +199,55 @@ void wait(int seconds)
 }
 
 //
+//    [onion] deepsleep if MainUI/gameSwitcher/retroarch is running
+//
+void deepsleep(void)
+{
+    system_state_update();
+    if (system_state == MODE_MAIN_UI) {
+        short_pulse();
+        set_system_shutdown();
+        kill_mainUI();
+    }
+    else if (system_state == MODE_SWITCHER) {
+        short_pulse();
+        set_system_shutdown();
+        kill(system_state_pid, SIGTERM);
+    }
+    else if (system_state == MODE_GAME) {
+        if (check_autosave()) {
+            short_pulse();
+            set_system_shutdown();
+            screenshot_system();
+            terminate_retroarch();
+        }
+    }
+    else if (system_state == MODE_ADVMENU) {
+        short_pulse();
+        set_system_shutdown();
+        kill(system_state_pid, SIGQUIT);
+    }
+    else if (system_state == MODE_APPS) {
+        short_pulse();
+        remove(CMD_TO_RUN_PATH);
+        set_system_shutdown();
+        suspend(1);
+    }
+    else if (system_state == MODE_DRASTIC) {
+        short_pulse();
+        set_system_shutdown();
+        screenshot_system();
+        terminate_drastic();
+    }
+
+    // Wait 30s before forcing a shutdown
+    wait(30);
+    if (!temp_flag_get("shutting_down")) {
+        force_shutdown();
+    }
+}
+
+//
 //    Suspend interface
 //
 void suspend_exec(int timeout)
@@ -253,8 +302,8 @@ void suspend_exec(int timeout)
             // shutdown
             system_powersave_off();
             resume();
-            usleep(100000);
-            shutdown();
+            usleep(150000);
+            deepsleep();
         }
     }
 
@@ -262,7 +311,7 @@ void suspend_exec(int timeout)
     system_powersave_off();
     if (killexit) {
         resume();
-        usleep(100000);
+        usleep(150000);
         suspend(2);
         usleep(400000);
     }
@@ -277,54 +326,6 @@ void suspend_exec(int timeout)
     }
 
     keyinput_enable();
-}
-
-//
-//    [onion] deepsleep if MainUI/gameSwitcher/retroarch is running
-//
-void deepsleep(void)
-{
-    system_state_update();
-    if (system_state == MODE_MAIN_UI) {
-        short_pulse();
-        set_system_shutdown();
-        kill_mainUI();
-    }
-    else if (system_state == MODE_SWITCHER) {
-        short_pulse();
-        set_system_shutdown();
-        kill(system_state_pid, SIGTERM);
-    }
-    else if (system_state == MODE_GAME) {
-        if (check_autosave()) {
-            short_pulse();
-            set_system_shutdown();
-            screenshot_system();
-            terminate_retroarch();
-        }
-    }
-    else if (system_state == MODE_ADVMENU) {
-        short_pulse();
-        set_system_shutdown();
-        kill(system_state_pid, SIGQUIT);
-    }
-    else if (system_state == MODE_APPS) {
-        short_pulse();
-        remove(CMD_TO_RUN_PATH);
-        set_system_shutdown();
-        suspend(1);
-    }
-    else if (system_state == MODE_DRASTIC) {
-        short_pulse();
-        set_system_shutdown();
-        screenshot_system();
-        terminate_drastic();
-    }
-     // Wait 30s before forcing a shutdown
-    wait(30);
-    if (!temp_flag_get("shutting_down")) {
-        force_shutdown();
-        }
 }
 
 void turnOffScreen(void)
@@ -396,9 +397,10 @@ int main(void)
 
     bool delete_flag = false;
     bool settings_changed = false;
+
     int save_settings_timestamp = 0;
     volatile bool needWriteSettings = false;
-   
+
     time_t fav_last_modified = time(NULL);
 
     while (1) {

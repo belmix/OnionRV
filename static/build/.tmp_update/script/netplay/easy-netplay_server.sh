@@ -94,7 +94,7 @@ create_cookie_info() {
 
 # We'll start Retroarch in host mode with -H with the core and rom paths loaded in.
 start_retroarch() {
-   log "RetroArch" "Starting RetroArch..."
+    log "RetroArch" "Starting RetroArch..."
     echo "*****************************************"
     echo "romfullpath: $cookie_rom_path"
     echo "platform: ${platform}"

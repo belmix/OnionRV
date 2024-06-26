@@ -2,6 +2,7 @@
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
+#include <SDL/SDL_rotozoom.h>
 
 static SDL_Surface *g_image_cache_prev = NULL;
 static SDL_Surface *g_image_cache_current = NULL;
@@ -15,42 +16,45 @@ static SDL_Surface *g_image_cache_next = NULL;
     } while (0)
 #endif
 
-static void drawImage(SDL_Surface *image_to_draw, SDL_Surface *screen,
-                      const SDL_Rect *frame)
+#define MIN(a, b) (a < b) ? (a) : (b)
+
+void drawImage(SDL_Surface *image, SDL_Surface *screen,
+               const SDL_Rect *frame)
 {
-    if (!image_to_draw)
+    if (!image)
         return;
 
-    if (image_to_draw->w != 640 || image_to_draw->h != 480) {
-        // scale image to 640x480 if needed
-        SDL_Rect dest_rect = {0, 0, 640, 480};
-        SDL_SoftStretch(image_to_draw, NULL, image_to_draw, &dest_rect);
-        image_to_draw->w = 640;
-        image_to_draw->h = 480;
+    SDL_Surface *scaled_image = NULL;
+    SDL_Rect target = {0, 0, screen->w, screen->h};
+
+    if (frame != NULL) {
+        target = *frame;
     }
 
-    DEBUG_PRINT(("фрейм %p\n", frame));
-    int border_left = 0;
-    SDL_Rect new_frame = {0, 0};
-    if (frame != NULL) {
-        DEBUG_PRINT(("x-%d y-%d\n", frame->x, frame->y));
-        new_frame = *frame;
-        border_left = new_frame.x;
+    // scale image to 640x480 only if bigger (v4 752x560)
+    if (image->w > target.w || image->h > target.h) {
+        double ratio_x = (double)target.w / image->w;
+        double ratio_y = (double)target.h / image->h;
+        double scale = MIN(ratio_x, ratio_y);
+        scaled_image = rotozoomSurface(image, 0.0, scale, true);
+
+        if (scaled_image == NULL) {
+            printf("rotozoomSurface failed: %s\n", SDL_GetError());
+        }
+        else {
+            image = scaled_image;
+        }
     }
-    DEBUG_PRINT(("border_left %d\n", border_left));
-    int16_t image_x = 320 - (int16_t)(image_to_draw->w / 2);
-    if (image_x < border_left) {
-        image_x = border_left;
+
+    SDL_Rect image_pos = {
+        target.x + (target.w - image->w) / 2,
+        target.y + (target.h - image->h) / 2};
+
+    SDL_BlitSurface(image, NULL, screen, &image_pos);
+
+    if (scaled_image != NULL) {
+        SDL_FreeSurface(scaled_image);
     }
-    else {
-        new_frame.x -= border_left;
-    }
-    SDL_Rect image_rect = {image_x, (int16_t)(240 - image_to_draw->h / 2)};
-    DEBUG_PRINT(("image_rect x-%d y-%d\n", image_rect.x, image_rect.y));
-    if (frame != NULL)
-        SDL_BlitSurface(image_to_draw, &new_frame, screen, &image_rect);
-    else
-        SDL_BlitSurface(image_to_draw, NULL, screen, &image_rect);
 }
 
 char *drawImageByIndex(const int new_image_index, const int image_index,
@@ -62,14 +66,14 @@ char *drawImageByIndex(const int new_image_index, const int image_index,
 
     if (new_image_index < 0 || new_image_index >= images_paths_count) {
         // out of range, draw nothing
-        printf("за пределами диапазона, не отрисовано\n");
+        printf("out of range, draw nothing\n");
         return NULL;
     }
     char *image_path_to_draw = images_paths[new_image_index];
     DEBUG_PRINT(("image_path_to_draw: %s\n", image_path_to_draw));
     if (new_image_index == image_index) {
         if (g_image_cache_current == NULL) {
-            DEBUG_PRINT(("невалидный кэш\n"));
+            DEBUG_PRINT(("invalidating cache\n"));
             g_image_cache_prev =
                 new_image_index == 0
                     ? NULL
@@ -87,14 +91,14 @@ char *drawImageByIndex(const int new_image_index, const int image_index,
         }
     }
     if (abs(new_image_index - image_index) > 1) {
-        DEBUG_PRINT(("случайное перемещение, еще не реализованно\n"));
+        DEBUG_PRINT(("random jump, not implemented yet\n"));
         return NULL;
     }
 
     int move_direction = new_image_index - image_index;
 
     if (move_direction > 0) {
-        DEBUG_PRINT(("перемещение вперёд\n"));
+        DEBUG_PRINT(("moving forward\n"));
         if (g_image_cache_prev)
             SDL_FreeSurface(g_image_cache_prev);
         g_image_cache_prev = g_image_cache_current;
@@ -105,14 +109,14 @@ char *drawImageByIndex(const int new_image_index, const int image_index,
         else {
             const int next_image_index = new_image_index + 1;
             char *image_path_to_load = images_paths[next_image_index];
-            DEBUG_PRINT(("предварительная загрузка следующего изображения '%s' for index #%d\n",
+            DEBUG_PRINT(("preloading next image '%s' for index #%d\n",
                          image_path_to_load, next_image_index));
             g_image_cache_next = IMG_Load(image_path_to_load);
         }
         *cache_used = true;
     }
     else if (move_direction < 0) {
-        DEBUG_PRINT(("перемещение назад\n"));
+        DEBUG_PRINT(("moving backward\n"));
 
         if (g_image_cache_next)
             SDL_FreeSurface(g_image_cache_next);
@@ -124,7 +128,7 @@ char *drawImageByIndex(const int new_image_index, const int image_index,
         else {
             const int prev_image_index = new_image_index - 1;
             char *image_path_to_load = images_paths[prev_image_index];
-            DEBUG_PRINT(("предварительная загрузка предыдущего изображения '%s' for index #%d\n",
+            DEBUG_PRINT(("preloading prev image '%s' for index #%d\n",
                          image_path_to_load, prev_image_index));
             g_image_cache_prev = IMG_Load(image_path_to_load);
         }
@@ -132,7 +136,7 @@ char *drawImageByIndex(const int new_image_index, const int image_index,
         *cache_used = true;
     }
     else {
-        DEBUG_PRINT(("тот же слайд\n"));
+        DEBUG_PRINT(("same slide\n"));
         *cache_used = true;
     }
 
@@ -143,7 +147,7 @@ char *drawImageByIndex(const int new_image_index, const int image_index,
 
 void cleanImagesCache()
 {
-    DEBUG_PRINT(("очистка кэша изображений\n"));
+    DEBUG_PRINT(("cleaning images cache\n"));
     if (g_image_cache_prev)
         SDL_FreeSurface(g_image_cache_prev);
     if (g_image_cache_current)
