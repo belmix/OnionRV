@@ -399,7 +399,7 @@ launch_game() {
 
             if [ $is_game -eq 1 ] && [ ! -f /tmp/.offOrder ] && [ -f /tmp/.displaySavingMessage ]; then
                 rm /tmp/.displaySavingMessage
-                infoPanel --title " " --message "Saving ..." --persistent --no-footer &
+                infoPanel --title " " --message "Сохранение..." --persistent --no-footer &
                 touch /tmp/dismiss_info_panel
                 sync
             fi
@@ -411,9 +411,9 @@ launch_game() {
     log "cmd retval: $retval"
 
     if [ $retval -eq 404 ]; then
-        infoPanel --title "File not found" --message "The requested file was not found." --auto
+        infoPanel --title "Файл не найден" --message "The requested file was not found." --auto
     elif [ $retval -ge 128 ] && [ $retval -ne 143 ] && [ $retval -ne 255 ]; then
-        infoPanel --title "Fatal error occurred" --message "The program exited unexpectedly.\n(Error code: $retval)" --auto
+        infoPanel --title "Фатальная ошибка" --message "The program exited unexpectedly.\n(Error code: $retval)" --auto
     fi
 
     launch_game_postprocess $is_game "$cmd" "$rompath"
